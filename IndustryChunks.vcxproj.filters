@@ -45,6 +45,9 @@
     <ClCompile Include="GraphicsPipeline.cpp">
       <Filter>Source Files\VulkanEngine</Filter>
     </ClCompile>
+    <ClCompile Include="Swapchain.cpp">
+      <Filter>Source Files\VulkanEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VulkanEngine.h">
@@ -63,6 +66,9 @@
       <Filter>Header Files\VulkanEngine</Filter>
     </ClInclude>
     <ClInclude Include="GraphicsPipeline.h">
+      <Filter>Header Files\VulkanEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="Swapchain.h">
       <Filter>Header Files\VulkanEngine</Filter>
     </ClInclude>
   </ItemGroup>

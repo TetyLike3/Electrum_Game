@@ -13,6 +13,7 @@
 #include "Window.h"
 #include "DebugMessenger.h"
 #include "Devices.h"
+#include "Swapchain.h"
 #include "Surface.h"
 #include "GraphicsPipeline.h"
 
@@ -41,7 +42,7 @@ private:
 	static VulkanEngine* m_pInstance;
 	VkEngineState m_state = VkEngineState::NONE;
 
-	Utilities* m_pUtilities = Utilities::getInstance();
+	Utilities* m_pUtilities = nullptr;
 
 	Window* m_pWindow = nullptr;
 
@@ -49,6 +50,7 @@ private:
 	DebugMessenger* m_pDebugMessenger = nullptr;
 	PhysicalDevice* m_pPhysicalDevice = nullptr;
 	LogicalDevice* m_pLogicalDevice = nullptr;
+	Swapchain* m_pSwapchain = nullptr;
 	GraphicsPipeline* m_pGraphicsPipeline = nullptr;
 
 	std::map<std::string, uint32_t> m_versions = {};

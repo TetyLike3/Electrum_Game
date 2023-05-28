@@ -151,6 +151,7 @@
     <ClCompile Include="Devices.cpp" />
     <ClCompile Include="GraphicsPipeline.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Swapchain.cpp" />
     <ClCompile Include="Utilities.cpp" />
     <ClCompile Include="VulkanEngine.cpp" />
     <ClCompile Include="Window.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="DebugMessenger.h" />
     <ClInclude Include="Devices.h" />
     <ClInclude Include="GraphicsPipeline.h" />
+    <ClInclude Include="Swapchain.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="VulkanEngine.h" />
     <ClInclude Include="Window.h" />

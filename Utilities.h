@@ -8,7 +8,6 @@
 #include <iostream>
 #include <chrono>
 #include <format>
-#include <filesystem>
 #include <fstream>
 
 // Macro to print debug messages with class name argument autofilled
@@ -50,13 +49,28 @@ public:
 
 	template<typename CLASSNAME>
 	// Prints a debug message with the class name and timestamp.
-	void debugPrint(std::string message, CLASSNAME* that);
+	inline void debugPrint(std::string message, CLASSNAME* that)
+	{
+		using std::string, std::format, std::cerr, std::setw;
+
+		string timestamp = generateTimestamp_HH_MM_SS_mmm();
+
+		// Print class name only once
+		if (lastClassPrinted != typeid(*that).name())
+		{
+			lastClassPrinted = typeid(*that).name();
+			cerr << format("\nVulkanEngine DEBUG - {} -\n", lastClassPrinted);
+		};
+
+		lastMessagePrinted = format("[{}] - {}\n", generateTimestamp_HH_MM_SS_mmm(), message);
+		cerr << lastMessagePrinted;
+	};
 
 	inline std::string getVkAPIVersionString(uint32_t version)
 	{
 		using std::string, std::to_string;
 		return to_string(VK_API_VERSION_MAJOR(version)) += string(".") += to_string(VK_API_VERSION_MINOR(version)) += string(".") += to_string(VK_API_VERSION_PATCH(version));
-	}
+	};
 
 	// Generates a timestamp in the format HH:MM:SS.mmm
 	std::string generateTimestamp_HH_MM_SS_mmm();
@@ -65,7 +79,7 @@ public:
 	std::vector<char> readFile(const std::string& filename);
 
 	// Compiles shaders in the given folder
-	void compileShaders(std::filesystem::path folderPath);
+	//void compileShaders(std::filesystem::path folderPath);
 private:
 	Utilities();
 

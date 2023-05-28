@@ -11,9 +11,9 @@ Utilities* Utilities::getInstance()
 	}
 
 	return m_pInstance;
-}
+};
 
-Utilities::Utilities() {}
+Utilities::Utilities() {};
 
 
 std::string Utilities::lastClassPrinted = "";
@@ -44,26 +44,7 @@ std::string Utilities::generateTimestamp_HH_MM_SS_mmm()
 	oss << '.' << std::setfill('0') << std::setw(3) << ms.count();
 
 	return oss.str();
-}
-
-template<typename CLASSNAME>
-void Utilities::debugPrint(std::string message, CLASSNAME* that)
-{
-	using std::string, std::format, std::cerr, std::setw;
-
-	std::string timestamp = generateTimestamp_HH_MM_SS_mmm();
-
-	// Print class name only once
-	if (lastClassPrinted != typeid(*that).name())
-	{
-		lastClassPrinted = typeid(*that).name();
-		cerr << format("\nVulkanEngine DEBUG - {} -\n", lastClassPrinted);
-	};
-
-	lastMessagePrinted = format("[{}] - {}\n", generateTimestamp_HH_MM_SS_mmm(), message);
-	cerr << lastMessagePrinted;
 };
-
 
 
 
@@ -83,14 +64,15 @@ std::vector<char> Utilities::readFile(const std::string& filename)
 	file.close();
 
 	return buffer;
-}
+};
 
 
 
 // TODO: Implement this
+/*
 void Utilities::compileShaders(std::filesystem::path folderPath)
 {
-	/*
+	
 	// Get the .vert and .frag files in the folder
 	std::filesystem::path vertShader = "";
 	std::filesystem::path fragShader = "";
@@ -103,5 +85,5 @@ void Utilities::compileShaders(std::filesystem::path folderPath)
 			vertShader = file;
 		}
 	};
-	*/
 };
+*/

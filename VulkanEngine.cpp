@@ -82,10 +82,12 @@ void VulkanEngine::initVulkan()
 	m_pLogicalDevice = new LogicalDevice(m_pPhysicalDevice, m_pWindow->getSurface(), m_pWindow->getWindow());
 	m_pLogicalDevice->createLogicalDevice(&m_settings->debugSettings);
 
-	m_pLogicalDevice->createSwapChain();
-	m_pLogicalDevice->createImageViews();
+	m_pSwapchain = new Swapchain(m_pLogicalDevice->getLogicalDevice(), m_pPhysicalDevice, m_pWindow->getWindow(), m_pWindow->getSurface());
+	m_pSwapchain->createSwapChain();
+	m_pSwapchain->createImageViews();
 
-	m_pGraphicsPipeline = new GraphicsPipeline(m_pLogicalDevice->getLogicalDevice(), m_pLogicalDevice->getSwapChainExtent(), &m_settings->graphicsSettings);
+	m_pGraphicsPipeline = new GraphicsPipeline(m_pLogicalDevice->getLogicalDevice(), m_pSwapchain, &m_settings->graphicsSettings);
+	m_pGraphicsPipeline->createRenderPass();
 	m_pGraphicsPipeline->createGraphicsPipeline();
 }
 
@@ -148,6 +150,9 @@ void VulkanEngine::cleanup()
 {
 	mDebugPrint("Cleaning up graphics pipeline...");
 	m_pGraphicsPipeline->cleanup();
+
+	mDebugPrint("Cleaning up swapchain...");
+	m_pSwapchain->cleanup();
 
 	mDebugPrint("Cleaning up logical device...");
 	m_pLogicalDevice->cleanup();

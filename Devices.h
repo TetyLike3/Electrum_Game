@@ -71,13 +71,10 @@ public:
 	LogicalDevice(PhysicalDevice* pPhysicalDevice, VkSurfaceKHR* pSurface, GLFWwindow* pWindow) : m_pPhysicalDevice(pPhysicalDevice), m_pSurface(pSurface), m_pWindow(pWindow), m_pUtilities(Utilities::getInstance()) {};
 
 	void createLogicalDevice(sSettings::sDebugSettings* pDebugSettings);
-	void createSwapChain();
-	void createImageViews();
 
 	void cleanup();
 
 	VkDevice* getLogicalDevice() { return &m_logicalDevice; };
-	VkExtent2D* getSwapChainExtent() { return &m_swapChainExtent; };
 
 private:
 	PhysicalDevice* m_pPhysicalDevice = nullptr;
@@ -88,17 +85,6 @@ private:
 
 	VkDevice m_logicalDevice = VK_NULL_HANDLE;
 
-	VkSwapchainKHR m_swapChain = nullptr;
-	std::vector<VkImage> m_swapChainImages = {};
-	VkFormat m_swapChainImageFormat = VK_FORMAT_UNDEFINED;
-	VkExtent2D m_swapChainExtent = {};
-	std::vector<VkImageView> m_swapChainImageViews = {};
-
 	VkQueue m_graphicsQueue = VK_NULL_HANDLE;
 	VkQueue m_presentQueue = VK_NULL_HANDLE;
-
-
-	VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
-	VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
-	VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 };
