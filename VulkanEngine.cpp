@@ -109,17 +109,19 @@ void VulkanEngine::createInstance()
 	}
 
 	mDebugPrint("Creating application info...");
-	VkApplicationInfo appInfo{};
-	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-	appInfo.pApplicationName = "IndustryChunks";
-	appInfo.applicationVersion = m_versions["gameVersion"];
-	appInfo.pEngineName = "VertexEngine";
-	appInfo.engineVersion = m_versions["engineVersion"];
-	appInfo.apiVersion = m_versions["apiVersion"];
+	VkApplicationInfo appInfo{
+		.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO,
+		.pApplicationName = "ElectrumGame",
+		.applicationVersion = m_versions["gameVersion"],
+		.pEngineName = "VertexEngine",
+		.engineVersion = m_versions["engineVersion"],
+		.apiVersion = m_versions["apiVersion"]
+	};
 
-	VkInstanceCreateInfo createInfo{};
-	createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-	createInfo.pApplicationInfo = &appInfo;
+	VkInstanceCreateInfo createInfo{
+		.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
+		.pApplicationInfo = &appInfo
+	};
 
 	mDebugPrint("Creating instance extensions...");
 	auto extensions = getRequiredExtensions();

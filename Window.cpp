@@ -38,12 +38,14 @@ void Window::createSyncObjects(LogicalDevice* pLogicalDevice, VkSwapchainKHR* pS
 	m_renderFinishedSemaphores.resize(m_MAX_FRAMES_IN_FLIGHT);
 	m_inFlightFences.resize(m_MAX_FRAMES_IN_FLIGHT);
 
-	VkSemaphoreCreateInfo semaphoreInfo{};
-	semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+	VkSemaphoreCreateInfo semaphoreInfo{
+		.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO
+	};
 
-	VkFenceCreateInfo fenceInfo{};
-	fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-	fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+	VkFenceCreateInfo fenceInfo{
+		.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO,
+		.flags = VK_FENCE_CREATE_SIGNALED_BIT
+	};
 
 	for (size_t i = 0; i < m_MAX_FRAMES_IN_FLIGHT; i++)
 	{
@@ -89,16 +91,16 @@ void Window::drawFrame()
 	VkSemaphore signalSemaphores[] = { m_renderFinishedSemaphores[m_currentFrame] };
 	VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
-	VkSubmitInfo submitInfo{};
-	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-	submitInfo.waitSemaphoreCount = 1;
-	submitInfo.pWaitSemaphores = waitSemaphores;
-	submitInfo.pWaitDstStageMask = waitStages;
-	submitInfo.commandBufferCount = 1;
-	submitInfo.pCommandBuffers = &commandBuffers[m_currentFrame];
-
-	submitInfo.signalSemaphoreCount = 1;
-	submitInfo.pSignalSemaphores = signalSemaphores;
+	VkSubmitInfo submitInfo{
+		.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
+		.waitSemaphoreCount = 1,
+		.pWaitSemaphores = waitSemaphores,
+		.pWaitDstStageMask = waitStages,
+		.commandBufferCount = 1,
+		.pCommandBuffers = &commandBuffers[m_currentFrame],
+		.signalSemaphoreCount = 1,
+		.pSignalSemaphores = signalSemaphores
+	};
 
 	if (vkQueueSubmit(*m_pGraphicsQueue, 1, &submitInfo, m_inFlightFences[m_currentFrame]) != VK_SUCCESS) {
 		throw std::runtime_error("failed to submit draw command buffer!");
@@ -107,14 +109,15 @@ void Window::drawFrame()
 
 	VkSwapchainKHR swapChains[] = { *m_pSwapchain };
 
-	VkPresentInfoKHR presentInfo{};
-	presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
-	presentInfo.waitSemaphoreCount = 1;
-	presentInfo.pWaitSemaphores = signalSemaphores;
-	presentInfo.swapchainCount = 1;
-	presentInfo.pSwapchains = swapChains;
-	presentInfo.pImageIndices = &imageIndex;
-	presentInfo.pResults = nullptr; // Optional
+	VkPresentInfoKHR presentInfo{
+		.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
+		.waitSemaphoreCount = 1,
+		.pWaitSemaphores = signalSemaphores,
+		.swapchainCount = 1,
+		.pSwapchains = swapChains,
+		.pImageIndices = &imageIndex,
+		.pResults = nullptr // Optional
+	};
 
 	vkQueuePresentKHR(*m_pGraphicsQueue, &presentInfo);
 
