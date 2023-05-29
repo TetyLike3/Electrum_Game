@@ -91,10 +91,11 @@ void VulkanEngine::initVulkan()
 	m_pGraphicsPipeline->createGraphicsPipeline();
 	m_pSwapchain->createFramebuffers(m_pGraphicsPipeline->getRenderPass());
 
-	m_pCommandBuffer = new CommandBuffer(m_pLogicalDevice->getLogicalDevice(), m_pPhysicalDevice->getPhysicalDevice(), m_pWindow->getSurface());
+	m_pCommandBuffer = new CommandBuffer(m_pLogicalDevice->getLogicalDevice(), m_pPhysicalDevice->getPhysicalDevice(), m_pWindow->getSurface(), m_pGraphicsPipeline->getRenderPass(), m_pSwapchain, m_pGraphicsPipeline->getGraphicsPipeline());
 	m_pCommandBuffer->createCommandPool();
 	m_pCommandBuffer->createCommandBuffer();
 
+	m_pWindow->createSyncObjects(m_pLogicalDevice, m_pSwapchain->getSwapchain(), m_pCommandBuffer);
 }
 
 void VulkanEngine::createInstance()
@@ -154,6 +155,12 @@ void VulkanEngine::mainLoop()
 
 void VulkanEngine::cleanup()
 {
+	mDebugPrint("Cleaning up sync objects...");
+	m_pWindow->cleanupSyncObjects();
+
+	mDebugPrint("Cleaning up command buffer...");
+	m_pCommandBuffer->cleanup();
+
 	mDebugPrint("Cleaning up graphics pipeline...");
 	m_pGraphicsPipeline->cleanup();
 

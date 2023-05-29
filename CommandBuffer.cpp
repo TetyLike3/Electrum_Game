@@ -32,9 +32,9 @@ void CommandBuffer::createCommandBuffer()
 	}
 }
 
-void CommandBuffer::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex, VkRenderPass* pRenderPass, Swapchain* pSwapchain, VkPipeline* pGraphicsPipeline)
+void CommandBuffer::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex)
 {
-	mDebugPrint("Recording command buffer...");
+	//mDebugPrint("Recording command buffer...");
 
 	VkCommandBufferBeginInfo beginInfo{};
 	beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -45,36 +45,36 @@ void CommandBuffer::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t 
 		throw std::runtime_error("failed to begin recording command buffer!");
 	}
 
-	mDebugPrint("Creating render pass...");
+	//mDebugPrint("Creating render pass...");
 
-	std::vector<VkFramebuffer> swapchainFramebuffers = *pSwapchain->getSwapchainFramebuffers();
+	std::vector<VkFramebuffer> swapchainFramebuffers = *m_pSwapchain->getSwapchainFramebuffers();
 	VkClearValue clearColor = { {{0.0f, 0.0f, 0.0f, 1.0f}} };
 
 	VkRenderPassBeginInfo renderPassInfo{};
 	renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-	renderPassInfo.renderPass = *pRenderPass;
+	renderPassInfo.renderPass = *m_pRenderPass;
 	renderPassInfo.framebuffer = swapchainFramebuffers[imageIndex];
 	renderPassInfo.renderArea.offset = { 0, 0 };
-	renderPassInfo.renderArea.extent = *pSwapchain->getSwapchainExtent();
+	renderPassInfo.renderArea.extent = *m_pSwapchain->getSwapchainExtent();
 	renderPassInfo.clearValueCount = 1;
 	renderPassInfo.pClearValues = &clearColor;
 
 	vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-	vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, *pGraphicsPipeline);
+	vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, *m_pGraphicsPipeline);
 
 	VkViewport viewport{};
 	viewport.x = 0.0f;
 	viewport.y = 0.0f;
-	viewport.width = static_cast<float>(pSwapchain->getSwapchainExtent()->width);
-	viewport.height = static_cast<float>(pSwapchain->getSwapchainExtent()->height);
+	viewport.width = static_cast<float>(m_pSwapchain->getSwapchainExtent()->width);
+	viewport.height = static_cast<float>(m_pSwapchain->getSwapchainExtent()->height);
 	viewport.minDepth = 0.0f;
 	viewport.maxDepth = 1.0f;
 	vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
 
 	VkRect2D scissor{};
 	scissor.offset = { 0, 0 };
-	scissor.extent = *pSwapchain->getSwapchainExtent();
+	scissor.extent = *m_pSwapchain->getSwapchainExtent();
 	vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
 	vkCmdDraw(commandBuffer, 3, 1, 0, 0);
@@ -85,7 +85,7 @@ void CommandBuffer::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t 
 		throw std::runtime_error("failed to record command buffer!");
 	}
 
-	mDebugPrint("Command buffer recorded.");
+	//mDebugPrint("Command buffer recorded.");
 }
 
 

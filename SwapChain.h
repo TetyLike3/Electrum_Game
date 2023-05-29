@@ -19,6 +19,7 @@ public:
 	void createImageViews();
 	void createFramebuffers(VkRenderPass* pRenderPass);
 
+	VkSwapchainKHR* getSwapchain() { return &m_swapchain; }
 	VkExtent2D* getSwapchainExtent() { return &m_swapchainExtent; }
 	VkFormat* getSwapchainImageFormat() { return &m_swapchainImageFormat; }
 	std::vector<VkFramebuffer>* getSwapchainFramebuffers() { return &m_swapchainFramebuffers; }

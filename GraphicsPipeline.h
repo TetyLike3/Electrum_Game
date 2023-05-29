@@ -17,6 +17,7 @@ public:
 	void createGraphicsPipeline();
 	void cleanup();
 
+	VkPipeline* getGraphicsPipeline() { return &m_graphicsPipeline; }
 	VkRenderPass* getRenderPass() { return &m_renderPass; }
 
 private:

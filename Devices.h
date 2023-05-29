@@ -62,6 +62,7 @@ public:
 	void cleanup();
 
 	VkDevice* getLogicalDevice() { return &m_logicalDevice; };
+	VkQueue* getGraphicsQueue() { return &m_graphicsQueue; };
 
 private:
 	PhysicalDevice* m_pPhysicalDevice = nullptr;
