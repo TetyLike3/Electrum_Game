@@ -90,6 +90,11 @@ void VulkanEngine::initVulkan()
 	m_pGraphicsPipeline->createRenderPass();
 	m_pGraphicsPipeline->createGraphicsPipeline();
 	m_pSwapchain->createFramebuffers(m_pGraphicsPipeline->getRenderPass());
+
+	m_pCommandBuffer = new CommandBuffer(m_pLogicalDevice->getLogicalDevice(), m_pPhysicalDevice->getPhysicalDevice(), m_pWindow->getSurface());
+	m_pCommandBuffer->createCommandPool();
+	m_pCommandBuffer->createCommandBuffer();
+
 }
 
 void VulkanEngine::createInstance()

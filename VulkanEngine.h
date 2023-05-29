@@ -16,6 +16,7 @@
 #include "Swapchain.h"
 #include "Surface.h"
 #include "GraphicsPipeline.h"
+#include "CommandBuffer.h"
 
 
 
@@ -52,6 +53,7 @@ private:
 	LogicalDevice* m_pLogicalDevice = nullptr;
 	Swapchain* m_pSwapchain = nullptr;
 	GraphicsPipeline* m_pGraphicsPipeline = nullptr;
+	CommandBuffer* m_pCommandBuffer = nullptr;
 
 	std::map<std::string, uint32_t> m_versions = {};
 	sSettings* m_settings = nullptr;
