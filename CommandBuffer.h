@@ -16,12 +16,12 @@ public:
 		: m_pLogicalDevice(pLogicalDevice), m_pPhysicalDevice(pPhysicalDevice), m_pSurface(pSurface), m_pRenderPass(pRenderPass), m_pSwapchain(pSwapchain), m_pGraphicsPipeline(pGraphicsPipeline), m_pUtilities(Utilities::getInstance()) {};
 
 	void createCommandPool();
-	void createCommandBuffer();
+	void createCommandBuffers(int MAX_FRAMES_IN_FLIGHT);
 	void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
 	void cleanup();
 
-	VkCommandBuffer* getCommandBuffer() { return &m_commandBuffer; }
+	std::vector<VkCommandBuffer>* getCommandBuffers() { return &m_commandBuffers; }
 
 private:
 	VkDevice* m_pLogicalDevice = nullptr;
@@ -33,5 +33,5 @@ private:
 	Utilities* m_pUtilities = nullptr;
 
 	VkCommandPool m_commandPool = VK_NULL_HANDLE;
-	VkCommandBuffer m_commandBuffer = VK_NULL_HANDLE;
+	std::vector<VkCommandBuffer> m_commandBuffers = {};
 };

@@ -15,7 +15,7 @@ const uint32_t HEIGHT = 720;
 class Window
 {
 public:
-	Window(VkInstance* pVkInstance) : m_pVkInstance(pVkInstance), m_pUtilities(Utilities::getInstance()) {};
+	Window(VkInstance* pVkInstance, int MAX_FRAMES_IN_FLIGHT) : m_pVkInstance(pVkInstance), m_MAX_FRAMES_IN_FLIGHT(MAX_FRAMES_IN_FLIGHT), m_pUtilities(Utilities::getInstance()) {};
 
 	void initWindow(sSettings::sWindowSettings* windowSettings);
 	void createSurface();
@@ -39,9 +39,11 @@ private:
 
 	GLFWwindow* m_pWindow = nullptr;
 	VkSurfaceKHR m_surface = nullptr;
-	VkSemaphore m_imageAvailableSemaphore = nullptr;
-	VkSemaphore m_renderFinishedSemaphore = nullptr;
-	VkFence m_inFlightFence = nullptr;
+	std::vector<VkSemaphore> m_imageAvailableSemaphores = {};
+	std::vector<VkSemaphore> m_renderFinishedSemaphores = {};
+	std::vector<VkFence> m_inFlightFences = {};
+	int m_MAX_FRAMES_IN_FLIGHT = 0;
+	uint32_t m_currentFrame = 0;
 
 
 	void drawFrame();

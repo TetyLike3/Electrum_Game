@@ -48,11 +48,12 @@ void VulkanEngine::run(std::map<std::string, uint32_t> versions, sSettings* sett
 	mDebugPrint("Engine version: " + m_pUtilities->getVkAPIVersionString(m_versions["engineVersion"]));
 	mDebugPrint("Game version: " + m_pUtilities->getVkAPIVersionString(m_versions["gameVersion"]));
 	mDebugPrint("API version: " + m_pUtilities->getVkAPIVersionString(m_versions["apiVersion"]));
+	mDebugPrint("Maximum frames in flight: " + std::to_string(MAX_FRAMES_IN_FLIGHT) + "\n");
 
 	m_settings = settings;
 
 	mDebugPrint("Creating window...");
-	m_pWindow = new Window(&m_vkInstance);
+	m_pWindow = new Window(&m_vkInstance, MAX_FRAMES_IN_FLIGHT);
 
 	m_pWindow->initWindow(&settings->windowSettings);
 
@@ -93,7 +94,7 @@ void VulkanEngine::initVulkan()
 
 	m_pCommandBuffer = new CommandBuffer(m_pLogicalDevice->getLogicalDevice(), m_pPhysicalDevice->getPhysicalDevice(), m_pWindow->getSurface(), m_pGraphicsPipeline->getRenderPass(), m_pSwapchain, m_pGraphicsPipeline->getGraphicsPipeline());
 	m_pCommandBuffer->createCommandPool();
-	m_pCommandBuffer->createCommandBuffer();
+	m_pCommandBuffer->createCommandBuffers(MAX_FRAMES_IN_FLIGHT);
 
 	m_pWindow->createSyncObjects(m_pLogicalDevice, m_pSwapchain->getSwapchain(), m_pCommandBuffer);
 }

@@ -19,6 +19,8 @@
 #include "CommandBuffer.h"
 
 
+const int MAX_FRAMES_IN_FLIGHT = 2;
+
 
 enum class VkEngineState
 {
