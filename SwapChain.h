@@ -15,11 +15,11 @@ public:
 
 	void cleanup();
 
-	void createSwapChain();
+	void createSwapchain();
 	void createImageViews();
 
-	VkExtent2D* getSwapChainExtent() { return &m_swapChainExtent; }
-	VkFormat* getSwapChainImageFormat() { return &m_swapChainImageFormat; }
+	VkExtent2D* getSwapchainExtent() { return &m_swapchainExtent; }
+	VkFormat* getSwapchainImageFormat() { return &m_swapchainImageFormat; }
 	std::vector<VkImageView>* getSwapchainImageViews() { return &m_swapchainImageViews; }
 
 private:

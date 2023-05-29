@@ -74,7 +74,7 @@ VkExtent2D Swapchain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilit
 	}
 }
 
-void Swapchain::createSwapChain()
+void Swapchain::createSwapchain()
 {
 	mDebugPrint("Creating swap chain...");
 	SwapChainSupportDetails swapChainSupport = m_pPhysicalDevice->querySwapChainSupport(*m_pPhysicalDevice->getPhysicalDevice());
