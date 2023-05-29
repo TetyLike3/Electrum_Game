@@ -9,7 +9,7 @@ void GraphicsPipeline::createRenderPass()
 
 	// Attachment setup
 	VkAttachmentDescription colorAttachment{};
-	colorAttachment.format = *m_pSwapchain->getSwapChainImageFormat();
+	colorAttachment.format = *m_pSwapchain->getSwapchainImageFormat();
 	colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
 
 	// Attachment operations
@@ -47,6 +47,7 @@ void GraphicsPipeline::createRenderPass()
 
 
 }
+
 
 void GraphicsPipeline::createGraphicsPipeline()
 {
@@ -91,15 +92,15 @@ void GraphicsPipeline::createGraphicsPipeline()
 	VkViewport viewport{};
 	viewport.x = 0.0f;
 	viewport.y = 0.0f;
-	viewport.width = (float)m_pSwapchain->getSwapChainExtent()->width;
-	viewport.height = (float)m_pSwapchain->getSwapChainExtent()->height;
+	viewport.width = (float)m_pSwapchain->getSwapchainExtent()->width;
+	viewport.height = (float)m_pSwapchain->getSwapchainExtent()->height;
 	viewport.minDepth = 0.0f;
 	viewport.maxDepth = 1.0f;
 	
 	mDebugPrint("Creating scissor...");
 	VkRect2D scissor{};
 	scissor.offset = { 0, 0 };
-	scissor.extent = *m_pSwapchain->getSwapChainExtent();
+	scissor.extent = *m_pSwapchain->getSwapchainExtent();
 
 	mDebugPrint("Creating viewport state...");
 	VkPipelineViewportStateCreateInfo viewportState{};

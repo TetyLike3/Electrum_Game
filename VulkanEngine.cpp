@@ -83,12 +83,13 @@ void VulkanEngine::initVulkan()
 	m_pLogicalDevice->createLogicalDevice(&m_settings->debugSettings);
 
 	m_pSwapchain = new Swapchain(m_pLogicalDevice->getLogicalDevice(), m_pPhysicalDevice, m_pWindow->getWindow(), m_pWindow->getSurface());
-	m_pSwapchain->createSwapChain();
+	m_pSwapchain->createSwapchain();
 	m_pSwapchain->createImageViews();
 
 	m_pGraphicsPipeline = new GraphicsPipeline(m_pLogicalDevice->getLogicalDevice(), m_pSwapchain, &m_settings->graphicsSettings);
 	m_pGraphicsPipeline->createRenderPass();
 	m_pGraphicsPipeline->createGraphicsPipeline();
+	m_pSwapchain->createFramebuffers(m_pGraphicsPipeline->getRenderPass());
 }
 
 void VulkanEngine::createInstance()

@@ -17,6 +17,8 @@ public:
 	void createGraphicsPipeline();
 	void cleanup();
 
+	VkRenderPass* getRenderPass() { return &m_renderPass; }
+
 private:
 	Utilities* m_pUtilities = nullptr;
 	VkDevice* m_pLogicalDevice = nullptr;
