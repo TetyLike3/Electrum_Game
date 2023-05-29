@@ -24,8 +24,8 @@ private:
 	sSettings::sGraphicsSettings* m_pGraphicsSettings = nullptr;
 
 	VkPipelineLayout m_pipelineLayout = VK_NULL_HANDLE;
-	VkRenderPass renderPass = VK_NULL_HANDLE;
-	VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
+	VkRenderPass m_renderPass = VK_NULL_HANDLE;
+	VkPipeline m_graphicsPipeline = VK_NULL_HANDLE;
 
 
 	VkShaderModule createShaderModule(const std::vector<char>& code);

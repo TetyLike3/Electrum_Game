@@ -66,4 +66,4 @@ private:
 	std::vector<const char*> getRequiredExtensions();
 };
 
-inline void nativeDebugPrint(std::string message) { std::cout << "VulkanEngine NATIVEDEBUG - " << message << std::endl; }
+inline void nativeDebugPrint(std::string message, bool newLine = false) { std::cout << (newLine ? "\n" : "") << "VulkanEngine NATIVEDEBUG - " << message << std::endl; }

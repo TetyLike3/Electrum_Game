@@ -41,7 +41,7 @@ void GraphicsPipeline::createRenderPass()
 	renderPassInfo.subpassCount = 1;
 	renderPassInfo.pSubpasses = &subpass;
 
-	if (vkCreateRenderPass(*m_pLogicalDevice, &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS) {
+	if (vkCreateRenderPass(*m_pLogicalDevice, &renderPassInfo, nullptr, &m_renderPass) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create render pass!");
 	}
 
@@ -50,7 +50,7 @@ void GraphicsPipeline::createRenderPass()
 
 void GraphicsPipeline::createGraphicsPipeline()
 {
-	mDebugPrint("Creating graphics pipeline...");
+	mDebugPrint("Creating graphics pipeline layout...");
 
 	auto vertShaderCode = m_pUtilities->readFile("shaders/vert.spv");
 	auto fragShaderCode = m_pUtilities->readFile("shaders/frag.spv");
@@ -191,15 +191,48 @@ void GraphicsPipeline::createGraphicsPipeline()
 	}
 
 
+
+	// Pipeline
+	mDebugPrint("Creating pipeline...");
+	VkGraphicsPipelineCreateInfo pipelineInfo{};
+	pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+	pipelineInfo.stageCount = 2;
+	pipelineInfo.pStages = shaderStages;
+	pipelineInfo.pVertexInputState = &vertexInputInfo;
+	pipelineInfo.pInputAssemblyState = &inputAssembly;
+	pipelineInfo.pViewportState = &viewportState;
+	pipelineInfo.pRasterizationState = &rasterizer;
+	pipelineInfo.pMultisampleState = &multisampling;
+	pipelineInfo.pDepthStencilState = nullptr; // Optional
+	pipelineInfo.pColorBlendState = &colorBlending;
+	pipelineInfo.pDynamicState = &dynamicState;
+
+	// Fixed Functions
+	pipelineInfo.layout = m_pipelineLayout;
+
+	// Pipeline Render Pass
+	pipelineInfo.renderPass = m_renderPass;
+	pipelineInfo.subpass = 0;
+
+	// Pipeline Derivatives
+	pipelineInfo.basePipelineHandle = VK_NULL_HANDLE; // Optional
+	pipelineInfo.basePipelineIndex = -1; // Optional
+
+
+	if (vkCreateGraphicsPipelines(*m_pLogicalDevice, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &m_graphicsPipeline) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create graphics pipeline!");
+	}
+
+
 	vkDestroyShaderModule(*m_pLogicalDevice, vertShaderModule, nullptr);
 	vkDestroyShaderModule(*m_pLogicalDevice, fragShaderModule, nullptr);
 }
 
 void GraphicsPipeline::cleanup()
 {
-	vkDestroyPipelineLayout(*m_pLogicalDevice, pipelineLayout, nullptr);
-	vkDestroyRenderPass(*m_pLogicalDevice, renderPass, nullptr);
+	vkDestroyPipeline(*m_pLogicalDevice, m_graphicsPipeline, nullptr);
 	vkDestroyPipelineLayout(*m_pLogicalDevice, m_pipelineLayout, nullptr);
+	vkDestroyRenderPass(*m_pLogicalDevice, m_renderPass, nullptr);
 }
 
 

@@ -16,8 +16,8 @@ Utilities* Utilities::getInstance()
 Utilities::Utilities() {};
 
 
-std::string Utilities::lastClassPrinted = "";
-std::string Utilities::lastMessagePrinted = "";
+std::string Utilities::m_lastClassPrinted = "";
+std::string Utilities::m_lastMessagePrinted = "";
 
 
 std::string Utilities::generateTimestamp_HH_MM_SS_mmm()

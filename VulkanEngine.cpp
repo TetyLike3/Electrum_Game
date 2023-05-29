@@ -6,7 +6,7 @@ VulkanEngine* VulkanEngine::m_pInstance = nullptr;
 
 VulkanEngine* VulkanEngine::getInstance()
 {
-	nativeDebugPrint("Instance requested");
+	nativeDebugPrint("Instance requested", true);
 	if (m_pInstance == nullptr)
 	{
 		m_pInstance = new VulkanEngine();
@@ -18,14 +18,14 @@ VulkanEngine* VulkanEngine::getInstance()
 
 void VulkanEngine::destroyInstance()
 {
-	nativeDebugPrint("Instance destruction requested");
+	nativeDebugPrint("Instance destruction requested", true);
 	if (m_pInstance != nullptr)
 	{
 		nativeDebugPrint("Cleaning up...");
 		m_pInstance->m_state = VkEngineState::CLEANUP;
 		m_pInstance->cleanup();
 
-		nativeDebugPrint("Exiting...");
+		nativeDebugPrint("Exiting...", true);
 		m_pInstance->m_state = VkEngineState::EXIT;
 		delete m_pInstance;
 		m_pInstance = nullptr;
@@ -59,7 +59,7 @@ void VulkanEngine::run(std::map<std::string, uint32_t> versions, sSettings* sett
 	mDebugPrint("Initialising Vulkan...");
 	initVulkan();
 
-	mDebugPrint("Initialisation successful, running...");
+	mDebugPrint("Initialisation successful, running...\n");
 	m_state = VkEngineState::RUNNING;
 	mainLoop();
 }

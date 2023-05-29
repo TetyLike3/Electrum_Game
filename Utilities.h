@@ -49,22 +49,8 @@ public:
 
 	template<typename CLASSNAME>
 	// Prints a debug message with the class name and timestamp.
-	inline void debugPrint(std::string message, CLASSNAME* that)
-	{
-		using std::string, std::format, std::cerr, std::setw;
-
-		string timestamp = generateTimestamp_HH_MM_SS_mmm();
-
-		// Print class name only once
-		if (lastClassPrinted != typeid(*that).name())
-		{
-			lastClassPrinted = typeid(*that).name();
-			cerr << format("\nVulkanEngine DEBUG - {} -\n", lastClassPrinted);
-		};
-
-		lastMessagePrinted = format("[{}] - {}\n", generateTimestamp_HH_MM_SS_mmm(), message);
-		cerr << lastMessagePrinted;
-	};
+	inline void debugPrint(std::string message, CLASSNAME* that) { iDebugPrint(message, std::string(typeid(that).name())); };
+	inline void debugPrint(std::string message, std::string className) { iDebugPrint(message, className); };
 
 	inline std::string getVkAPIVersionString(uint32_t version)
 	{
@@ -85,7 +71,29 @@ private:
 
 	static Utilities* m_pInstance;
 
-	static std::string lastClassPrinted;
-	static std::string lastMessagePrinted;
+	static std::string m_lastClassPrinted;
+	static std::string m_lastMessagePrinted;
+
+
+	inline void iDebugPrint(std::string message, std::string className)
+	{
+		using std::string, std::format, std::cerr, std::setw;
+
+		string timestamp = generateTimestamp_HH_MM_SS_mmm();
+
+		// Truncate the "* __ptr64" at the end of the class name
+		if (className.find("* __ptr64") != string::npos)
+			className = className.substr(0, className.find("* __ptr64"));
+
+		// Print class name only once
+		if (m_lastClassPrinted != className)
+		{
+			m_lastClassPrinted = className;
+			cerr << format("\nVulkanEngine DEBUG - {} -\n", m_lastClassPrinted);
+		};
+
+		m_lastMessagePrinted = format("[{}] - {}\n", generateTimestamp_HH_MM_SS_mmm(), message);
+		cerr << m_lastMessagePrinted;
+	}
 };
 

@@ -30,6 +30,7 @@ void Window::mainLoop()
 	{
 		glfwPollEvents();
 	}
+	mDebugPrint("Window closed.");
 }
 
 void Window::cleanupSurface()
