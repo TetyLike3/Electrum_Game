@@ -17,6 +17,7 @@ public:
 
 	void createSwapchain();
 	void createImageViews();
+	void createFramebuffers(VkRenderPass* pRenderPass);
 
 	VkExtent2D* getSwapchainExtent() { return &m_swapchainExtent; }
 	VkFormat* getSwapchainImageFormat() { return &m_swapchainImageFormat; }
@@ -34,6 +35,7 @@ private:
 	VkFormat m_swapchainImageFormat = VK_FORMAT_UNDEFINED;
 	VkExtent2D m_swapchainExtent = {};
 	std::vector<VkImageView> m_swapchainImageViews = {};
+	std::vector<VkFramebuffer> m_swapchainFramebuffers = {};
 
 	VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
 	VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);

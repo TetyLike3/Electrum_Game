@@ -6,6 +6,10 @@
 
 void Swapchain::cleanup()
 {
+	for (auto framebuffer : m_swapchainFramebuffers) {
+		vkDestroyFramebuffer(*m_pLogicalDevice, framebuffer, nullptr);
+	}
+
 	for (auto imageView : m_swapchainImageViews) {
 		vkDestroyImageView(*m_pLogicalDevice, imageView, nullptr);
 	}
@@ -163,6 +167,32 @@ void Swapchain::createImageViews()
 
 		if (vkCreateImageView(*m_pLogicalDevice, &createInfo, nullptr, &m_swapchainImageViews[i]) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create image views!");
+		}
+	}
+}
+
+void Swapchain::createFramebuffers(VkRenderPass* pRenderPass)
+{
+	mDebugPrint("Creating framebuffers...");
+	m_swapchainFramebuffers.resize(m_swapchainImageViews.size());
+
+	for (size_t i = 0; i < m_swapchainImageViews.size(); i++)
+	{
+		VkImageView attachments[] = {
+			m_swapchainImageViews.at(i)
+		};
+
+		VkFramebufferCreateInfo framebufferInfo{};
+		framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+		framebufferInfo.renderPass = *pRenderPass;
+		framebufferInfo.attachmentCount = 1;
+		framebufferInfo.pAttachments = attachments;
+		framebufferInfo.width = m_swapchainExtent.width;
+		framebufferInfo.height = m_swapchainExtent.height;
+		framebufferInfo.layers = 1;
+
+		if (vkCreateFramebuffer(*m_pLogicalDevice, &framebufferInfo, nullptr, &m_swapchainFramebuffers[i]) != VK_SUCCESS) {
+			throw std::runtime_error("failed to create framebuffer!");
 		}
 	}
 }
