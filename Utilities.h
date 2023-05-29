@@ -16,7 +16,7 @@
 
 struct sSettings {
 	struct sWindowSettings {
-		const char* windowName = "IndustryChunks";
+		const char* windowName = "ElectrumGame";
 		uint32_t windowWidth = 1280;
 		uint32_t windowHeight = 720;
 	} windowSettings;

@@ -18,27 +18,6 @@ const std::map<std::string, uint32_t> versions = {
 	{ "apiVersion", VK_MAKE_API_VERSION(0,1,0,0) }
 };
 
-/*
-struct {
-	struct {
-		const char* windowName = "IndustryChunks";
-		uint32_t windowWidth = 1280;
-		uint32_t windowHeight = 720;
-	} windowSettings;
-	struct {
-		bool debugMode = true;
-		std::vector<const char*> validationLayers = {
-			"VK_LAYER_KHRONOS_validation"
-		};
-		bool enableValidationLayers = true;
-	} debugSettings;
-	struct {
-		bool tripleBuffering = true;
-		bool vsync = true;
-	} graphicsSettings;
-} settings;
-*/
-
 sSettings* settings = new sSettings();
 
 
