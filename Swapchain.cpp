@@ -1,63 +1,50 @@
 #include "Swapchain.h"
 
+//#define mDebugPrint(...) if(m_firstRun) {m_pUtilities->debugPrint(...,this)}
 
 
-
-
-void Swapchain::cleanup()
-{
-	for (auto framebuffer : m_swapchainFramebuffers) {
-		vkDestroyFramebuffer(*m_pLogicalDevice, framebuffer, nullptr);
-	}
-
-	for (auto imageView : m_swapchainImageViews) {
-		vkDestroyImageView(*m_pLogicalDevice, imageView, nullptr);
-	}
-
-	vkDestroySwapchainKHR(*m_pLogicalDevice, m_swapchain, nullptr);
-}
-
+// TODO: Disable debug prints after first swapchain creation
 
 
 // TODO: Add ranking system to choose best swap chain format
 VkSurfaceFormatKHR Swapchain::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats)
 {
-	mDebugPrint("Choosing swap surface format...");
+	//mDebugPrint("Choosing swap surface format...");
 
 	for (const auto& availableFormat : availableFormats)
 	{
 		if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB &&
 			availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
 		{
-			mDebugPrint("Swap surface format chosen!");
+			//mDebugPrint("Swap surface format chosen!");
 			return availableFormat;
 		}
 	}
 
-	mDebugPrint("No optimal choices, choosing first result...");
+	//mDebugPrint("No optimal choices, choosing first result...");
 	return availableFormats[0];
 }
 
 VkPresentModeKHR Swapchain::chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes)
 {
-	mDebugPrint("Choosing swap present mode...");
+	//mDebugPrint("Choosing swap present mode...");
 
 	for (const auto& availablePresentMode : availablePresentModes)
 	{
 		if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR)
 		{
-			mDebugPrint("Swap present mode chosen!");
+			//mDebugPrint("Swap present mode chosen!");
 			return availablePresentMode;
 		}
 	}
 
-	mDebugPrint("No optimal choices, choosing first result...");
+	//mDebugPrint("No optimal choices, choosing first result...");
 	return VK_PRESENT_MODE_FIFO_KHR;
 }
 
 VkExtent2D Swapchain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities)
 {
-	mDebugPrint("Choosing swap extent...");
+	//mDebugPrint("Choosing swap extent...");
 
 	if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) {
 		return capabilities.currentExtent;
@@ -80,7 +67,7 @@ VkExtent2D Swapchain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilit
 
 void Swapchain::createSwapchain()
 {
-	mDebugPrint("Creating swap chain...");
+	//mDebugPrint("Creating swap chain...");
 	SwapChainSupportDetails swapChainSupport = m_pPhysicalDevice->querySwapChainSupport(*m_pPhysicalDevice->getPhysicalDevice());
 
 	VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
@@ -110,14 +97,14 @@ void Swapchain::createSwapchain()
 
 	if (indices.graphicsFamily != indices.presentFamily)
 	{
-		mDebugPrint("Graphics and present families are different, using concurrent sharing mode...");
+		//mDebugPrint("Graphics and present families are different, using concurrent sharing mode...");
 		createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
 		createInfo.queueFamilyIndexCount = 2;
 		createInfo.pQueueFamilyIndices = queueFamilyIndices;
 	}
 	else
 	{
-		mDebugPrint("Graphics and present families are the same, using exclusive sharing mode...");
+		//mDebugPrint("Graphics and present families are the same, using exclusive sharing mode...");
 		createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
 		createInfo.queueFamilyIndexCount = 0; // Optional
 		createInfo.pQueueFamilyIndices = nullptr; // Optional
@@ -144,7 +131,7 @@ void Swapchain::createSwapchain()
 
 void Swapchain::createImageViews()
 {
-	mDebugPrint("Creating image views...");
+	//mDebugPrint("Creating image views...");
 	m_swapchainImageViews.resize(m_swapchainImages.size());
 
 	for (size_t i = 0; i < m_swapchainImages.size(); i++)
@@ -177,7 +164,10 @@ void Swapchain::createImageViews()
 
 void Swapchain::createFramebuffers(VkRenderPass* pRenderPass)
 {
-	mDebugPrint("Creating framebuffers...");
+	//mDebugPrint("Creating framebuffers...");
+
+	m_pRenderPass = pRenderPass;
+
 	m_swapchainFramebuffers.resize(m_swapchainImageViews.size());
 
 	for (size_t i = 0; i < m_swapchainImageViews.size(); i++)
@@ -188,7 +178,7 @@ void Swapchain::createFramebuffers(VkRenderPass* pRenderPass)
 
 		VkFramebufferCreateInfo framebufferInfo{
 			.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
-			.renderPass = *pRenderPass,
+			.renderPass = *m_pRenderPass,
 			.attachmentCount = 1,
 			.pAttachments = attachments,
 			.width = m_swapchainExtent.width,
@@ -200,4 +190,33 @@ void Swapchain::createFramebuffers(VkRenderPass* pRenderPass)
 			throw std::runtime_error("failed to create framebuffer!");
 		}
 	}
+}
+
+
+void Swapchain::recreateSwapchain()
+{
+	vkDeviceWaitIdle(*m_pLogicalDevice);
+
+	cleanup();
+
+	createSwapchain();
+	createImageViews();
+	createFramebuffers(m_pRenderPass);
+}
+
+
+
+
+
+void Swapchain::cleanup()
+{
+	for (auto framebuffer : m_swapchainFramebuffers) {
+		vkDestroyFramebuffer(*m_pLogicalDevice, framebuffer, nullptr);
+	}
+
+	for (auto imageView : m_swapchainImageViews) {
+		vkDestroyImageView(*m_pLogicalDevice, imageView, nullptr);
+	}
+
+	vkDestroySwapchainKHR(*m_pLogicalDevice, m_swapchain, nullptr);
 }

@@ -93,7 +93,7 @@ bool PhysicalDevice::checkDeviceExtensionSupport(VkPhysicalDevice candidateDevic
 // Returns the details of the swap chain support of the device.
 SwapChainSupportDetails PhysicalDevice::querySwapChainSupport(VkPhysicalDevice physicalDevice)
 {
-	mDebugPrint("Querying swap chain support...");
+	//mDebugPrint("Querying swap chain support...");
 
 	SwapChainSupportDetails details;
 	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, *m_pSurface, &details.capabilities);

@@ -96,7 +96,7 @@ void VulkanEngine::initVulkan()
 	m_pCommandBuffer->createCommandPool();
 	m_pCommandBuffer->createCommandBuffers(MAX_FRAMES_IN_FLIGHT);
 
-	m_pWindow->createSyncObjects(m_pLogicalDevice, m_pSwapchain->getSwapchain(), m_pCommandBuffer);
+	m_pWindow->createSyncObjects(m_pLogicalDevice, m_pSwapchain, m_pCommandBuffer);
 }
 
 void VulkanEngine::createInstance()

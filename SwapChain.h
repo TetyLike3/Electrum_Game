@@ -18,6 +18,7 @@ public:
 	void createSwapchain();
 	void createImageViews();
 	void createFramebuffers(VkRenderPass* pRenderPass);
+	void recreateSwapchain();
 
 	VkSwapchainKHR* getSwapchain() { return &m_swapchain; }
 	VkExtent2D* getSwapchainExtent() { return &m_swapchainExtent; }
@@ -30,6 +31,7 @@ private:
 	PhysicalDevice* m_pPhysicalDevice = nullptr;
 	GLFWwindow* m_pWindow = nullptr;
 	VkSurfaceKHR* m_pSurface = nullptr;
+	VkRenderPass* m_pRenderPass = nullptr;
 
 	VkSwapchainKHR m_swapchain = nullptr;
 	std::vector<VkImage> m_swapchainImages = {};
@@ -37,6 +39,8 @@ private:
 	VkExtent2D m_swapchainExtent = {};
 	std::vector<VkImageView> m_swapchainImageViews = {};
 	std::vector<VkFramebuffer> m_swapchainFramebuffers = {};
+
+	bool m_firstRun = true;
 
 	VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
 	VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);

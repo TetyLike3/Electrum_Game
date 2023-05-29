@@ -7,6 +7,7 @@
 
 #include "Utilities.h"
 #include "CommandBuffer.h"
+#include "Swapchain.h"
 
 
 const uint32_t WIDTH = 1280;
@@ -19,7 +20,7 @@ public:
 
 	void initWindow(sSettings::sWindowSettings* windowSettings);
 	void createSurface();
-	void createSyncObjects(LogicalDevice* pLogicalDevice, VkSwapchainKHR* pSwapchain, CommandBuffer* pCommandBuffer);
+	void createSyncObjects(LogicalDevice* pLogicalDevice, Swapchain* pSwapchain, CommandBuffer* pCommandBuffer);
 
 	void mainLoop();
 
@@ -27,14 +28,18 @@ public:
 	void cleanupSurface();
 	void cleanupWindow();
 
+	static void framebufferResizeCallback(GLFWwindow* window, int width, int height);
+
 	GLFWwindow* getWindow() { return m_pWindow; }
 	VkSurfaceKHR* getSurface() { return &m_surface; }
+
+	bool m_framebufferResized = false;
 private:
 	VkInstance* m_pVkInstance = nullptr;
 	Utilities* m_pUtilities = nullptr;
 	VkDevice* m_pLogicalDevice = nullptr;
 	VkQueue* m_pGraphicsQueue = nullptr;
-	VkSwapchainKHR* m_pSwapchain = nullptr;
+	Swapchain* m_pSwapchain = nullptr;
 	CommandBuffer* m_pCommandBuffer = nullptr;
 
 	GLFWwindow* m_pWindow = nullptr;

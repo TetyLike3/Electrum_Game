@@ -9,9 +9,17 @@ void Window::initWindow(sSettings::sWindowSettings* windowSettings)
 	glfwInit();
 
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+	//glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
 	m_pWindow = glfwCreateWindow(windowSettings->windowWidth, windowSettings->windowHeight, windowSettings->windowName, nullptr, nullptr);
+	glfwSetWindowUserPointer(m_pWindow, this);
+	glfwSetFramebufferSizeCallback(m_pWindow, framebufferResizeCallback);
+}
+
+void Window::framebufferResizeCallback(GLFWwindow* window, int width, int height)
+{
+	auto app = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+	app->m_framebufferResized = true;
 }
 
 void Window::createSurface()
@@ -23,7 +31,7 @@ void Window::createSurface()
 	}
 }
 
-void Window::createSyncObjects(LogicalDevice* pLogicalDevice, VkSwapchainKHR* pSwapchain, CommandBuffer* pCommandBuffer)
+void Window::createSyncObjects(LogicalDevice* pLogicalDevice, Swapchain* pSwapchain, CommandBuffer* pCommandBuffer)
 {
 	mDebugPrint("Creating sync objects...");
 
@@ -79,9 +87,20 @@ void Window::drawFrame()
 	std::vector<VkCommandBuffer> commandBuffers = *m_pCommandBuffer->getCommandBuffers();
 
 	vkWaitForFences(*m_pLogicalDevice, 1, &m_inFlightFences[m_currentFrame], VK_TRUE, UINT64_MAX);
-	vkResetFences(*m_pLogicalDevice, 1, &m_inFlightFences[m_currentFrame]);
 
-	vkAcquireNextImageKHR(*m_pLogicalDevice, *m_pSwapchain, UINT64_MAX, m_imageAvailableSemaphores[m_currentFrame], VK_NULL_HANDLE, &imageIndex);
+	VkResult result = vkAcquireNextImageKHR(*m_pLogicalDevice, *m_pSwapchain->getSwapchain(), UINT64_MAX, m_imageAvailableSemaphores[m_currentFrame], VK_NULL_HANDLE, &imageIndex);
+
+	// Ensure swapchain quality
+	if (result == VK_ERROR_OUT_OF_DATE_KHR)
+	{
+		m_pSwapchain->recreateSwapchain();
+		return;
+	}
+	else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
+		throw std::runtime_error("failed to acquire swap chain image!");
+	}
+
+	vkResetFences(*m_pLogicalDevice, 1, &m_inFlightFences[m_currentFrame]);
 
 	vkResetCommandBuffer(commandBuffers[m_currentFrame], 0);
 	m_pCommandBuffer->recordCommandBuffer(commandBuffers[m_currentFrame],imageIndex);
@@ -107,7 +126,7 @@ void Window::drawFrame()
 	}
 
 
-	VkSwapchainKHR swapChains[] = { *m_pSwapchain };
+	VkSwapchainKHR swapChains[] = { *m_pSwapchain->getSwapchain()};
 
 	VkPresentInfoKHR presentInfo{
 		.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
@@ -119,10 +138,22 @@ void Window::drawFrame()
 		.pResults = nullptr // Optional
 	};
 
-	vkQueuePresentKHR(*m_pGraphicsQueue, &presentInfo);
+	result = vkQueuePresentKHR(*m_pGraphicsQueue, &presentInfo);
+
+	// Ensure swapchain quality
+	if (result == VK_ERROR_OUT_OF_DATE_KHR || result != VK_SUBOPTIMAL_KHR  || m_framebufferResized)
+	{
+		m_framebufferResized = false;
+		m_pSwapchain->recreateSwapchain();
+	}
+	else if (result != VK_SUCCESS) {
+		throw std::runtime_error("failed to present swap chain image!");
+	}
 
 	m_currentFrame = (m_currentFrame + 1) % m_MAX_FRAMES_IN_FLIGHT;
 }
+
+
 
 
 void Window::cleanupSyncObjects()
