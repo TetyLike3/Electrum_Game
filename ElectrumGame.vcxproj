@@ -148,19 +148,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CommandBuffer.cpp" />
     <ClCompile Include="DebugMessenger.cpp" />
     <ClCompile Include="Devices.cpp" />
     <ClCompile Include="GraphicsPipeline.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="QueueFamilyIndices.cpp" />
     <ClCompile Include="Swapchain.cpp" />
     <ClCompile Include="Utilities.cpp" />
     <ClCompile Include="VulkanEngine.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CommandBuffer.h" />
     <ClInclude Include="DebugMessenger.h" />
     <ClInclude Include="Devices.h" />
     <ClInclude Include="GraphicsPipeline.h" />
+    <ClInclude Include="QueueFamilyIndices.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Swapchain.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="VulkanEngine.h" />
@@ -181,6 +186,9 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ElectrumGame.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
