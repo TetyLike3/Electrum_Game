@@ -40,7 +40,7 @@ bool PhysicalDevice::isDeviceSuitable(VkPhysicalDevice candidateDevice)
 {
 	mDebugPrint("Checking device suitability...");
 
-	QueueFamilyIndices indices = findQueueFamilies(candidateDevice, *m_pSurface);
+	QueueFamilyIndices::sQueueFamilyIndices indices = QueueFamilyIndices::findQueueFamilies(candidateDevice, *m_pSurface);
 	bool extensionsSupported = checkDeviceExtensionSupport(candidateDevice);
 
 	mDebugPrint("Extensions supported: " + std::to_string(extensionsSupported));
@@ -120,53 +120,11 @@ SwapChainSupportDetails PhysicalDevice::querySwapChainSupport(VkPhysicalDevice p
 
 
 
-
-QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface)
-{
-	QueueFamilyIndices indices;
-
-	uint32_t queueFamilyCount = 0;
-	vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
-
-	std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-	vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
-
-	int i = 0;
-	for (const auto& queueFamily : queueFamilies)
-	{
-		if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT)
-		{
-			indices.graphicsFamily = i;
-		}
-
-		VkBool32 presentSupport = false;
-		vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &presentSupport);
-
-		if (presentSupport)
-		{
-			indices.presentFamily = i;
-		}
-
-		if (indices.isComplete())
-		{
-			break;
-		}
-
-		i++;
-	}
-
-	return indices;
-}
-
-
-
-
-
 void LogicalDevice::createLogicalDevice(sSettings::sDebugSettings* pDebugSettings)
 {
 	mDebugPrint("Creating logical device...");
 
-	QueueFamilyIndices indices = findQueueFamilies(*m_pPhysicalDevice->getPhysicalDevice(), *m_pSurface);
+	QueueFamilyIndices::sQueueFamilyIndices indices = QueueFamilyIndices::findQueueFamilies(*m_pPhysicalDevice->getPhysicalDevice(), *m_pSurface);
 
 	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 	std::set<uint32_t> uniqueQueueFamilies = { indices.graphicsFamily.value(), indices.presentFamily.value() };
