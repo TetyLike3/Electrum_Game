@@ -21,7 +21,7 @@ public:
 
 	VkExtent2D* getSwapchainExtent() { return &m_swapchainExtent; }
 	VkFormat* getSwapchainImageFormat() { return &m_swapchainImageFormat; }
-	std::vector<VkImageView>* getSwapchainImageViews() { return &m_swapchainImageViews; }
+	std::vector<VkFramebuffer>* getSwapchainFramebuffers() { return &m_swapchainFramebuffers; }
 
 private:
 	Utilities* m_pUtilities = nullptr;
