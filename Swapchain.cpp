@@ -6,11 +6,11 @@
 
 void Swapchain::cleanup()
 {
-	for (auto imageView : m_swapChainImageViews) {
+	for (auto imageView : m_swapchainImageViews) {
 		vkDestroyImageView(*m_pLogicalDevice, imageView, nullptr);
 	}
 
-	vkDestroySwapchainKHR(*m_pLogicalDevice, m_swapChain, nullptr);
+	vkDestroySwapchainKHR(*m_pLogicalDevice, m_swapchain, nullptr);
 }
 
 
@@ -125,31 +125,31 @@ void Swapchain::createSwapChain()
 	createInfo.clipped = VK_TRUE;
 	createInfo.oldSwapchain = VK_NULL_HANDLE;
 
-	if (vkCreateSwapchainKHR(*m_pLogicalDevice, &createInfo, nullptr, &m_swapChain) != VK_SUCCESS)
+	if (vkCreateSwapchainKHR(*m_pLogicalDevice, &createInfo, nullptr, &m_swapchain) != VK_SUCCESS)
 	{
 		throw std::runtime_error("failed to create swap chain!");
 	}
 
-	vkGetSwapchainImagesKHR(*m_pLogicalDevice, m_swapChain, &imageCount, nullptr);
-	m_swapChainImages.resize(imageCount);
-	vkGetSwapchainImagesKHR(*m_pLogicalDevice, m_swapChain, &imageCount, m_swapChainImages.data());
+	vkGetSwapchainImagesKHR(*m_pLogicalDevice, m_swapchain, &imageCount, nullptr);
+	m_swapchainImages.resize(imageCount);
+	vkGetSwapchainImagesKHR(*m_pLogicalDevice, m_swapchain, &imageCount, m_swapchainImages.data());
 
-	m_swapChainImageFormat = surfaceFormat.format;
-	m_swapChainExtent = extent;
+	m_swapchainImageFormat = surfaceFormat.format;
+	m_swapchainExtent = extent;
 }
 
 void Swapchain::createImageViews()
 {
 	mDebugPrint("Creating image views...");
-	m_swapChainImageViews.resize(m_swapChainImages.size());
+	m_swapchainImageViews.resize(m_swapchainImages.size());
 
-	for (size_t i = 0; i < m_swapChainImages.size(); i++)
+	for (size_t i = 0; i < m_swapchainImages.size(); i++)
 	{
 		VkImageViewCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-		createInfo.image = m_swapChainImages[i];
+		createInfo.image = m_swapchainImages[i];
 		createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-		createInfo.format = m_swapChainImageFormat;
+		createInfo.format = m_swapchainImageFormat;
 		createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
 		createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
 		createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
@@ -161,7 +161,7 @@ void Swapchain::createImageViews()
 		createInfo.subresourceRange.baseArrayLayer = 0;
 		createInfo.subresourceRange.layerCount = 1;
 
-		if (vkCreateImageView(*m_pLogicalDevice, &createInfo, nullptr, &m_swapChainImageViews[i]) != VK_SUCCESS) {
+		if (vkCreateImageView(*m_pLogicalDevice, &createInfo, nullptr, &m_swapchainImageViews[i]) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create image views!");
 		}
 	}

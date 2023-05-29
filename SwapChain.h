@@ -20,6 +20,7 @@ public:
 
 	VkExtent2D* getSwapChainExtent() { return &m_swapChainExtent; }
 	VkFormat* getSwapChainImageFormat() { return &m_swapChainImageFormat; }
+	std::vector<VkImageView>* getSwapchainImageViews() { return &m_swapchainImageViews; }
 
 private:
 	Utilities* m_pUtilities = nullptr;
@@ -28,11 +29,11 @@ private:
 	GLFWwindow* m_pWindow = nullptr;
 	VkSurfaceKHR* m_pSurface = nullptr;
 
-	VkSwapchainKHR m_swapChain = nullptr;
-	std::vector<VkImage> m_swapChainImages = {};
-	VkFormat m_swapChainImageFormat = VK_FORMAT_UNDEFINED;
-	VkExtent2D m_swapChainExtent = {};
-	std::vector<VkImageView> m_swapChainImageViews = {};
+	VkSwapchainKHR m_swapchain = nullptr;
+	std::vector<VkImage> m_swapchainImages = {};
+	VkFormat m_swapchainImageFormat = VK_FORMAT_UNDEFINED;
+	VkExtent2D m_swapchainExtent = {};
+	std::vector<VkImageView> m_swapchainImageViews = {};
 
 	VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
 	VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
