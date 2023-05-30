@@ -193,8 +193,15 @@ void Swapchain::createFramebuffers(VkRenderPass* pRenderPass)
 }
 
 
-void Swapchain::recreateSwapchain()
+void Swapchain::recreateSwapchain(GLFWwindow* pWindow)
 {
+	int width = 0, height = 0;
+	glfwGetFramebufferSize(pWindow, &width, &height);
+	while (width == 0 || height == 0) {
+		glfwGetFramebufferSize(pWindow, &width, &height);
+		glfwWaitEvents();
+	}
+
 	vkDeviceWaitIdle(*m_pLogicalDevice);
 
 	cleanup();

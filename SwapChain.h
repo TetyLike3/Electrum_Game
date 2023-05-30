@@ -18,7 +18,7 @@ public:
 	void createSwapchain();
 	void createImageViews();
 	void createFramebuffers(VkRenderPass* pRenderPass);
-	void recreateSwapchain();
+	void recreateSwapchain(GLFWwindow* pWindow);
 
 	VkSwapchainKHR* getSwapchain() { return &m_swapchain; }
 	VkExtent2D* getSwapchainExtent() { return &m_swapchainExtent; }

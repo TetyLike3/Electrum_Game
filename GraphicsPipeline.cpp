@@ -104,6 +104,8 @@ void GraphicsPipeline::createGraphicsPipeline()
 		.primitiveRestartEnable = VK_FALSE
 	};
 
+	/*
+	* MOVED TO CommandBuffer::createCommandBuffers()
 	mDebugPrint("Creating viewport...");
 	VkViewport viewport{
 		.x = 0.0f,
@@ -119,14 +121,15 @@ void GraphicsPipeline::createGraphicsPipeline()
 		.offset = { 0, 0 },
 		.extent = *m_pSwapchain->getSwapchainExtent()
 	};
+	*/
 
 	mDebugPrint("Creating viewport state...");
 	VkPipelineViewportStateCreateInfo viewportState{
 		.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO,
 		.viewportCount = 1,
-		.pViewports = &viewport,
+		.pViewports = nullptr, // Dynamic
 		.scissorCount = 1,
-		.pScissors = &scissor
+		.pScissors = nullptr // Dynamic
 	};
 
 	mDebugPrint("Creating rasterizer...");

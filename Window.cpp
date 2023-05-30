@@ -20,7 +20,9 @@ void Window::framebufferResizeCallback(GLFWwindow* window, int width, int height
 {
 	auto app = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
 	app->m_framebufferResized = true;
+	//app->drawFrame(); // Don't do this or it'll break the window when one of the coordinates is 0
 }
+
 
 void Window::createSurface()
 {
@@ -93,7 +95,7 @@ void Window::drawFrame()
 	// Ensure swapchain quality
 	if (result == VK_ERROR_OUT_OF_DATE_KHR)
 	{
-		m_pSwapchain->recreateSwapchain();
+		m_pSwapchain->recreateSwapchain(m_pWindow);
 		return;
 	}
 	else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
@@ -144,7 +146,7 @@ void Window::drawFrame()
 	if (result == VK_ERROR_OUT_OF_DATE_KHR || result != VK_SUBOPTIMAL_KHR  || m_framebufferResized)
 	{
 		m_framebufferResized = false;
-		m_pSwapchain->recreateSwapchain();
+		m_pSwapchain->recreateSwapchain(m_pWindow);
 	}
 	else if (result != VK_SUCCESS) {
 		throw std::runtime_error("failed to present swap chain image!");
