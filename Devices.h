@@ -31,9 +31,8 @@ struct SwapChainSupportDetails {
 class PhysicalDevice
 {
 public:
-	PhysicalDevice(VkInstance* pVkInstance, VkSurfaceKHR* pSurface) : m_pVkInstance(pVkInstance), m_pSurface(pSurface), m_pUtilities(Utilities::getInstance()) {};
+	PhysicalDevice(VkInstance* pVkInstance, VkSurfaceKHR* pSurface) : m_pVkInstance(pVkInstance), m_pSurface(pSurface), m_pUtilities(Utilities::getInstance()) { pickPhysicalDevice(); };
 
-	VkPhysicalDevice* pickPhysicalDevice();
 	SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice physicalDevice);
 
 	VkPhysicalDevice* getPhysicalDevice() { return &m_physicalDevice; };
@@ -47,6 +46,8 @@ private:
 	VkPhysicalDevice m_physicalDevice = VK_NULL_HANDLE;
 
 
+	VkPhysicalDevice* pickPhysicalDevice();
+
 	bool isDeviceSuitable(VkPhysicalDevice candidateDevice);
 	bool checkDeviceExtensionSupport(VkPhysicalDevice candidateDevice);
 };
@@ -55,13 +56,14 @@ private:
 class LogicalDevice
 {
 public:
-	LogicalDevice(PhysicalDevice* pPhysicalDevice, VkSurfaceKHR* pSurface, GLFWwindow* pWindow) : m_pPhysicalDevice(pPhysicalDevice), m_pSurface(pSurface), m_pWindow(pWindow), m_pUtilities(Utilities::getInstance()) {};
+	LogicalDevice(PhysicalDevice* pPhysicalDevice, VkSurfaceKHR* pSurface, GLFWwindow* pWindow, sSettings::sDebugSettings* pDebugSettings)
+		: m_pPhysicalDevice(pPhysicalDevice), m_pSurface(pSurface), m_pWindow(pWindow), m_pUtilities(Utilities::getInstance()) { createLogicalDevice(pDebugSettings); };
 
-	void createLogicalDevice(sSettings::sDebugSettings* pDebugSettings);
 
 	void cleanup();
 
 	VkDevice* getLogicalDevice() { return &m_logicalDevice; };
+	PhysicalDevice* getPhysicalDevice() { return m_pPhysicalDevice; };
 	VkQueue* getGraphicsQueue() { return &m_graphicsQueue; };
 
 private:
@@ -75,4 +77,7 @@ private:
 
 	VkQueue m_graphicsQueue = VK_NULL_HANDLE;
 	VkQueue m_presentQueue = VK_NULL_HANDLE;
+
+
+	void createLogicalDevice(sSettings::sDebugSettings* pDebugSettings);
 };

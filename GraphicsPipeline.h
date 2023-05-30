@@ -5,6 +5,7 @@
 
 #include "Utilities.h"
 #include "Swapchain.h"
+#include "VertexBuffer.h"
 
 
 class GraphicsPipeline

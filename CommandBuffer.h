@@ -7,13 +7,15 @@
 #include "Utilities.h"
 #include "QueueFamilyIndices.h"
 #include "Swapchain.h"
+#include "VertexBuffer.h"
 
 
 class CommandBuffer
 {
 public:
-	CommandBuffer(VkDevice* pLogicalDevice, VkPhysicalDevice* pPhysicalDevice, VkSurfaceKHR* pSurface, VkRenderPass* pRenderPass, Swapchain* pSwapchain, VkPipeline* pGraphicsPipeline)
-		: m_pLogicalDevice(pLogicalDevice), m_pPhysicalDevice(pPhysicalDevice), m_pSurface(pSurface), m_pRenderPass(pRenderPass), m_pSwapchain(pSwapchain), m_pGraphicsPipeline(pGraphicsPipeline), m_pUtilities(Utilities::getInstance()) {};
+	CommandBuffer(LogicalDevice* pLogicalDevice, VkSurfaceKHR* pSurface, VkRenderPass* pRenderPass, Swapchain* pSwapchain, VkPipeline* pGraphicsPipeline, VertexBuffer* pVertexBuffer)
+		: m_pLogicalDevice(pLogicalDevice->getLogicalDevice()), m_pPhysicalDevice(pLogicalDevice->getPhysicalDevice()->getPhysicalDevice()), m_pSurface(pSurface),
+		m_pRenderPass(pRenderPass), m_pSwapchain(pSwapchain), m_pGraphicsPipeline(pGraphicsPipeline), m_pVertexBuffer(pVertexBuffer), m_pUtilities(Utilities::getInstance()) {};
 
 	void createCommandPool();
 	void createCommandBuffers(int MAX_FRAMES_IN_FLIGHT);
@@ -30,6 +32,7 @@ private:
 	VkRenderPass* m_pRenderPass = nullptr;
 	Swapchain* m_pSwapchain = nullptr;
 	VkPipeline* m_pGraphicsPipeline = nullptr;
+	VertexBuffer* m_pVertexBuffer = nullptr;
 	Utilities* m_pUtilities = nullptr;
 
 	VkCommandPool m_commandPool = VK_NULL_HANDLE;

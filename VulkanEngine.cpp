@@ -71,32 +71,39 @@ void VulkanEngine::initVulkan()
 {
 	createInstance();
 
+	// Debug messenger
 	mDebugPrint("Creating debug messenger...");
 	m_pDebugMessenger = new DebugMessenger();
 	m_pDebugMessenger->setupDebugMessenger(&m_vkInstance, m_settings->debugSettings.debugMode);
 
+	// Surface
 	m_pWindow->createSurface();
 
+	// Devices
 	m_pPhysicalDevice = new PhysicalDevice(&m_vkInstance, m_pWindow->getSurface());
-	m_pPhysicalDevice->pickPhysicalDevice();
+	m_pLogicalDevice = new LogicalDevice(m_pPhysicalDevice, m_pWindow->getSurface(), m_pWindow->getWindow(), &m_settings->debugSettings);
 
-	m_pLogicalDevice = new LogicalDevice(m_pPhysicalDevice, m_pWindow->getSurface(), m_pWindow->getWindow());
-	m_pLogicalDevice->createLogicalDevice(&m_settings->debugSettings);
-
+	// Swapchain
 	m_pSwapchain = new Swapchain(m_pLogicalDevice->getLogicalDevice(), m_pPhysicalDevice, m_pWindow->getWindow(), m_pWindow->getSurface());
-	m_pSwapchain->createSwapchain();
 	m_pSwapchain->createImageViews();
 
+	// Graphics pipeline
 	m_pGraphicsPipeline = new GraphicsPipeline(m_pLogicalDevice->getLogicalDevice(), m_pSwapchain, &m_settings->graphicsSettings);
 	m_pGraphicsPipeline->createRenderPass();
 	m_pGraphicsPipeline->createGraphicsPipeline();
 	m_pSwapchain->createFramebuffers(m_pGraphicsPipeline->getRenderPass());
 
-	m_pCommandBuffer = new CommandBuffer(m_pLogicalDevice->getLogicalDevice(), m_pPhysicalDevice->getPhysicalDevice(), m_pWindow->getSurface(), m_pGraphicsPipeline->getRenderPass(), m_pSwapchain, m_pGraphicsPipeline->getGraphicsPipeline());
+	// Vertex buffer
+	m_pVertexBuffer = new VertexBuffer(m_pLogicalDevice);
+
+	// Command buffer
+	m_pCommandBuffer = new CommandBuffer(m_pLogicalDevice, m_pWindow->getSurface(), m_pGraphicsPipeline->getRenderPass(), m_pSwapchain, m_pGraphicsPipeline->getGraphicsPipeline(), m_pVertexBuffer);
 	m_pCommandBuffer->createCommandPool();
 	m_pCommandBuffer->createCommandBuffers(MAX_FRAMES_IN_FLIGHT);
 
+	// Sync objects
 	m_pWindow->createSyncObjects(m_pLogicalDevice, m_pSwapchain, m_pCommandBuffer);
+
 }
 
 void VulkanEngine::createInstance()
@@ -169,6 +176,9 @@ void VulkanEngine::cleanup()
 
 	mDebugPrint("Cleaning up swapchain...");
 	m_pSwapchain->cleanup();
+
+	mDebugPrint("Cleaning up vertex buffer...");
+	m_pVertexBuffer->cleanup();
 
 	mDebugPrint("Cleaning up logical device...");
 	m_pLogicalDevice->cleanup();

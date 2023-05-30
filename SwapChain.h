@@ -11,7 +11,7 @@ class Swapchain
 {
 public:
 	Swapchain(VkDevice* pLogicalDevice, PhysicalDevice* pPhysicalDevice, GLFWwindow* pWindow,VkSurfaceKHR* pSurface)
-		: m_pLogicalDevice(pLogicalDevice), m_pPhysicalDevice(pPhysicalDevice), m_pWindow(pWindow), m_pSurface(pSurface), m_pUtilities(Utilities::getInstance()) {};
+		: m_pLogicalDevice(pLogicalDevice), m_pPhysicalDevice(pPhysicalDevice), m_pWindow(pWindow), m_pSurface(pSurface), m_pUtilities(Utilities::getInstance()) { createSwapchain(); };
 
 	void cleanup();
 

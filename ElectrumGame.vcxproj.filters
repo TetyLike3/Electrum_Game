@@ -22,6 +22,18 @@
     <Filter Include="Resource Files\Shaders">
       <UniqueIdentifier>{b1803285-8cd9-41d1-8fdb-2aee49358554}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\VulkanEngine\Shaders">
+      <UniqueIdentifier>{fea7bc71-769d-4bbf-a624-49f44052630f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\VulkanEngine\Graphics">
+      <UniqueIdentifier>{f30fa413-f636-4c78-a145-5f84b8341574}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\VulkanEngine\Graphics">
+      <UniqueIdentifier>{016e5a4a-3b64-4671-a43e-d203070b6752}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\VulkanEngine\Shaders">
+      <UniqueIdentifier>{3ce23516-768e-4397-be24-6b81c6b9f011}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -30,61 +42,67 @@
     <ClCompile Include="VulkanEngine.cpp">
       <Filter>Source Files\VulkanEngine</Filter>
     </ClCompile>
-    <ClCompile Include="Window.cpp">
-      <Filter>Source Files\VulkanEngine</Filter>
-    </ClCompile>
     <ClCompile Include="DebugMessenger.cpp">
-      <Filter>Source Files\VulkanEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="Devices.cpp">
       <Filter>Source Files\VulkanEngine</Filter>
     </ClCompile>
     <ClCompile Include="Utilities.cpp">
       <Filter>Source Files\VulkanEngine</Filter>
     </ClCompile>
-    <ClCompile Include="GraphicsPipeline.cpp">
-      <Filter>Source Files\VulkanEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="Swapchain.cpp">
-      <Filter>Source Files\VulkanEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="QueueFamilyIndices.cpp">
-      <Filter>Source Files\VulkanEngine</Filter>
+    <ClCompile Include="Window.cpp">
+      <Filter>Source Files\VulkanEngine\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="CommandBuffer.cpp">
-      <Filter>Source Files\VulkanEngine</Filter>
+      <Filter>Source Files\VulkanEngine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Devices.cpp">
+      <Filter>Source Files\VulkanEngine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsPipeline.cpp">
+      <Filter>Source Files\VulkanEngine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Swapchain.cpp">
+      <Filter>Source Files\VulkanEngine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="QueueFamilyIndices.cpp">
+      <Filter>Source Files\VulkanEngine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexBuffer.cpp">
+      <Filter>Source Files\VulkanEngine\Shaders</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VulkanEngine.h">
       <Filter>Header Files\VulkanEngine</Filter>
     </ClInclude>
-    <ClInclude Include="Window.h">
-      <Filter>Header Files\VulkanEngine</Filter>
-    </ClInclude>
     <ClInclude Include="DebugMessenger.h">
-      <Filter>Header Files\VulkanEngine</Filter>
-    </ClInclude>
-    <ClInclude Include="Devices.h">
       <Filter>Header Files\VulkanEngine</Filter>
     </ClInclude>
     <ClInclude Include="Utilities.h">
       <Filter>Header Files\VulkanEngine</Filter>
     </ClInclude>
-    <ClInclude Include="GraphicsPipeline.h">
-      <Filter>Header Files\VulkanEngine</Filter>
-    </ClInclude>
-    <ClInclude Include="Swapchain.h">
-      <Filter>Header Files\VulkanEngine</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="QueueFamilyIndices.h">
-      <Filter>Header Files\VulkanEngine</Filter>
+    <ClInclude Include="VertexBuffer.h">
+      <Filter>Header Files\VulkanEngine\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>Header Files\VulkanEngine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Swapchain.h">
+      <Filter>Header Files\VulkanEngine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsPipeline.h">
+      <Filter>Header Files\VulkanEngine\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="CommandBuffer.h">
-      <Filter>Header Files\VulkanEngine</Filter>
+      <Filter>Header Files\VulkanEngine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Devices.h">
+      <Filter>Header Files\VulkanEngine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="QueueFamilyIndices.h">
+      <Filter>Header Files\VulkanEngine\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
