@@ -19,9 +19,11 @@ void CommandBuffer::createCommandPool()
 	}
 }
 
-void CommandBuffer::createCommandBuffers(int MAX_FRAMES_IN_FLIGHT)
+void CommandBuffer::createCommandBuffers(int MAX_FRAMES_IN_FLIGHT, VkBuffer* pVertexBuffer)
 {
 	mDebugPrint("Creating command buffers...");
+
+	m_pVertexBuffer = pVertexBuffer;
 
 	m_commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
@@ -89,7 +91,7 @@ void CommandBuffer::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t 
 	};
 	vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-	VkBuffer vertexBuffers[] = { *m_pVertexBuffer->getVkBuffer() };
+	VkBuffer vertexBuffers[] = { *m_pVertexBuffer };
 	VkDeviceSize offsets[] = { 0 };
 	vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 

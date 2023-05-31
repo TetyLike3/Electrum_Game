@@ -75,6 +75,9 @@ void Window::mainLoop()
 	{
 		glfwPollEvents();
 		drawFrame();
+
+		// Print FPS
+		calculateFPS();
 	}
 	mDebugPrint("Window closed, waiting for device idle...");
 
@@ -153,6 +156,24 @@ void Window::drawFrame()
 	}
 
 	m_currentFrame = (m_currentFrame + 1) % m_MAX_FRAMES_IN_FLIGHT;
+}
+
+
+void Window::calculateFPS()
+{
+	using std::string, std::to_string;
+	double current = glfwGetTime();
+	double delta = current - m_lastTime;
+	m_frameCounter++;
+
+	if (delta >= 1.0)
+	{
+		// Print the FPS with a precision of 2 d.p.
+		string fpsString = to_string(m_frameCounter/delta);
+		mDebugPrint("FPS: " + fpsString.substr(0, fpsString.find(".") + 3));
+		m_frameCounter = 0;
+		m_lastTime = current;
+	}
 }
 
 

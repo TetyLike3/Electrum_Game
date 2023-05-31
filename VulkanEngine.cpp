@@ -93,13 +93,15 @@ void VulkanEngine::initVulkan()
 	m_pGraphicsPipeline->createGraphicsPipeline();
 	m_pSwapchain->createFramebuffers(m_pGraphicsPipeline->getRenderPass());
 
-	// Vertex buffer
-	m_pVertexBuffer = new VertexBuffer(m_pLogicalDevice);
-
-	// Command buffer
-	m_pCommandBuffer = new CommandBuffer(m_pLogicalDevice, m_pWindow->getSurface(), m_pGraphicsPipeline->getRenderPass(), m_pSwapchain, m_pGraphicsPipeline->getGraphicsPipeline(), m_pVertexBuffer);
+	// Command pool
+	m_pCommandBuffer = new CommandBuffer(m_pLogicalDevice, m_pWindow->getSurface(), m_pGraphicsPipeline->getRenderPass(), m_pSwapchain, m_pGraphicsPipeline->getGraphicsPipeline());
 	m_pCommandBuffer->createCommandPool();
-	m_pCommandBuffer->createCommandBuffers(MAX_FRAMES_IN_FLIGHT);
+
+	// Vertex buffer
+	m_pVertexBuffer = new VertexBuffer(m_pLogicalDevice, m_pCommandBuffer->getVkCommandPool());
+
+	// Command buffers
+	m_pCommandBuffer->createCommandBuffers(MAX_FRAMES_IN_FLIGHT, m_pVertexBuffer->getVkBuffer());
 
 	// Sync objects
 	m_pWindow->createSyncObjects(m_pLogicalDevice, m_pSwapchain, m_pCommandBuffer);

@@ -50,7 +50,13 @@ private:
 	int m_MAX_FRAMES_IN_FLIGHT = 0;
 	uint32_t m_currentFrame = 0;
 
+	double m_lastTime = 0.0f;
+	int m_frameCounter = 0;
+
 
 	void drawFrame();
+
+	// Calculates and prints the FPS
+	void calculateFPS();
 };
 

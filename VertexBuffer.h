@@ -11,9 +11,7 @@
 
 #include "Utilities.h"
 #include "Devices.h"
-
-
-
+#include "CommandBuffer.h"
 
 
 
@@ -55,9 +53,11 @@ public:
 
 
 
-	VertexBuffer(LogicalDevice* pLogicalDevice) : m_pLogicalDevice(pLogicalDevice->getLogicalDevice()), m_pPhysicalDevice(pLogicalDevice->getPhysicalDevice()->getPhysicalDevice()) { createVertexBuffer(); };
+	VertexBuffer(LogicalDevice* pLogicalDevice, VkCommandPool* pCommandPool)
+		: m_pLogicalDevice(pLogicalDevice->getLogicalDevice()), m_pPhysicalDevice(pLogicalDevice->getPhysicalDevice()->getPhysicalDevice()), m_pGraphicsQueue(pLogicalDevice->getGraphicsQueue()), m_pCommandPool(pCommandPool), m_pUtilities(Utilities::getInstance())
+	{ createVertexBuffer(); };
 
-
+	
 	void createVertexBuffer();
 
 	void cleanup();
@@ -67,10 +67,15 @@ public:
 private:
 	VkDevice* m_pLogicalDevice = nullptr;
 	VkPhysicalDevice* m_pPhysicalDevice = nullptr;
+	VkQueue* m_pGraphicsQueue = nullptr;
+	VkCommandPool* m_pCommandPool = nullptr;
+	Utilities* m_pUtilities = nullptr;
 
 	VkBuffer vertexBuffer = VK_NULL_HANDLE;
 	VkDeviceMemory vertexBufferMemory = VK_NULL_HANDLE;
 
 
 	uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+	void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+	void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 };
