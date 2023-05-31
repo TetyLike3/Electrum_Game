@@ -19,11 +19,12 @@ void CommandBuffer::createCommandPool()
 	}
 }
 
-void CommandBuffer::createCommandBuffers(int MAX_FRAMES_IN_FLIGHT, VkBuffer* pVertexBuffer)
+void CommandBuffer::createCommandBuffers(int MAX_FRAMES_IN_FLIGHT, VkBuffer* pVertexBuffer, VkBuffer* pIndexBuffer)
 {
 	mDebugPrint("Creating command buffers...");
 
 	m_pVertexBuffer = pVertexBuffer;
+	m_pIndexBuffer = pIndexBuffer;
 
 	m_commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
@@ -94,8 +95,9 @@ void CommandBuffer::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t 
 	VkBuffer vertexBuffers[] = { *m_pVertexBuffer };
 	VkDeviceSize offsets[] = { 0 };
 	vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+	vkCmdBindIndexBuffer(commandBuffer, *m_pIndexBuffer, 0, VK_INDEX_TYPE_UINT16);
 
-	vkCmdDraw(commandBuffer, static_cast<uint32_t>(VertexBuffer::vertices.size()), 1, 0, 0);
+	vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(VertexBuffer::indices.size()), 1, 0, 0, 0);
 
 	vkCmdEndRenderPass(commandBuffer);
 

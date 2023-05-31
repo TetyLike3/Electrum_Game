@@ -18,7 +18,7 @@ public:
 		m_pRenderPass(pRenderPass), m_pSwapchain(pSwapchain), m_pGraphicsPipeline(pGraphicsPipeline), m_pUtilities(Utilities::getInstance()) {};
 
 	void createCommandPool();
-	void createCommandBuffers(int MAX_FRAMES_IN_FLIGHT, VkBuffer* pVertexBuffer);
+	void createCommandBuffers(int MAX_FRAMES_IN_FLIGHT, VkBuffer* pVertexBuffer, VkBuffer* pIndexBuffer);
 	void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
 	void cleanup();
@@ -34,6 +34,7 @@ private:
 	Swapchain* m_pSwapchain = nullptr;
 	VkPipeline* m_pGraphicsPipeline = nullptr;
 	VkBuffer* m_pVertexBuffer = nullptr;
+	VkBuffer* m_pIndexBuffer = nullptr;
 	Utilities* m_pUtilities = nullptr;
 
 	VkCommandPool m_commandPool = VK_NULL_HANDLE;

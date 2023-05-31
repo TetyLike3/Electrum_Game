@@ -50,19 +50,22 @@ public:
 	};
 
 	static const std::vector<sVertex> vertices;
+	static const std::vector<uint16_t> indices;
 
 
 
 	VertexBuffer(LogicalDevice* pLogicalDevice, VkCommandPool* pCommandPool)
 		: m_pLogicalDevice(pLogicalDevice->getLogicalDevice()), m_pPhysicalDevice(pLogicalDevice->getPhysicalDevice()->getPhysicalDevice()), m_pGraphicsQueue(pLogicalDevice->getGraphicsQueue()), m_pCommandPool(pCommandPool), m_pUtilities(Utilities::getInstance())
-	{ createVertexBuffer(); };
+	{ createVertexBuffer(); createIndexBuffer(); };
 
 	
 	void createVertexBuffer();
+	void createIndexBuffer();
 
 	void cleanup();
 
-	VkBuffer* getVkBuffer() { return &vertexBuffer; }
+	VkBuffer* getVkVertexBuffer() { return &vertexBuffer; }
+	VkBuffer* getVkIndexBuffer() { return &indexBuffer; }
 
 private:
 	VkDevice* m_pLogicalDevice = nullptr;
@@ -73,6 +76,8 @@ private:
 
 	VkBuffer vertexBuffer = VK_NULL_HANDLE;
 	VkDeviceMemory vertexBufferMemory = VK_NULL_HANDLE;
+	VkBuffer indexBuffer = VK_NULL_HANDLE;
+	VkDeviceMemory indexBufferMemory = VK_NULL_HANDLE;
 
 
 	uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);

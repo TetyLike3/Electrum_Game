@@ -101,7 +101,7 @@ void VulkanEngine::initVulkan()
 	m_pVertexBuffer = new VertexBuffer(m_pLogicalDevice, m_pCommandBuffer->getVkCommandPool());
 
 	// Command buffers
-	m_pCommandBuffer->createCommandBuffers(MAX_FRAMES_IN_FLIGHT, m_pVertexBuffer->getVkBuffer());
+	m_pCommandBuffer->createCommandBuffers(MAX_FRAMES_IN_FLIGHT, m_pVertexBuffer->getVkVertexBuffer(), m_pVertexBuffer->getVkIndexBuffer());
 
 	// Sync objects
 	m_pWindow->createSyncObjects(m_pLogicalDevice, m_pSwapchain, m_pCommandBuffer);
