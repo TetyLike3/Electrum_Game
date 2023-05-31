@@ -35,7 +35,8 @@ struct sSettings {
 		bool tripleBuffering = true;
 		bool vsync = true;
 		bool rasterizerDepthClamp = false;
-		bool wireframe = false;
+		bool wireframe = true;
+		float wireframeThickness = 2.0f;
 		bool multisampling = false;
 	} graphicsSettings;
 };
