@@ -79,8 +79,8 @@ void VertexBuffer::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkM
 {
 	VkBufferCreateInfo bufferInfo{
 		.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
-		.size = sizeof(vertices[0]) * vertices.size(),
-		.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+		.size = size,
+		.usage = usage,
 		.sharingMode = VK_SHARING_MODE_EXCLUSIVE
 	};
 
@@ -95,7 +95,7 @@ void VertexBuffer::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkM
 	VkMemoryAllocateInfo allocInfo{
 		.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
 		.allocationSize = memRequirements.size,
-		.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)
+		.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, properties)
 	};
 
 	if (vkAllocateMemory(*m_pLogicalDevice, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS)
