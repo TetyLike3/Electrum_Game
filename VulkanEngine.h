@@ -18,6 +18,7 @@
 #include "GraphicsPipeline.h"
 #include "CommandBuffer.h"
 #include "VertexBuffer.h"
+#include "UniformBufferObject.h"
 
 
 const int MAX_FRAMES_IN_FLIGHT = 2;
@@ -58,6 +59,7 @@ private:
 	GraphicsPipeline* m_pGraphicsPipeline = nullptr;
 	CommandBuffer* m_pCommandBuffer = nullptr;
 	VertexBuffer* m_pVertexBuffer = nullptr;
+	UniformBufferObject* m_pUniformBufferObject = nullptr;
 
 	std::map<std::string, uint32_t> m_versions = {};
 	sSettings* m_settings = nullptr;

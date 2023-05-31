@@ -179,6 +179,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="QueueFamilyIndices.cpp" />
     <ClCompile Include="Swapchain.cpp" />
+    <ClCompile Include="UniformBufferObject.cpp" />
     <ClCompile Include="Utilities.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="VulkanEngine.cpp" />
@@ -192,6 +193,7 @@
     <ClInclude Include="QueueFamilyIndices.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Swapchain.h" />
+    <ClInclude Include="UniformBufferObject.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="VulkanEngine.h" />

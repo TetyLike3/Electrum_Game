@@ -100,6 +100,9 @@ void VulkanEngine::initVulkan()
 	// Vertex buffer
 	m_pVertexBuffer = new VertexBuffer(m_pLogicalDevice, m_pCommandBuffer->getVkCommandPool());
 
+	// Uniform buffers
+	m_pUniformBufferObject = new UniformBufferObject(m_pLogicalDevice);
+
 	// Command buffers
 	m_pCommandBuffer->createCommandBuffers(MAX_FRAMES_IN_FLIGHT, m_pVertexBuffer->getVkVertexBuffer(), m_pVertexBuffer->getVkIndexBuffer());
 

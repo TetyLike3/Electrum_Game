@@ -87,3 +87,52 @@ void Utilities::compileShaders(std::filesystem::path folderPath)
 	};
 };
 */
+
+
+
+
+
+void Utilities::createBuffer(VkDevice* pDevice, VkPhysicalDevice* pPhysicalDevice, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
+{
+	VkBufferCreateInfo bufferInfo{
+	.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO,
+	.size = size,
+	.usage = usage,
+	.sharingMode = VK_SHARING_MODE_EXCLUSIVE
+	};
+
+	if (vkCreateBuffer(*pDevice, &bufferInfo, nullptr, &buffer) != VK_SUCCESS)
+	{
+		throw std::runtime_error("Failed to create buffer.");
+	}
+
+	VkMemoryRequirements memRequirements;
+	vkGetBufferMemoryRequirements(*pDevice, buffer, &memRequirements);
+
+	VkMemoryAllocateInfo allocInfo{
+		.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
+		.allocationSize = memRequirements.size,
+		.memoryTypeIndex = findMemoryType(pPhysicalDevice, memRequirements.memoryTypeBits, properties)
+	};
+
+	if (vkAllocateMemory(*pDevice, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS)
+	{
+		throw std::runtime_error("Failed to allocate vertex buffer memory.");
+	}
+
+	vkBindBufferMemory(*pDevice, buffer, bufferMemory, 0);
+};
+
+uint32_t Utilities::findMemoryType(VkPhysicalDevice* pPhysicalDevice, uint32_t typeFilter, VkMemoryPropertyFlags properties)
+{
+	VkPhysicalDeviceMemoryProperties memProperties;
+	vkGetPhysicalDeviceMemoryProperties(*pPhysicalDevice, &memProperties);
+
+	for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
+		if (typeFilter & (1 << i) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties) {
+			return i;
+		}
+	}
+
+	throw std::runtime_error("failed to find suitable memory type!");
+}

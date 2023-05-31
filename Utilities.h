@@ -67,6 +67,12 @@ public:
 
 	// Compiles shaders in the given folder
 	//void compileShaders(std::filesystem::path folderPath);
+
+
+	// Vulkan helper functions
+	void createBuffer(VkDevice* pDevice, VkPhysicalDevice* pPhysicalDevice, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+	uint32_t findMemoryType(VkPhysicalDevice* pPhysicalDevice, uint32_t typeFilter, VkMemoryPropertyFlags properties);
+
 private:
 	Utilities();
 

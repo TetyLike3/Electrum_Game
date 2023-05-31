@@ -55,8 +55,11 @@ public:
 
 
 	VertexBuffer(LogicalDevice* pLogicalDevice, VkCommandPool* pCommandPool)
-		: m_pLogicalDevice(pLogicalDevice->getLogicalDevice()), m_pPhysicalDevice(pLogicalDevice->getPhysicalDevice()->getPhysicalDevice()), m_pGraphicsQueue(pLogicalDevice->getGraphicsQueue()), m_pCommandPool(pCommandPool), m_pUtilities(Utilities::getInstance())
-	{ createVertexBuffer(); createIndexBuffer(); };
+		: m_pLogicalDevice(pLogicalDevice->getLogicalDevice()), m_pPhysicalDevice(pLogicalDevice->getPhysicalDevice()->getPhysicalDevice()),
+		m_pGraphicsQueue(pLogicalDevice->getGraphicsQueue()), m_pCommandPool(pCommandPool), m_pUtilities(Utilities::getInstance())
+	{
+		createVertexBuffer(); createIndexBuffer();
+	};
 
 	
 	void createVertexBuffer();
@@ -64,8 +67,8 @@ public:
 
 	void cleanup();
 
-	VkBuffer* getVkVertexBuffer() { return &vertexBuffer; }
-	VkBuffer* getVkIndexBuffer() { return &indexBuffer; }
+	VkBuffer* getVkVertexBuffer() { return &m_vertexBuffer; }
+	VkBuffer* getVkIndexBuffer() { return &m_indexBuffer; }
 
 private:
 	VkDevice* m_pLogicalDevice = nullptr;
@@ -74,13 +77,11 @@ private:
 	VkCommandPool* m_pCommandPool = nullptr;
 	Utilities* m_pUtilities = nullptr;
 
-	VkBuffer vertexBuffer = VK_NULL_HANDLE;
-	VkDeviceMemory vertexBufferMemory = VK_NULL_HANDLE;
-	VkBuffer indexBuffer = VK_NULL_HANDLE;
-	VkDeviceMemory indexBufferMemory = VK_NULL_HANDLE;
+	VkBuffer m_vertexBuffer = VK_NULL_HANDLE;
+	VkDeviceMemory m_vertexBufferMemory = VK_NULL_HANDLE;
+	VkBuffer m_indexBuffer = VK_NULL_HANDLE;
+	VkDeviceMemory m_indexBufferMemory = VK_NULL_HANDLE;
 
 
-	uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
-	void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 	void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
 };

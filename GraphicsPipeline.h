@@ -12,16 +12,13 @@ class GraphicsPipeline
 {
 public:
 
-	struct UniformBufferObject
-	{
-		glm::mat4 model;
-		glm::mat4 view;
-		glm::mat4 proj;
-	};
-
-
 	GraphicsPipeline(VkDevice* pLogicalDevice, Swapchain* pSwapchain, sSettings::sGraphicsSettings* pGraphicsSettings)
-		: m_pLogicalDevice(pLogicalDevice), m_pSwapchain(pSwapchain), m_pGraphicsSettings(pGraphicsSettings), m_pUtilities(Utilities::getInstance()) {};
+		: m_pLogicalDevice(pLogicalDevice), m_pSwapchain(pSwapchain), m_pGraphicsSettings(pGraphicsSettings), m_pUtilities(Utilities::getInstance())
+	{
+		createRenderPass();
+		createDescriptorSetLayout();
+		createGraphicsPipeline();
+	};
 
 	void createRenderPass();
 	void createDescriptorSetLayout();
