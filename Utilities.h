@@ -96,7 +96,8 @@ private:
 		if (m_lastClassPrinted != className)
 		{
 			m_lastClassPrinted = className;
-			cerr << format("\nVulkanEngine DEBUG - {} -\n", m_lastClassPrinted);
+			cerr << system("Color 0C") << "\n VulkanEngine DEBUG - " << system("Color 03") << className << " -\n";
+			//cerr << format("\nVulkanEngine DEBUG - {} -\n", m_lastClassPrinted);
 		};
 
 		m_lastMessagePrinted = format("[{}] - {}\n", generateTimestamp_HH_MM_SS_mmm(), message);

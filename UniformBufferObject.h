@@ -29,8 +29,11 @@ public:
 	};
 
 	void createUniformBuffers();
-
+	
 	void cleanup();
+
+
+	std::vector<void*>* getUniformBuffersMapped() { return &m_uniformBuffersMapped; };
 
 private:
 	VkDevice* m_pLogicalDevice = nullptr;

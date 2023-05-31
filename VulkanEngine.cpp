@@ -89,8 +89,7 @@ void VulkanEngine::initVulkan()
 
 	// Graphics pipeline
 	m_pGraphicsPipeline = new GraphicsPipeline(m_pLogicalDevice->getLogicalDevice(), m_pSwapchain, &m_settings->graphicsSettings);
-	m_pGraphicsPipeline->createRenderPass();
-	m_pGraphicsPipeline->createGraphicsPipeline();
+
 	m_pSwapchain->createFramebuffers(m_pGraphicsPipeline->getRenderPass());
 
 	// Command pool
@@ -107,7 +106,7 @@ void VulkanEngine::initVulkan()
 	m_pCommandBuffer->createCommandBuffers(MAX_FRAMES_IN_FLIGHT, m_pVertexBuffer->getVkVertexBuffer(), m_pVertexBuffer->getVkIndexBuffer());
 
 	// Sync objects
-	m_pWindow->createSyncObjects(m_pLogicalDevice, m_pSwapchain, m_pCommandBuffer);
+	m_pWindow->createSyncObjects(m_pLogicalDevice, m_pSwapchain, m_pCommandBuffer, m_pUniformBufferObject);
 
 }
 
@@ -175,6 +174,9 @@ void VulkanEngine::cleanup()
 
 	mDebugPrint("Cleaning up command buffer...");
 	m_pCommandBuffer->cleanup();
+
+	mDebugPrint("Cleaning up uniform buffers...");
+	m_pUniformBufferObject->cleanup();
 
 	mDebugPrint("Cleaning up graphics pipeline...");
 	m_pGraphicsPipeline->cleanup();

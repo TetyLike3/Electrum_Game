@@ -141,7 +141,10 @@ void LogicalDevice::createLogicalDevice(sSettings::sDebugSettings* pDebugSetting
 		queueCreateInfos.push_back(queueCreateInfo);
 	}
 
-	VkPhysicalDeviceFeatures deviceFeatures{};
+	VkPhysicalDeviceFeatures deviceFeatures{
+		.fillModeNonSolid = VK_TRUE,
+		.wideLines = VK_TRUE,
+	};
 
 	VkDeviceCreateInfo createInfo{
 		.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,

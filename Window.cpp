@@ -33,7 +33,7 @@ void Window::createSurface()
 	}
 }
 
-void Window::createSyncObjects(LogicalDevice* pLogicalDevice, Swapchain* pSwapchain, CommandBuffer* pCommandBuffer)
+void Window::createSyncObjects(LogicalDevice* pLogicalDevice, Swapchain* pSwapchain, CommandBuffer* pCommandBuffer, UniformBufferObject* pUniformBufferObject)
 {
 	mDebugPrint("Creating sync objects...");
 
@@ -42,6 +42,7 @@ void Window::createSyncObjects(LogicalDevice* pLogicalDevice, Swapchain* pSwapch
 	m_pGraphicsQueue = pLogicalDevice->getGraphicsQueue();
 	m_pSwapchain = pSwapchain;
 	m_pCommandBuffer = pCommandBuffer;
+	m_pUniformBufferObject = pUniformBufferObject;
 
 	// Resize the vectors to the correct size
 	m_imageAvailableSemaphores.resize(m_MAX_FRAMES_IN_FLIGHT);
@@ -105,6 +106,8 @@ void Window::drawFrame()
 		throw std::runtime_error("failed to acquire swap chain image!");
 	}
 
+	updateUniformBuffer(m_currentFrame);
+
 	vkResetFences(*m_pLogicalDevice, 1, &m_inFlightFences[m_currentFrame]);
 
 	vkResetCommandBuffer(commandBuffers[m_currentFrame], 0);
@@ -156,6 +159,27 @@ void Window::drawFrame()
 	}
 
 	m_currentFrame = (m_currentFrame + 1) % m_MAX_FRAMES_IN_FLIGHT;
+}
+
+void Window::updateUniformBuffer(uint32_t currentImage)
+{
+	using std::chrono::high_resolution_clock, std::chrono::duration, std::chrono::seconds;
+
+	static auto startTime = high_resolution_clock::now();
+
+	auto currentTime = high_resolution_clock::now();
+	float time = duration<float, seconds::period>(currentTime - startTime).count();
+
+	UniformBufferObject::sUniformBufferObject ubo{};
+	ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	VkExtent2D swapchainExtent = *m_pSwapchain->getSwapchainExtent();
+	ubo.proj = glm::perspective(glm::radians(45.0f), swapchainExtent.width / (float)swapchainExtent.height, 0.1f, 10.0f);
+
+	ubo.proj[1][1] *= -1;
+
+	std::vector<void*>* uniformBuffersMapped = m_pUniformBufferObject->getUniformBuffersMapped();
+	memcpy(&uniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
 }
 
 

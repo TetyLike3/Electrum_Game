@@ -1,17 +1,26 @@
 #pragma once
 
-#include <iostream>
-
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+
+#define GLM_FORCE_RADIANS
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include <iostream>
+#include <chrono>
 
 #include "Utilities.h"
 #include "CommandBuffer.h"
 #include "Swapchain.h"
+#include "UniformBufferObject.h"
+
 
 
 const uint32_t WIDTH = 1280;
 const uint32_t HEIGHT = 720;
+
+
 
 class Window
 {
@@ -20,7 +29,7 @@ public:
 
 	void initWindow(sSettings::sWindowSettings* windowSettings);
 	void createSurface();
-	void createSyncObjects(LogicalDevice* pLogicalDevice, Swapchain* pSwapchain, CommandBuffer* pCommandBuffer);
+	void createSyncObjects(LogicalDevice* pLogicalDevice, Swapchain* pSwapchain, CommandBuffer* pCommandBuffer, UniformBufferObject* pUniformBufferObject);
 
 	void mainLoop();
 
@@ -41,6 +50,7 @@ private:
 	VkQueue* m_pGraphicsQueue = nullptr;
 	Swapchain* m_pSwapchain = nullptr;
 	CommandBuffer* m_pCommandBuffer = nullptr;
+	UniformBufferObject* m_pUniformBufferObject = nullptr;
 
 	GLFWwindow* m_pWindow = nullptr;
 	VkSurfaceKHR m_surface = nullptr;
@@ -55,6 +65,7 @@ private:
 
 
 	void drawFrame();
+	void updateUniformBuffer(uint32_t currentImage);
 
 	// Calculates and prints the FPS
 	void calculateFPS();
