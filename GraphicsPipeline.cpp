@@ -60,6 +60,26 @@ void GraphicsPipeline::createRenderPass()
 
 }
 
+void GraphicsPipeline::createDescriptorSetLayout()
+{
+	VkDescriptorSetLayoutBinding uboLayoutBinding{
+		.binding = 0,
+		.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+		.descriptorCount = 1,
+		.stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
+		.pImmutableSamplers = nullptr
+	};
+
+	VkDescriptorSetLayoutCreateInfo layoutInfo{
+		.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
+		.bindingCount = 1,
+		.pBindings = &uboLayoutBinding
+	};
+
+	if (vkCreateDescriptorSetLayout(*m_pLogicalDevice, &layoutInfo, nullptr, &m_descriptorSetLayout) != VK_SUCCESS) {
+		throw std::runtime_error("failed to create descriptor set layout!");
+	}
+}
 
 void GraphicsPipeline::createGraphicsPipeline()
 {
@@ -147,7 +167,7 @@ void GraphicsPipeline::createGraphicsPipeline()
 		.depthBiasConstantFactor = 0.0f, // Optional
 		.depthBiasClamp = 0.0f, // Optional
 		.depthBiasSlopeFactor = 0.0f, // Optional
-		.lineWidth = 1.0f,
+		.lineWidth = m_pGraphicsSettings->wireframeThickness
 	};
 	m_pGraphicsSettings->rasterizerDepthClamp == true ? rasterizer.depthClampEnable = VK_TRUE : rasterizer.depthClampEnable = VK_FALSE;
 	m_pGraphicsSettings->wireframe == true ? rasterizer.polygonMode = VK_POLYGON_MODE_LINE : rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
@@ -212,7 +232,7 @@ void GraphicsPipeline::createGraphicsPipeline()
 	VkPipelineLayoutCreateInfo pipelineLayoutInfo{
 		.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO,
 		.setLayoutCount = 0, // Optional
-		.pSetLayouts = nullptr, // Optional
+		.pSetLayouts = &m_descriptorSetLayout,
 		.pushConstantRangeCount = 0, // Optional 
 		.pPushConstantRanges = nullptr // Optional
 	};
@@ -260,6 +280,7 @@ void GraphicsPipeline::createGraphicsPipeline()
 
 void GraphicsPipeline::cleanup()
 {
+	vkDestroyDescriptorSetLayout(*m_pLogicalDevice, m_descriptorSetLayout, nullptr);
 	vkDestroyPipeline(*m_pLogicalDevice, m_graphicsPipeline, nullptr);
 	vkDestroyPipelineLayout(*m_pLogicalDevice, m_pipelineLayout, nullptr);
 	vkDestroyRenderPass(*m_pLogicalDevice, m_renderPass, nullptr);

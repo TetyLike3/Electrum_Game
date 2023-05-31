@@ -11,10 +11,20 @@
 class GraphicsPipeline
 {
 public:
+
+	struct UniformBufferObject
+	{
+		glm::mat4 model;
+		glm::mat4 view;
+		glm::mat4 proj;
+	};
+
+
 	GraphicsPipeline(VkDevice* pLogicalDevice, Swapchain* pSwapchain, sSettings::sGraphicsSettings* pGraphicsSettings)
 		: m_pLogicalDevice(pLogicalDevice), m_pSwapchain(pSwapchain), m_pGraphicsSettings(pGraphicsSettings), m_pUtilities(Utilities::getInstance()) {};
 
 	void createRenderPass();
+	void createDescriptorSetLayout();
 	void createGraphicsPipeline();
 	void cleanup();
 
@@ -27,6 +37,7 @@ private:
 	Swapchain* m_pSwapchain = nullptr;
 	sSettings::sGraphicsSettings* m_pGraphicsSettings = nullptr;
 
+	VkDescriptorSetLayout m_descriptorSetLayout = VK_NULL_HANDLE;
 	VkPipelineLayout m_pipelineLayout = VK_NULL_HANDLE;
 	VkRenderPass m_renderPass = VK_NULL_HANDLE;
 	VkPipeline m_graphicsPipeline = VK_NULL_HANDLE;
