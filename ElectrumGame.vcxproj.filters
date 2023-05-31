@@ -19,9 +19,6 @@
     <Filter Include="Header Files\VulkanEngine">
       <UniqueIdentifier>{28e9fc7c-a6f3-4477-be88-e19ea5eb22c6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Shaders">
-      <UniqueIdentifier>{b1803285-8cd9-41d1-8fdb-2aee49358554}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\VulkanEngine\Shaders">
       <UniqueIdentifier>{fea7bc71-769d-4bbf-a624-49f44052630f}</UniqueIdentifier>
     </Filter>
@@ -106,16 +103,16 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\shader.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="shaders\shader.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="ElectrumGame.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\shader.frag">
+      <Filter>Source Files\VulkanEngine\Shaders</Filter>
+    </None>
+    <None Include="shaders\shader.vert">
+      <Filter>Source Files\VulkanEngine\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
