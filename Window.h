@@ -11,9 +11,8 @@
 #include <chrono>
 
 #include "Utilities.h"
-#include "CommandBuffer.h"
+#include "Buffers.h"
 #include "Swapchain.h"
-#include "UniformBufferObject.h"
 
 
 

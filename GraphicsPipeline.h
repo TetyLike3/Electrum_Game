@@ -5,7 +5,7 @@
 
 #include "Utilities.h"
 #include "Swapchain.h"
-#include "VertexBuffer.h"
+#include "Buffers.h"
 
 
 class GraphicsPipeline
@@ -27,6 +27,7 @@ public:
 
 	VkPipeline* getGraphicsPipeline() { return &m_graphicsPipeline; }
 	VkRenderPass* getRenderPass() { return &m_renderPass; }
+	VkDescriptorSetLayout* getDescriptorSetLayout() { return &m_descriptorSetLayout; }
 
 private:
 	Utilities* m_pUtilities = nullptr;

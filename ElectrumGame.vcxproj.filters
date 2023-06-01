@@ -31,12 +31,6 @@
     <Filter Include="Header Files\VulkanEngine\Shaders">
       <UniqueIdentifier>{3ce23516-768e-4397-be24-6b81c6b9f011}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\VulkanEngine\Graphics\Buffers">
-      <UniqueIdentifier>{c42b859c-c598-4831-a648-eed478feb242}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\VulkanEngine\Graphics\Buffers">
-      <UniqueIdentifier>{1a37206a-e899-472f-8807-cbabcaf18535}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -66,14 +60,8 @@
     <ClCompile Include="QueueFamilyIndices.cpp">
       <Filter>Source Files\VulkanEngine\Graphics</Filter>
     </ClCompile>
-    <ClCompile Include="CommandBuffer.cpp">
-      <Filter>Source Files\VulkanEngine\Graphics\Buffers</Filter>
-    </ClCompile>
-    <ClCompile Include="VertexBuffer.cpp">
-      <Filter>Source Files\VulkanEngine\Graphics\Buffers</Filter>
-    </ClCompile>
-    <ClCompile Include="UniformBufferObject.cpp">
-      <Filter>Source Files\VulkanEngine\Graphics\Buffers</Filter>
+    <ClCompile Include="Buffers.cpp">
+      <Filter>Source Files\VulkanEngine\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -104,14 +92,8 @@
     <ClInclude Include="QueueFamilyIndices.h">
       <Filter>Header Files\VulkanEngine\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="CommandBuffer.h">
-      <Filter>Header Files\VulkanEngine\Graphics\Buffers</Filter>
-    </ClInclude>
-    <ClInclude Include="VertexBuffer.h">
-      <Filter>Header Files\VulkanEngine\Graphics\Buffers</Filter>
-    </ClInclude>
-    <ClInclude Include="UniformBufferObject.h">
-      <Filter>Header Files\VulkanEngine\Graphics\Buffers</Filter>
+    <ClInclude Include="Buffers.h">
+      <Filter>Header Files\VulkanEngine\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

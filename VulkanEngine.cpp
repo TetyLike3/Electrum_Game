@@ -92,21 +92,12 @@ void VulkanEngine::initVulkan()
 
 	m_pSwapchain->createFramebuffers(m_pGraphicsPipeline->getRenderPass());
 
-	// Command pool
-	m_pCommandBuffer = new CommandBuffer(m_pLogicalDevice, m_pWindow->getSurface(), m_pGraphicsPipeline->getRenderPass(), m_pSwapchain, m_pGraphicsPipeline->getGraphicsPipeline());
-	m_pCommandBuffer->createCommandPool();
-
-	// Vertex buffer
-	m_pVertexBuffer = new VertexBuffer(m_pLogicalDevice, m_pCommandBuffer->getVkCommandPool());
-
-	// Uniform buffers
-	m_pUniformBufferObject = new UniformBufferObject(m_pLogicalDevice);
-
-	// Command buffers
-	m_pCommandBuffer->createCommandBuffers(MAX_FRAMES_IN_FLIGHT, m_pVertexBuffer->getVkVertexBuffer(), m_pVertexBuffer->getVkIndexBuffer());
+	// Buffer Manager
+	m_pBufferManager = new BufferManager(m_pLogicalDevice, m_pWindow->getSurface(), m_pGraphicsPipeline->getRenderPass(), m_pSwapchain, m_pGraphicsPipeline->getGraphicsPipeline(), m_pGraphicsPipeline->getDescriptorSetLayout());
+	m_pBufferManager->initBuffers();
 
 	// Sync objects
-	m_pWindow->createSyncObjects(m_pLogicalDevice, m_pSwapchain, m_pCommandBuffer, m_pUniformBufferObject);
+	m_pWindow->createSyncObjects(m_pLogicalDevice, m_pSwapchain,m_pBufferManager->m_pCommandBuffer, m_pBufferManager->m_pUniformBufferObject);
 
 }
 
@@ -173,10 +164,10 @@ void VulkanEngine::cleanup()
 	m_pWindow->cleanupSyncObjects();
 
 	mDebugPrint("Cleaning up command buffer...");
-	m_pCommandBuffer->cleanup();
+	m_pBufferManager->m_pCommandBuffer->cleanup();
 
 	mDebugPrint("Cleaning up uniform buffers...");
-	m_pUniformBufferObject->cleanup();
+	m_pBufferManager->m_pUniformBufferObject->cleanup();
 
 	mDebugPrint("Cleaning up graphics pipeline...");
 	m_pGraphicsPipeline->cleanup();
@@ -185,7 +176,7 @@ void VulkanEngine::cleanup()
 	m_pSwapchain->cleanup();
 
 	mDebugPrint("Cleaning up vertex buffer...");
-	m_pVertexBuffer->cleanup();
+	m_pBufferManager->m_pVertexBuffer->cleanup();
 
 	mDebugPrint("Cleaning up logical device...");
 	m_pLogicalDevice->cleanup();
