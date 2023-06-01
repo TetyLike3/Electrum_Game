@@ -96,11 +96,10 @@ private:
 		if (m_lastClassPrinted != className)
 		{
 			m_lastClassPrinted = className;
-			cerr << system("Color 0C") << "\n VulkanEngine DEBUG - " << system("Color 03") << className << " -\n";
-			//cerr << format("\nVulkanEngine DEBUG - {} -\n", m_lastClassPrinted);
+			cerr << format("\nVulkanEngine \x1b[31;49;1mDEBUG\x1b[39;49m - \x1b[32;49m{}\x1b[39;49m -\n", m_lastClassPrinted);
 		};
 
-		m_lastMessagePrinted = format("[{}] - {}\n", generateTimestamp_HH_MM_SS_mmm(), message);
+		m_lastMessagePrinted = format("\x1b[36;49m[{}]\x1b[39;49m - {}\n", generateTimestamp_HH_MM_SS_mmm(), message);
 		cerr << m_lastMessagePrinted;
 	}
 };
