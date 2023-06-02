@@ -35,8 +35,8 @@ sSettings settings{
 		.tripleBuffering = true,
 		.vsync = true,
 		.rasterizerDepthClamp = false,
-		.wireframe = false,
-		.wireframeThickness = 8.0f,
+		.wireframe = true,
+		.wireframeThickness = 6.0f,
 		.multisampling = false
 	}
 };
