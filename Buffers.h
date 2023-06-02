@@ -17,6 +17,14 @@
 #define mfDebugPrint(x) m_pBufferManager->m_pUtilities->debugPrint(x,this)
 
 
+
+
+
+
+//// ----------------------------------------------------- //
+/// ------------------ Buffer Manager ------------------- //
+// ----------------------------------------------------- //
+
 class CommandBuffer;
 class VertexBuffer;
 class UniformBufferObject;
@@ -34,6 +42,10 @@ public:
 	{};
 
 	void initBuffers();
+
+	void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& pBuffer, VkDeviceMemory& pDeviceMemory);
+	void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+	uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
 	// Don't use this, clean up each one individually to avoid nullptr errors.
 	void cleanup();
@@ -67,17 +79,15 @@ private:
 	friend class VertexBuffer;
 	friend class UniformBufferObject;
 	friend class DescriptorSets;
-
-	
-	void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& pBuffer, VkDeviceMemory& pDeviceMemory);
-	void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
-	uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 };
 
 
 
 
 
+//// ----------------------------------------------------- //
+/// ------------------ Command Bufffer ------------------ //
+// ----------------------------------------------------- //
 
 
 class CommandBuffer
@@ -97,6 +107,8 @@ public:
 	};
 
 	void createCommandPool();
+	VkCommandBuffer beginSingleTimeCommands();
+	void endSingleTimeCommands(VkCommandBuffer commandBuffer);
 	void createCommandBuffers();
 	void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
 
@@ -116,6 +128,9 @@ private:
 
 
 
+//// ----------------------------------------------------- //
+/// ------------------- Vertex Buffer ------------------- //
+// ----------------------------------------------------- //
 
 
 class VertexBuffer
@@ -192,6 +207,9 @@ private:
 
 
 
+//// ----------------------------------------------------- //
+/// ------------------ Uniform Buffers ------------------ //
+// ----------------------------------------------------- //
 
 
 class UniformBufferObject
@@ -232,6 +250,9 @@ private:
 
 
 
+//// ----------------------------------------------------- //
+/// ------------------ Descriptor Sets ------------------ //
+// ----------------------------------------------------- //
 
 
 class DescriptorSets

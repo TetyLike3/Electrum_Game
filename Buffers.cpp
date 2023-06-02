@@ -50,42 +50,17 @@ void BufferManager::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, Vk
 	vkBindBufferMemory(*m_pLogicalDevice, pBuffer, pBufferMemory, 0);
 };
 
-void BufferManager::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size) {
-	VkCommandBufferAllocateInfo allocInfo{
-		.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
-		.commandPool = *m_pCommandBuffer->getVkCommandPool(),
-		.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
-		.commandBufferCount = 1
-	};
-
-	VkCommandBuffer commandBuffer;
-	vkAllocateCommandBuffers(*m_pLogicalDevice, &allocInfo, &commandBuffer);
-
-	VkCommandBufferBeginInfo beginInfo{
-		.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
-		.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT
-	};
-
-	vkBeginCommandBuffer(commandBuffer, &beginInfo);
+void BufferManager::copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size)
+{
+	VkCommandBuffer commandBuffer = m_pCommandBuffer->beginSingleTimeCommands();
 
 	VkBufferCopy copyRegion{
-		.srcOffset = 0,
-		.dstOffset = 0,
 		.size = size
 	};
 
 	vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
 
-	vkEndCommandBuffer(commandBuffer);
-
-	VkSubmitInfo submitInfo{
-		.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
-		.commandBufferCount = 1,
-		.pCommandBuffers = &commandBuffer
-	};
-
-	vkQueueSubmit(*m_pGraphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
-	vkQueueWaitIdle(*m_pGraphicsQueue);
+	m_pCommandBuffer->endSingleTimeCommands(commandBuffer);
 }
 
 uint32_t BufferManager::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties)
@@ -144,6 +119,44 @@ void CommandBuffer::createCommandPool()
 	if (vkCreateCommandPool(*m_pBufferManager->m_pLogicalDevice, &poolInfo, nullptr, &m_commandPool) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create command pool!");
 	}
+}
+
+VkCommandBuffer CommandBuffer::beginSingleTimeCommands()
+{
+	VkCommandBufferAllocateInfo allocInfo{
+		.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
+		.commandPool = m_commandPool,
+		.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
+		.commandBufferCount = 1
+	};
+
+	VkCommandBuffer commandBuffer;
+	vkAllocateCommandBuffers(*m_pBufferManager->m_pLogicalDevice, &allocInfo, &commandBuffer);
+
+	VkCommandBufferBeginInfo beginInfo{
+		.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO,
+		.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT
+	};
+
+	vkBeginCommandBuffer(commandBuffer, &beginInfo);
+
+	return commandBuffer;
+}
+
+void CommandBuffer::endSingleTimeCommands(VkCommandBuffer commandBuffer)
+{
+	vkEndCommandBuffer(commandBuffer);
+
+	VkSubmitInfo submitInfo{
+		.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO,
+		.commandBufferCount = 1,
+		.pCommandBuffers = &commandBuffer
+	};
+
+	vkQueueSubmit(*m_pBufferManager->m_pGraphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
+	vkQueueWaitIdle(*m_pBufferManager->m_pGraphicsQueue);
+
+	vkFreeCommandBuffers(*m_pBufferManager->m_pLogicalDevice, m_commandPool, 1, &commandBuffer);
 }
 
 void CommandBuffer::createCommandBuffers()
