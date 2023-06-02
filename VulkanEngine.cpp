@@ -174,29 +174,42 @@ void VulkanEngine::cleanup()
 
 	mDebugPrint("Cleaning up command buffer...");
 	m_pBufferManager->m_pCommandBuffer->cleanup();
+	delete m_pBufferManager->m_pCommandBuffer;
 
-	mDebugPrint("Cleaning up uniform buffers...");
+	mDebugPrint("Cleaning up uniform buffer objects...");
 	m_pBufferManager->m_pUniformBufferObject->cleanup();
+	delete m_pBufferManager->m_pUniformBufferObject;
 
 	mDebugPrint("Cleaning up graphics pipeline...");
 	m_pGraphicsPipeline->cleanup();
+	delete m_pGraphicsPipeline;
 
 	mDebugPrint("Cleaning up swapchain...");
 	m_pSwapchain->cleanup();
+	delete m_pSwapchain;
+
+	mDebugPrint("Cleaning up texture image...");
+	m_pTextureImage->cleanup();
+	delete m_pTextureImage;
 
 	mDebugPrint("Cleaning up descriptor sets...");
 	m_pBufferManager->m_pDescriptorSets->cleanup();
+	delete m_pBufferManager->m_pDescriptorSets;
 
 	mDebugPrint("Cleaning up vertex buffer...");
 	m_pBufferManager->m_pVertexBuffer->cleanup();
+	delete m_pBufferManager->m_pVertexBuffer;
+	delete m_pBufferManager;
 
 	mDebugPrint("Cleaning up logical device...");
 	m_pLogicalDevice->cleanup();
+	delete m_pLogicalDevice;
 
 	if (m_settings->debugSettings.debugMode)
 	{
 		mDebugPrint("Cleaning up debug messenger...");
 		m_pDebugMessenger->cleanup();
+		delete m_pDebugMessenger;
 	}
 
 	mDebugPrint("Cleaning up surface...");
@@ -207,6 +220,7 @@ void VulkanEngine::cleanup()
 
 	mDebugPrint("Cleaning up window...");
 	m_pWindow->cleanupWindow();
+	delete m_pWindow;
 }
 
 
