@@ -18,7 +18,28 @@ const std::map<std::string, uint32_t> versions = {
 	{ "apiVersion", VK_MAKE_API_VERSION(0,1,0,0) }
 };
 
-sSettings* settings = new sSettings();
+sSettings settings{
+	.windowSettings {
+		.title = "ElectrumGame",
+		.width = 1280,
+		.height = 720,
+	},
+	.debugSettings {
+		.debugMode = true,
+		.validationLayers = {
+			"VK_LAYER_KHRONOS_validation"
+		},
+		.enableValidationLayers = true
+	},
+	.graphicsSettings {
+		.tripleBuffering = true,
+		.vsync = true,
+		.rasterizerDepthClamp = false,
+		.wireframe = true,
+		.wireframeThickness = 4.0f,
+		.multisampling = false
+	}
+};
 
 
 
@@ -30,7 +51,7 @@ int main()
 
 	try
 	{
-		pVulkanEngine -> run(versions, settings);
+		pVulkanEngine -> run(versions, &settings);
 	}
 	catch (const std::exception& e)
 	{

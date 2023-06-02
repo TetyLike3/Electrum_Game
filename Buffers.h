@@ -11,6 +11,7 @@
 #include "Utilities.h"
 #include "Swapchain.h"
 #include "Devices.h"
+#include "GraphicsPipeline.h"
 
 
 #define mfDebugPrint(x) m_pBufferManager->m_pUtilities->debugPrint(x,this)
@@ -25,13 +26,16 @@ class DescriptorSets;
 class BufferManager
 {
 public:
-	BufferManager(LogicalDevice* pLogicalDevice, VkSurfaceKHR* pSurface, VkRenderPass* pRenderPass, Swapchain* pSwapchain, int MAX_FRAMES_IN_FLIGHT, VkPipeline* pGraphicsPipeline, VkDescriptorSetLayout* pDescriptorSetLayout)
-		: m_pLogicalDevice(pLogicalDevice->getLogicalDevice()), m_pPhysicalDevice(pLogicalDevice->getPhysicalDevice()->getPhysicalDevice()), m_pSurface(pSurface), m_pRenderPass(pRenderPass), m_pSwapchain(pSwapchain),
-		m_MAX_FRAMES_IN_FLIGHT(MAX_FRAMES_IN_FLIGHT), m_pGraphicsPipeline(pGraphicsPipeline), m_pGraphicsQueue(pLogicalDevice->getGraphicsQueue()), m_pDescriptorSetLayout(pDescriptorSetLayout), m_pUtilities(Utilities::getInstance())
+	BufferManager(LogicalDevice* pLogicalDevice, VkSurfaceKHR* pSurface, GraphicsPipeline* pGraphicsPipeline, Swapchain* pSwapchain, int MAX_FRAMES_IN_FLIGHT)
+		: m_pLogicalDevice(pLogicalDevice->getLogicalDevice()), m_pPhysicalDevice(pLogicalDevice->getPhysicalDevice()->getPhysicalDevice()), m_pSurface(pSurface),
+		m_pRenderPass(pGraphicsPipeline->getRenderPass()), m_pSwapchain(pSwapchain), m_MAX_FRAMES_IN_FLIGHT(MAX_FRAMES_IN_FLIGHT), m_pGraphicsPipeline(pGraphicsPipeline->getGraphicsPipeline()),
+		m_pGraphicsQueue(pLogicalDevice->getGraphicsQueue()), m_pDescriptorSetLayout(pGraphicsPipeline->getDescriptorSetLayout()), m_pPipelineLayout(pGraphicsPipeline->getVkPipelineLayout()),
+		m_pUtilities(Utilities::getInstance())
 	{};
 
 	void initBuffers();
 
+	// Don't use this, clean up each one individually to avoid nullptr errors.
 	void cleanup();
 
 	CommandBuffer* getCommandBuffer() { return m_pCommandBuffer; }
@@ -46,6 +50,7 @@ private:
 	VkRenderPass* m_pRenderPass = nullptr;
 	Swapchain* m_pSwapchain = nullptr;
 	VkPipeline* m_pGraphicsPipeline = nullptr;
+	VkPipelineLayout* m_pPipelineLayout = nullptr;
 	Utilities* m_pUtilities = nullptr;
 	int m_MAX_FRAMES_IN_FLIGHT = 1;
 	VkQueue* m_pGraphicsQueue = nullptr;
@@ -194,9 +199,9 @@ class UniformBufferObject
 public:
 	struct sUniformBufferObject
 	{
-		glm::mat4 model;
-		glm::mat4 view;
-		glm::mat4 proj;
+		alignas(16) glm::mat4 model;
+		alignas(16) glm::mat4 view;
+		alignas(16) glm::mat4 proj;
 	};
 
 	UniformBufferObject(BufferManager* pBufferManager) : m_pBufferManager(pBufferManager)
@@ -242,6 +247,9 @@ public:
 	void createDescriptorSets();
 
 	void cleanup();
+
+	std::vector<VkDescriptorSet>* getVkDescriptorSets() { return &m_descriptorSets; }
+
 private:
 	BufferManager* m_pBufferManager = nullptr;
 

@@ -11,7 +11,7 @@ void Window::initWindow(sSettings::sWindowSettings* windowSettings)
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	//glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
-	m_pWindow = glfwCreateWindow(windowSettings->windowWidth, windowSettings->windowHeight, windowSettings->windowName, nullptr, nullptr);
+	m_pWindow = glfwCreateWindow(windowSettings->width, windowSettings->height, windowSettings->title, nullptr, nullptr);
 	glfwSetWindowUserPointer(m_pWindow, this);
 	glfwSetFramebufferSizeCallback(m_pWindow, framebufferResizeCallback);
 }
@@ -106,7 +106,7 @@ void Window::drawFrame()
 		throw std::runtime_error("failed to acquire swap chain image!");
 	}
 
-	updateUniformBuffer(imageIndex);
+	updateUniformBuffer(m_currentFrame);
 
 	vkResetFences(*m_pLogicalDevice, 1, &m_inFlightFences[m_currentFrame]);
 
@@ -170,16 +170,18 @@ void Window::updateUniformBuffer(uint32_t currentImage)
 	auto currentTime = high_resolution_clock::now();
 	float time = duration<float, seconds::period>(currentTime - startTime).count();
 
-	UniformBufferObject::sUniformBufferObject ubo{};
-	ubo.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	ubo.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	VkExtent2D swapchainExtent = *m_pSwapchain->getSwapchainExtent();
-	ubo.proj = glm::perspective(glm::radians(45.0f), swapchainExtent.width / (float)swapchainExtent.height, 0.1f, 10.0f);
 
+	VkExtent2D swapchainExtent = *m_pSwapchain->getSwapchainExtent();
+
+	UniformBufferObject::sUniformBufferObject ubo{
+		.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f)),
+		.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)),
+		.proj = glm::perspective(glm::radians(45.0f), swapchainExtent.width / (float)swapchainExtent.height, 0.1f, 10.0f)
+	};
 	ubo.proj[1][1] *= -1;
 
-	std::vector<void*>* uniformBuffersMapped = m_pUniformBufferObject->getUniformBuffersMapped();
-	memcpy(&uniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
+	std::vector<void*> uniformBuffersMapped = *m_pUniformBufferObject->getUniformBuffersMapped(); // FUCK THIS PIECE OF CODE IN PARTICULAR
+	memcpy(uniformBuffersMapped[currentImage], &ubo, sizeof(ubo));
 }
 
 

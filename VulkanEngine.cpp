@@ -93,7 +93,7 @@ void VulkanEngine::initVulkan()
 	m_pSwapchain->createFramebuffers(m_pGraphicsPipeline->getRenderPass());
 
 	// Buffer Manager
-	m_pBufferManager = new BufferManager(m_pLogicalDevice, m_pWindow->getSurface(), m_pGraphicsPipeline->getRenderPass(), m_pSwapchain, MAX_FRAMES_IN_FLIGHT, m_pGraphicsPipeline->getGraphicsPipeline(), m_pGraphicsPipeline->getDescriptorSetLayout());
+	m_pBufferManager = new BufferManager(m_pLogicalDevice, m_pWindow->getSurface(), m_pGraphicsPipeline, m_pSwapchain, MAX_FRAMES_IN_FLIGHT);
 	m_pBufferManager->initBuffers();
 
 	// Sync objects
@@ -163,6 +163,9 @@ void VulkanEngine::cleanup()
 	mDebugPrint("Cleaning up sync objects...");
 	m_pWindow->cleanupSyncObjects();
 
+	//mDebugPrint("Cleaning up buffers...");
+	//m_pBufferManager->cleanup();
+
 	mDebugPrint("Cleaning up command buffer...");
 	m_pBufferManager->m_pCommandBuffer->cleanup();
 
@@ -174,6 +177,9 @@ void VulkanEngine::cleanup()
 
 	mDebugPrint("Cleaning up swapchain...");
 	m_pSwapchain->cleanup();
+
+	mDebugPrint("Cleaning up descriptor sets...");
+	m_pBufferManager->m_pDescriptorSets->cleanup();
 
 	mDebugPrint("Cleaning up vertex buffer...");
 	m_pBufferManager->m_pVertexBuffer->cleanup();

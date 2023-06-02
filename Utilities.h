@@ -16,9 +16,9 @@
 
 struct sSettings {
 	struct sWindowSettings {
-		const char* windowName = "ElectrumGame";
-		uint32_t windowWidth = 1280;
-		uint32_t windowHeight = 720;
+		const char* title = "ElectrumGame";
+		uint32_t width = 1280;
+		uint32_t height = 720;
 	} windowSettings;
 	struct sDebugSettings {
 		#ifdef NDEBUG
