@@ -16,8 +16,8 @@
 
 
 
-const uint32_t WIDTH = 1280;
-const uint32_t HEIGHT = 720;
+//const uint32_t WIDTH = 1280;
+//const uint32_t HEIGHT = 720;
 
 
 
