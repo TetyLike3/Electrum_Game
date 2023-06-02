@@ -17,6 +17,7 @@
 #include "Surface.h"
 #include "GraphicsPipeline.h"
 #include "Buffers.h"
+#include "Image.h"
 
 
 const int MAX_FRAMES_IN_FLIGHT = 2;
@@ -56,6 +57,7 @@ private:
 	Swapchain* m_pSwapchain = nullptr;
 	GraphicsPipeline* m_pGraphicsPipeline = nullptr;
 	BufferManager* m_pBufferManager = nullptr;
+	Image* m_pTextureImage = nullptr;
 
 
 	std::map<std::string, uint32_t> m_versions = {};
