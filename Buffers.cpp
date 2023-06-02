@@ -1,11 +1,3 @@
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-
-#include "Utilities.h"
-#include "Swapchain.h"
-#include "Devices.h"
-
 #include "Buffers.h"
 
 

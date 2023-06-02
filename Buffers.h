@@ -1,25 +1,43 @@
 #pragma once
 
+#define GLFW_INCLUDE_VULKAN
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+
 #include <array>
 #include <vector>
 #include <stdexcept>
+
+#include "Utilities.h"
+#include "Swapchain.h"
+#include "Devices.h"
 
 
 #define mfDebugPrint(x) m_pBufferManager->m_pUtilities->debugPrint(x,this)
 
 
+class CommandBuffer;
+class VertexBuffer;
+class UniformBufferObject;
+class DescriptorSets;
 
 
 class BufferManager
 {
 public:
-	BufferManager(LogicalDevice* pLogicalDevice, VkSurfaceKHR* pSurface, VkRenderPass* pRenderPass, Swapchain* pSwapchain, VkPipeline* pGraphicsPipeline, VkDescriptorSetLayout* pDescriptorSetLayout)
+	BufferManager(LogicalDevice* pLogicalDevice, VkSurfaceKHR* pSurface, VkRenderPass* pRenderPass, Swapchain* pSwapchain, int MAX_FRAMES_IN_FLIGHT, VkPipeline* pGraphicsPipeline, VkDescriptorSetLayout* pDescriptorSetLayout)
 		: m_pLogicalDevice(pLogicalDevice->getLogicalDevice()), m_pPhysicalDevice(pLogicalDevice->getPhysicalDevice()->getPhysicalDevice()), m_pSurface(pSurface), m_pRenderPass(pRenderPass), m_pSwapchain(pSwapchain),
-		m_pGraphicsPipeline(pGraphicsPipeline),m_pGraphicsQueue(pLogicalDevice->getGraphicsQueue()), m_pDescriptorSetLayout(pDescriptorSetLayout), m_pUtilities(Utilities::getInstance()) {};
+		m_MAX_FRAMES_IN_FLIGHT(MAX_FRAMES_IN_FLIGHT), m_pGraphicsPipeline(pGraphicsPipeline), m_pGraphicsQueue(pLogicalDevice->getGraphicsQueue()), m_pDescriptorSetLayout(pDescriptorSetLayout), m_pUtilities(Utilities::getInstance())
+	{};
 
 	void initBuffers();
 
 	void cleanup();
+
+	CommandBuffer* getCommandBuffer() { return m_pCommandBuffer; }
+	VertexBuffer* getVertexBuffer() { return m_pVertexBuffer; }
+	UniformBufferObject* getUniformBufferObject() { return m_pUniformBufferObject; }
+	DescriptorSets* getDescriptorSets() { return m_pDescriptorSets; }
 
 private:
 	VkDevice* m_pLogicalDevice = nullptr;
@@ -145,6 +163,7 @@ public:
 	VertexBuffer(BufferManager* pBufferManager) : m_pBufferManager(pBufferManager)
 	{
 		createVertexBuffer();
+		createIndexBuffer();
 	};
 
 

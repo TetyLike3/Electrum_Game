@@ -93,7 +93,7 @@ void VulkanEngine::initVulkan()
 	m_pSwapchain->createFramebuffers(m_pGraphicsPipeline->getRenderPass());
 
 	// Buffer Manager
-	m_pBufferManager = new BufferManager(m_pLogicalDevice, m_pWindow->getSurface(), m_pGraphicsPipeline->getRenderPass(), m_pSwapchain, m_pGraphicsPipeline->getGraphicsPipeline(), m_pGraphicsPipeline->getDescriptorSetLayout());
+	m_pBufferManager = new BufferManager(m_pLogicalDevice, m_pWindow->getSurface(), m_pGraphicsPipeline->getRenderPass(), m_pSwapchain, MAX_FRAMES_IN_FLIGHT, m_pGraphicsPipeline->getGraphicsPipeline(), m_pGraphicsPipeline->getDescriptorSetLayout());
 	m_pBufferManager->initBuffers();
 
 	// Sync objects

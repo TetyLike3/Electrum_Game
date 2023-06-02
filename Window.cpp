@@ -106,7 +106,7 @@ void Window::drawFrame()
 		throw std::runtime_error("failed to acquire swap chain image!");
 	}
 
-	updateUniformBuffer(m_currentFrame);
+	updateUniformBuffer(imageIndex);
 
 	vkResetFences(*m_pLogicalDevice, 1, &m_inFlightFences[m_currentFrame]);
 
