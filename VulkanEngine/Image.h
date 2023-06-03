@@ -9,6 +9,7 @@
 #include "Devices.h"
 #include "Buffers.h"
 
+class BufferManager;
 
 class Image
 {

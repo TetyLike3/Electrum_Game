@@ -83,7 +83,7 @@
     <ClInclude Include="VulkanEngine\QueueFamilyIndices.h">
       <Filter>Header Files\VulkanEngine\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanEngine\SwapChain.h">
+    <ClInclude Include="VulkanEngine\Swapchain.h">
       <Filter>Header Files\VulkanEngine\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="VulkanEngine\Window.h">

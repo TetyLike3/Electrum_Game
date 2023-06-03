@@ -140,37 +140,6 @@ void Swapchain::createImageViews()
 	}
 }
 
-void Swapchain::createFramebuffers(VkRenderPass* pRenderPass)
-{
-	//mDebugPrint("Creating framebuffers...");
-
-	m_pRenderPass = pRenderPass;
-
-	m_swapchainFramebuffers.resize(m_swapchainImageViews.size());
-
-	for (size_t i = 0; i < m_swapchainImageViews.size(); i++)
-	{
-		VkImageView attachments[] = {
-			m_swapchainImageViews.at(i)
-		};
-
-		VkFramebufferCreateInfo framebufferInfo{
-			.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
-			.renderPass = *m_pRenderPass,
-			.attachmentCount = 1,
-			.pAttachments = attachments,
-			.width = m_swapchainExtent.width,
-			.height = m_swapchainExtent.height,
-			.layers = 1
-		};
-
-		if (vkCreateFramebuffer(*m_pLogicalDevice, &framebufferInfo, nullptr, &m_swapchainFramebuffers[i]) != VK_SUCCESS) {
-			throw std::runtime_error("failed to create framebuffer!");
-		}
-	}
-}
-
-
 void Swapchain::recreateSwapchain(GLFWwindow* pWindow)
 {
 	int width = 0, height = 0;
@@ -186,7 +155,8 @@ void Swapchain::recreateSwapchain(GLFWwindow* pWindow)
 
 	createSwapchain();
 	createImageViews();
-	createFramebuffers(m_pRenderPass);
+	m_pBufferManager->getDepthBuffer()->createDepthResources();
+	m_pBufferManager->getFramebuffer()->createFramebuffers();
 }
 
 
@@ -195,9 +165,8 @@ void Swapchain::recreateSwapchain(GLFWwindow* pWindow)
 
 void Swapchain::cleanup()
 {
-	for (auto framebuffer : m_swapchainFramebuffers) {
-		vkDestroyFramebuffer(*m_pLogicalDevice, framebuffer, nullptr);
-	}
+	m_pBufferManager->getFramebuffer()->cleanup();
+	m_pBufferManager->getDepthBuffer()->cleanup();
 
 	for (auto imageView : m_swapchainImageViews) {
 		vkDestroyImageView(*m_pLogicalDevice, imageView, nullptr);

@@ -1,3 +1,5 @@
+#include "Image.h"
+
 #include "Buffers.h"
 
 
@@ -12,7 +14,8 @@ void BufferManager::initBuffers()
 	m_pCommandBuffer = new CommandBuffer(this);
 
 	m_pVertexBuffer = new VertexBuffer(this);
-
+	m_pDepthBuffer = new DepthBuffer(this);
+	m_pFramebuffer = new Framebuffer(this);
 	m_pUniformBufferObject = new UniformBufferObject(this);
 	m_pDescriptorSets = new DescriptorSets(this);
 
@@ -196,19 +199,23 @@ void CommandBuffer::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t 
 
 	//mDebugPrint("Creating render pass...");
 
-	std::vector<VkFramebuffer> swapchainFramebuffers = *m_pBufferManager->m_pSwapchain->getSwapchainFramebuffers();
+	std::vector<VkFramebuffer> framebuffers = *m_pBufferManager->m_pFramebuffer->getFramebuffers();
 	VkClearValue clearColor = { {{0.0f, 0.0f, 0.0f, 1.0f}} };
+	std::array<VkClearValue, 2> clearValues{
+		VkClearValue{{{0.0f, 0.0f, 0.0f, 1.0f}}},
+		VkClearValue{{{1.0f, 0}}}
+	};
 
 	VkRenderPassBeginInfo renderPassInfo{
 		.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO,
 		.renderPass = *m_pBufferManager->m_pRenderPass,
-		.framebuffer = swapchainFramebuffers[imageIndex],
+		.framebuffer = framebuffers[imageIndex],
 		.renderArea {
 			.offset = { 0, 0 },
 			.extent = *m_pBufferManager->m_pSwapchain->getSwapchainExtent(),
 		},
-		.clearValueCount = 1,
-		.pClearValues = &clearColor
+		.clearValueCount = static_cast<uint32_t>(clearValues.size()),
+		.pClearValues = clearValues.data()
 	};
 
 	vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
@@ -267,14 +274,26 @@ void CommandBuffer::cleanup()
 
 
 std::vector<VertexBuffer::sVertex> VertexBuffer::vertices = {
-	{{-0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}, 0.0f},
-	{{0.5f, -0.5f}, {0.2f, 0.0f, 0.8f}, {0.0f, 0.0f}, 0.0f},
-	{{0.5f, 0.5f}, {0.2f, 0.5f, 0.8f}, {0.0f, 1.0f}, 0.0f},
-	{{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}, 0.0f}
+	{{-0.5f, -0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}, 0.0f},
+	{{0.5f, -0.5f, 0.0f}, {0.2f, 0.0f, 0.8f}, {0.0f, 0.0f}, 0.0f},
+	{{0.5f, 0.5f, 0.0f}, {0.2f, 0.5f, 0.8f}, {0.0f, 1.0f}, 0.0f},
+	{{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}, 0.0f},
+
+	{{0.5f, -0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}, 0.0f},
+	{{1.5f, -0.5f, -0.5f}, {0.2f, 0.0f, 0.8f}, {0.0f, 0.0f}, 0.0f},
+	{{1.5f, 0.5f, -0.5f}, {0.2f, 0.5f, 0.8f}, {0.0f, 1.0f}, 0.0f},
+	{{0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}, 0.0f},
+
+	{{-0.5f, 0.5f, -1.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}, 0.0f},
+	{{0.5f, 0.5f, -1.0f}, {0.2f, 0.0f, 0.8f}, {0.0f, 0.0f}, 0.0f},
+	{{0.5f, 1.5f, -1.0f}, {0.2f, 0.5f, 0.8f}, {0.0f, 1.0f}, 0.0f},
+	{{-0.5f, 1.5f, -1.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}, 0.0f}
 };
 
 const std::vector<uint16_t> VertexBuffer::indices = {
-	0, 1, 2, 2, 3, 0
+	0, 1, 2, 2, 3, 0,
+	4, 5, 6, 6, 7, 4,
+	8, 9, 10, 10, 11, 8
 };
 
 
@@ -339,6 +358,109 @@ void VertexBuffer::cleanup()
 
 	vkDestroyBuffer(*m_pBufferManager->m_pLogicalDevice, m_vertexBuffer, nullptr);
 	vkFreeMemory(*m_pBufferManager->m_pLogicalDevice, m_vertexBufferMemory, nullptr);
+}
+
+
+
+
+
+
+
+
+//// ----------------------------------------------------- //
+/// -------------------- Depth Buffer ------------------- //
+// ----------------------------------------------------- //
+
+void DepthBuffer::createDepthResources()
+{
+	VkExtent2D swapchainExtent = *m_pBufferManager->m_pSwapchain->getSwapchainExtent();
+
+	VkFormat depthFormat = findDepthFormat(m_pBufferManager->m_pPhysicalDevice);
+	Image::createImage(*m_pBufferManager->m_pLogicalDevice, m_pBufferManager, swapchainExtent.width, swapchainExtent.height, depthFormat, VK_IMAGE_TILING_OPTIMAL,
+		VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_depthImage, m_depthImageMemory);
+
+	m_depthImageView = Image::createImageView(*m_pBufferManager->m_pLogicalDevice, m_depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
+	Image::transitionImageLayout(m_pBufferManager, m_depthImage, depthFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+}
+
+VkFormat DepthBuffer::findDepthFormat(VkPhysicalDevice* pPhysicalDevice)
+{
+	return findSupportedFormat(pPhysicalDevice,
+		{ VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT },
+		VK_IMAGE_TILING_OPTIMAL,
+		VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT
+	);
+}
+
+VkFormat DepthBuffer::findSupportedFormat(VkPhysicalDevice* pPhysicalDevice, const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features)
+{
+	for (VkFormat format : candidates)
+	{
+		VkFormatProperties props;
+		vkGetPhysicalDeviceFormatProperties(*pPhysicalDevice, format, &props);
+
+		if (tiling == VK_IMAGE_TILING_LINEAR && (props.linearTilingFeatures & features) == features)
+			return(format);
+		else if (tiling == VK_IMAGE_TILING_OPTIMAL && (props.optimalTilingFeatures & features) == features)
+			return(format);
+
+	}
+
+	throw std::runtime_error("Failed to find supported format!");
+}
+
+
+
+void DepthBuffer::cleanup()
+{
+
+}
+
+
+
+
+
+
+//// ----------------------------------------------------- //
+/// -------------------- Frame Buffer ------------------- //
+// ----------------------------------------------------- //
+
+void Framebuffer::createFramebuffers()
+{
+	Swapchain* pSwapchain = m_pBufferManager->m_pSwapchain;
+	std::vector<VkImageView> swapchainImageViews = *pSwapchain->getSwapchainImageViews();
+	VkExtent2D swapchainExtent = *pSwapchain->getSwapchainExtent();
+
+	m_framebuffers.resize(swapchainImageViews.size());
+
+	for (size_t i = 0; i < swapchainImageViews.size(); i++)
+	{
+		std::array<VkImageView, 2> attachments = {
+			swapchainImageViews[i],
+			*m_pBufferManager->m_pDepthBuffer->getVkImageView()
+		};
+
+		VkFramebufferCreateInfo framebufferInfo{
+			.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO,
+			.renderPass = *m_pBufferManager->m_pRenderPass,
+			.attachmentCount = static_cast<uint32_t>(attachments.size()),
+			.pAttachments = attachments.data(),
+			.width = swapchainExtent.width,
+			.height = swapchainExtent.height,
+			.layers = 1
+		};
+
+		if (vkCreateFramebuffer(*m_pBufferManager->m_pLogicalDevice, &framebufferInfo, nullptr, &m_framebuffers[i]) != VK_SUCCESS) {
+			throw std::runtime_error("failed to create framebuffer!");
+		}
+	}
+}
+
+void Framebuffer::cleanup()
+{
+	for (auto framebuffer : m_framebuffers) {
+		vkDestroyFramebuffer(*m_pBufferManager->m_pLogicalDevice, framebuffer, nullptr);
+	}
 }
 
 

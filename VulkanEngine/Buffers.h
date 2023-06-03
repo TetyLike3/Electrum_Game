@@ -27,6 +27,8 @@
 
 class CommandBuffer;
 class VertexBuffer;
+class DepthBuffer;
+class Framebuffer;
 class UniformBufferObject;
 class DescriptorSets;
 
@@ -52,6 +54,8 @@ public:
 
 	CommandBuffer* getCommandBuffer() { return m_pCommandBuffer; }
 	VertexBuffer* getVertexBuffer() { return m_pVertexBuffer; }
+	DepthBuffer* getDepthBuffer() { return m_pDepthBuffer; }
+	Framebuffer* getFramebuffer() { return m_pFramebuffer; }
 	UniformBufferObject* getUniformBufferObject() { return m_pUniformBufferObject; }
 	DescriptorSets* getDescriptorSets() { return m_pDescriptorSets; }
 
@@ -72,12 +76,16 @@ private:
 
 	CommandBuffer* m_pCommandBuffer = nullptr;
 	VertexBuffer* m_pVertexBuffer = nullptr;
+	DepthBuffer* m_pDepthBuffer = nullptr;
+	Framebuffer* m_pFramebuffer = nullptr;
 	UniformBufferObject* m_pUniformBufferObject = nullptr;
 	DescriptorSets* m_pDescriptorSets = nullptr;
 
 	friend class VulkanEngine;
 	friend class CommandBuffer;
 	friend class VertexBuffer;
+	friend class DepthBuffer;
+	friend class Framebuffer;
 	friend class UniformBufferObject;
 	friend class DescriptorSets;
 };
@@ -138,7 +146,7 @@ class VertexBuffer
 {
 public:
 	struct sVertex {
-		glm::vec2 pos;
+		glm::vec3 pos;
 		glm::vec3 color;
 		glm::vec2 texCoord;
 		glm::float32 colorBlendTex;
@@ -160,7 +168,7 @@ public:
 				VkVertexInputAttributeDescription{
 					.location = 0,
 					.binding = 0,
-					.format = VK_FORMAT_R32G32_SFLOAT,
+					.format = VK_FORMAT_R32G32B32_SFLOAT,
 					.offset = offsetof(sVertex, pos)
 				},
 				VkVertexInputAttributeDescription{
@@ -222,6 +230,70 @@ private:
 	VkBuffer m_indexBuffer = VK_NULL_HANDLE;
 	VkDeviceMemory m_indexBufferMemory = VK_NULL_HANDLE;
 };
+
+
+
+
+
+
+
+//// ----------------------------------------------------- //
+/// -------------------- Depth Buffer ------------------- //
+// ----------------------------------------------------- //
+
+class DepthBuffer
+{
+public:
+	DepthBuffer(BufferManager* pBufferManager) : m_pBufferManager(pBufferManager)
+	{
+		createDepthResources();
+	};
+
+	void createDepthResources();
+	static VkFormat findDepthFormat(VkPhysicalDevice* pPhysicalDevice);
+	static VkFormat findSupportedFormat(VkPhysicalDevice* pPhysicalDevice, const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
+
+	void cleanup();
+
+	VkImageView* getVkImageView() { return &m_depthImageView; }
+private:
+	BufferManager* m_pBufferManager = nullptr;
+
+	VkImage m_depthImage = VK_NULL_HANDLE;
+	VkDeviceMemory m_depthImageMemory = VK_NULL_HANDLE;
+	VkImageView m_depthImageView = VK_NULL_HANDLE;
+};
+
+
+
+
+
+
+//// ----------------------------------------------------- //
+/// -------------------- Frame Buffer ------------------- //
+// ----------------------------------------------------- //
+
+
+class Framebuffer
+{
+public:
+	Framebuffer(BufferManager* pBufferManager) : m_pBufferManager(pBufferManager)
+	{
+		createFramebuffers();
+	};
+
+	void createFramebuffers();
+	void cleanup();
+
+	std::vector<VkFramebuffer>* getFramebuffers() { return &m_framebuffers; }
+private:
+	BufferManager* m_pBufferManager = nullptr;
+
+	std::vector<VkFramebuffer> m_framebuffers = {};
+};
+
+
+
 
 
 

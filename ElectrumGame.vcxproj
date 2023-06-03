@@ -191,7 +191,7 @@
     <ClInclude Include="VulkanEngine\GraphicsPipeline.h" />
     <ClInclude Include="VulkanEngine\Image.h" />
     <ClInclude Include="VulkanEngine\QueueFamilyIndices.h" />
-    <ClInclude Include="VulkanEngine\SwapChain.h" />
+    <ClInclude Include="VulkanEngine\Swapchain.h" />
     <ClInclude Include="VulkanEngine\Utilities.h" />
     <ClInclude Include="VulkanEngine\VulkanEngine.h" />
     <ClInclude Include="VulkanEngine\Window.h" />

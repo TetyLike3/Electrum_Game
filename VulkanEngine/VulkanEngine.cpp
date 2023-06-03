@@ -89,14 +89,14 @@ void VulkanEngine::initVulkan()
 	m_pSwapchain = new Swapchain(m_pLogicalDevice->getLogicalDevice(), m_pPhysicalDevice, m_pWindow->getWindow(), m_pWindow->getSurface());
 
 	// Graphics pipeline
-	m_pGraphicsPipeline = new GraphicsPipeline(m_pLogicalDevice->getLogicalDevice(), m_pSwapchain, &m_settings->graphicsSettings);
+	m_pGraphicsPipeline = new GraphicsPipeline(m_pLogicalDevice, m_pSwapchain, &m_settings->graphicsSettings);
 
-	m_pSwapchain->createFramebuffers(m_pGraphicsPipeline->getRenderPass());
 
 	// Buffer Manager
 	m_pBufferManager = new BufferManager(m_pLogicalDevice, m_pWindow->getSurface(), m_pGraphicsPipeline, m_pSwapchain, m_settings, MAX_FRAMES_IN_FLIGHT);
 	m_pBufferManager->initBuffers();
 
+	m_pSwapchain->setBufferManager(m_pBufferManager);
 
 	// Texture Image
 	m_pTextureImage = new Image("textures/image.png", m_pLogicalDevice, m_pBufferManager, &m_settings->graphicsSettings);

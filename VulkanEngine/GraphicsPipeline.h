@@ -5,14 +5,18 @@
 
 #include "Utilities.h"
 #include "Swapchain.h"
+#include "Devices.h"
 
+
+class Swapchain;
 
 class GraphicsPipeline
 {
 public:
 
-	GraphicsPipeline(VkDevice* pLogicalDevice, Swapchain* pSwapchain, sSettings::sGraphicsSettings* pGraphicsSettings)
-		: m_pLogicalDevice(pLogicalDevice), m_pSwapchain(pSwapchain), m_pGraphicsSettings(pGraphicsSettings), m_pUtilities(Utilities::getInstance())
+	GraphicsPipeline(LogicalDevice* pLogicalDevice, Swapchain* pSwapchain, sSettings::sGraphicsSettings* pGraphicsSettings)
+		: m_pLogicalDevice(pLogicalDevice->getLogicalDevice()), m_pPhysicalDevice(pLogicalDevice->getPhysicalDevice()->getPhysicalDevice()),
+		m_pSwapchain(pSwapchain), m_pGraphicsSettings(pGraphicsSettings), m_pUtilities(Utilities::getInstance())
 	{
 		createRenderPass();
 		createDescriptorSetLayout();
@@ -32,6 +36,7 @@ public:
 private:
 	Utilities* m_pUtilities = nullptr;
 	VkDevice* m_pLogicalDevice = nullptr;
+	VkPhysicalDevice* m_pPhysicalDevice = nullptr;
 	Swapchain* m_pSwapchain = nullptr;
 	sSettings::sGraphicsSettings* m_pGraphicsSettings = nullptr;
 

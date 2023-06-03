@@ -6,7 +6,10 @@
 #include "Utilities.h"
 #include "Devices.h"
 #include "Image.h"
+#include "Buffers.h"
 
+
+class BufferManager;
 
 class Swapchain
 {
@@ -22,13 +25,14 @@ public:
 
 	void createSwapchain();
 	void createImageViews();
-	void createFramebuffers(VkRenderPass* pRenderPass);
 	void recreateSwapchain(GLFWwindow* pWindow);
 
 	VkSwapchainKHR* getSwapchain() { return &m_swapchain; }
 	VkExtent2D* getSwapchainExtent() { return &m_swapchainExtent; }
 	VkFormat* getSwapchainImageFormat() { return &m_swapchainImageFormat; }
-	std::vector<VkFramebuffer>* getSwapchainFramebuffers() { return &m_swapchainFramebuffers; }
+	std::vector<VkImageView>* getSwapchainImageViews() { return &m_swapchainImageViews; }
+
+	void setBufferManager(BufferManager* pBufferManager) { m_pBufferManager = pBufferManager; }
 
 private:
 	Utilities* m_pUtilities = nullptr;
@@ -37,13 +41,13 @@ private:
 	GLFWwindow* m_pWindow = nullptr;
 	VkSurfaceKHR* m_pSurface = nullptr;
 	VkRenderPass* m_pRenderPass = nullptr;
+	BufferManager* m_pBufferManager = nullptr;
 
 	VkSwapchainKHR m_swapchain = nullptr;
 	std::vector<VkImage> m_swapchainImages = {};
 	VkFormat m_swapchainImageFormat = VK_FORMAT_UNDEFINED;
 	VkExtent2D m_swapchainExtent = {};
 	std::vector<VkImageView> m_swapchainImageViews = {};
-	std::vector<VkFramebuffer> m_swapchainFramebuffers = {};
 
 	bool m_firstRun = true;
 

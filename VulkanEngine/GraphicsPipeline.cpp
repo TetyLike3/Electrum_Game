@@ -21,34 +21,52 @@ void GraphicsPipeline::createRenderPass()
 		.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
 	};
 
+	VkAttachmentDescription depthAttachment{
+		.format = DepthBuffer::findDepthFormat(m_pPhysicalDevice),
+		.samples = VK_SAMPLE_COUNT_1_BIT,
+		.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR,
+		.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE, // We don't need the depth buffer after drawing has finished
+		.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE,
+		.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE,
+		.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED,
+		.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
+	};
+
 	// Attachment reference
 	VkAttachmentReference colorAttachmentRef{
 		.attachment = 0,
 		.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
 	};
 
+	VkAttachmentReference depthAttachmentRef{
+		.attachment = 1,
+		.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
+	};
+
 	// Subpass
 	VkSubpassDescription subpass{
 		.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS,
 		.colorAttachmentCount = 1,
-		.pColorAttachments = &colorAttachmentRef
+		.pColorAttachments = &colorAttachmentRef,
+		.pDepthStencilAttachment = &depthAttachmentRef
 	};
 
 	// Subpass dependency
 	VkSubpassDependency dependency{
 		.srcSubpass = VK_SUBPASS_EXTERNAL,
 		.dstSubpass = 0,
-		.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-		.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+		.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT,
+		.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT,
 		.srcAccessMask = 0,
-		.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT
+		.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT
 	};
 
 	// Render pass
+	std::array<VkAttachmentDescription, 2> attachments = { colorAttachment, depthAttachment };
 	VkRenderPassCreateInfo renderPassInfo{
 		.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO,
-		.attachmentCount = 1,
-		.pAttachments = &colorAttachment,
+		.attachmentCount = static_cast<uint32_t>(attachments.size()),
+		.pAttachments = attachments.data(),
 		.subpassCount = 1,
 		.pSubpasses = &subpass,
 		.dependencyCount = 1,
@@ -162,7 +180,7 @@ void GraphicsPipeline::createGraphicsPipeline()
 		.minDepth = 0.0f,
 		.maxDepth = 1.0f
 	};
-	
+
 	mDebugPrint("Creating scissor...");
 	VkRect2D scissor{
 		.offset = { 0, 0 },
@@ -207,6 +225,20 @@ void GraphicsPipeline::createGraphicsPipeline()
 		.alphaToOneEnable = VK_FALSE, // Optional
 	};
 	m_pGraphicsSettings->multisampling == true ? multisampling.sampleShadingEnable = VK_TRUE : multisampling.sampleShadingEnable = VK_FALSE;
+
+	mDebugPrint("Creating depth stencil...");
+	VkPipelineDepthStencilStateCreateInfo depthStencil{
+		.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO,
+		.depthTestEnable = VK_TRUE,
+		.depthWriteEnable = VK_TRUE,
+		.depthCompareOp = VK_COMPARE_OP_LESS,
+		.depthBoundsTestEnable = VK_FALSE,
+		.stencilTestEnable = VK_FALSE,
+		.front = {}, // Optional
+		.back = {}, // Optional
+		.minDepthBounds = 0.0f, // Optional
+		.maxDepthBounds = 1.0f // Optional
+	};
 
 	mDebugPrint("Creating color blender...");
 	VkPipelineColorBlendAttachmentState colorBlendAttachment{
@@ -279,7 +311,7 @@ void GraphicsPipeline::createGraphicsPipeline()
 		.pViewportState = &viewportState,
 		.pRasterizationState = &rasterizer,
 		.pMultisampleState = &multisampling,
-		.pDepthStencilState = nullptr, // Optional
+		.pDepthStencilState = &depthStencil,
 		.pColorBlendState = &colorBlending,
 		.pDynamicState = &dynamicState,
 		// Fixed Functions
