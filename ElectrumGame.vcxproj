@@ -172,6 +172,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Block.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="VulkanEngine\Buffers.cpp" />
     <ClCompile Include="VulkanEngine\DebugMessenger.cpp" />
@@ -185,6 +186,7 @@
     <ClCompile Include="VulkanEngine\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Block.h" />
     <ClInclude Include="VulkanEngine\Buffers.h" />
     <ClInclude Include="VulkanEngine\DebugMessenger.h" />
     <ClInclude Include="VulkanEngine\Devices.h" />

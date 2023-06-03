@@ -31,6 +31,12 @@
     <Filter Include="Header Files\VulkanEngine\Shaders">
       <UniqueIdentifier>{3ce23516-768e-4397-be24-6b81c6b9f011}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\VulkanEngine\Models">
+      <UniqueIdentifier>{30b9f3bd-8b8c-4db3-83c8-d9215efea894}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\VulkanEngine\Models">
+      <UniqueIdentifier>{3d6df32b-94a5-4541-b711-fa44aed3449c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -66,6 +72,9 @@
     <ClCompile Include="VulkanEngine\DebugMessenger.cpp">
       <Filter>Source Files\VulkanEngine</Filter>
     </ClCompile>
+    <ClCompile Include="Block.cpp">
+      <Filter>Source Files\VulkanEngine\Models</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VulkanEngine\Buffers.h">
@@ -97,6 +106,9 @@
     </ClInclude>
     <ClInclude Include="VulkanEngine\VulkanEngine.h">
       <Filter>Header Files\VulkanEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="Block.h">
+      <Filter>Header Files\VulkanEngine\Models</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
