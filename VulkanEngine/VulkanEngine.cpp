@@ -83,6 +83,8 @@ void VulkanEngine::initVulkan()
 	m_pPhysicalDevice = new PhysicalDevice(&m_vkInstance, m_pWindow->getSurface());
 	m_pLogicalDevice = new LogicalDevice(m_pPhysicalDevice, m_pWindow->getSurface(), m_pWindow->getWindow(), &m_settings->debugSettings);
 
+	validateSettings(); // Ensure device supports current settings
+
 	// Swapchain
 	m_pSwapchain = new Swapchain(m_pLogicalDevice->getLogicalDevice(), m_pPhysicalDevice, m_pWindow->getWindow(), m_pWindow->getSurface());
 
@@ -96,7 +98,7 @@ void VulkanEngine::initVulkan()
 	m_pBufferManager->initBuffers();
 
 	// Texture Image
-	m_pTextureImage = new Image("textures/image.png", m_pLogicalDevice, m_pBufferManager);
+	m_pTextureImage = new Image("textures/image.png", m_pLogicalDevice, m_pBufferManager, &m_settings->graphicsSettings);
 
 	// Command buffer must be created seperately
 	m_pBufferManager->m_pCommandBuffer->createCommandBuffers();
@@ -276,4 +278,40 @@ std::vector<const char*> VulkanEngine::getRequiredExtensions()
 	}
 
 	return extensions;
+}
+
+void VulkanEngine::validateSettings()
+{
+	mDebugPrint("Validating settings...");
+
+	int settingsChanged = 0;
+
+	VkPhysicalDeviceProperties properties{};
+	vkGetPhysicalDeviceProperties(*m_pPhysicalDevice->getPhysicalDevice(), &properties);
+	VkPhysicalDeviceFeatures features{};
+	vkGetPhysicalDeviceFeatures(*m_pPhysicalDevice->getPhysicalDevice(), &features);
+
+	// Check if the device supports anisotropic filtering
+	if (properties.limits.maxSamplerAnisotropy < m_settings->graphicsSettings.anisotrophyLevel)
+	{
+		mDebugPrint(std::format("Anisotropic filtering level of x{} is not supported by the device. Setting to x{}.", m_settings->graphicsSettings.anisotrophyLevel, properties.limits.maxSamplerAnisotropy));
+		m_settings->graphicsSettings.anisotrophyLevel = properties.limits.maxSamplerAnisotropy;
+		settingsChanged++;
+	}
+
+	// Check if device supports wireframe rendering
+	if (!features.fillModeNonSolid)
+	{
+		mDebugPrint("Wireframe rendering is not supported by the device. Setting to false.");
+		m_settings->graphicsSettings.wireframe = false;
+		settingsChanged++;
+	}
+	if (!features.wideLines)
+	{
+		mDebugPrint("Wide lines are not supported by the device. Setting wireframe thickness to 1px.");
+		m_settings->graphicsSettings.wireframeThickness = 1.0f;
+		settingsChanged++;
+	}
+
+	settingsChanged != 1 ? mDebugPrint(std::format("Settings validated with {} changes.", settingsChanged)) : mDebugPrint("Settings validated with 1 change.");
 }

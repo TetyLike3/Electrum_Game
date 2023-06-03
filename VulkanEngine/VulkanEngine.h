@@ -70,6 +70,7 @@ private:
 
 	bool checkValidationLayerSupport();
 	std::vector<const char*> getRequiredExtensions();
+	void validateSettings();
 };
 
 inline void nativeDebugPrint(std::string message, bool newLine = false) { std::cout << (newLine ? "\n" : "") << "VulkanEngine NATIVEDEBUG - " << message << std::endl; }

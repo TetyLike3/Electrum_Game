@@ -39,7 +39,7 @@ sSettings settings{
 		.wireframeThickness = 6.0f,
 		.multisampling = false,
 		.anisotropicFiltering = true,
-		.maxAnisotropy = 16.0f
+		.anisotrophyLevel = 16.0f
 	}
 };
 

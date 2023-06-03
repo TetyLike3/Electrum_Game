@@ -39,7 +39,7 @@ struct sSettings {
 		float wireframeThickness = 2.0f;
 		bool multisampling = false;
 		bool anisotropicFiltering = false;
-		float maxAnisotropy = 4.0f;
+		float anisotrophyLevel = 4.0f;
 	} graphicsSettings;
 };
 
