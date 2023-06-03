@@ -1,5 +1,7 @@
 #define STB_IMAGE_IMPLEMENTATION
+#pragma warning(push, 0)
 #include <stb_image.h>
+#pragma warning(pop)
 
 #include "Image.h"
 
@@ -41,6 +43,34 @@ void Image::createTextureImage()
 void Image::createTextureImageView()
 {
 	m_textureImageView = createImageView(m_textureImage, VK_FORMAT_R8G8B8A8_SRGB);
+}
+
+void Image::createTextureSampler()
+{
+	VkSamplerCreateInfo samplerInfo{
+		.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO,
+		.magFilter = VK_FILTER_LINEAR,
+		.minFilter = VK_FILTER_NEAREST,
+		.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR,
+		.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT,
+		.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT,
+		.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT,
+		.mipLodBias = 0.0f,
+		.anisotropyEnable = m_pGraphicsSettings->anisotropicFiltering,
+		.maxAnisotropy = m_pGraphicsSettings->anisotropyLevel,
+		.compareEnable = VK_FALSE,
+		.compareOp = VK_COMPARE_OP_ALWAYS,
+		.minLod = 0.0f,
+		.maxLod = 0.0f,
+		.borderColor = VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK,
+		.unnormalizedCoordinates = VK_FALSE,
+	};
+
+
+	if (vkCreateSampler(*m_pLogicalDevice, &samplerInfo, nullptr, &m_textureSampler) != VK_SUCCESS)
+	{
+		throw std::runtime_error("Failed to create texture sampler!");
+	}
 }
 
 VkImageView Image::createImageView(VkImage image, VkFormat format)
@@ -198,6 +228,9 @@ void Image::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, ui
 
 void Image::cleanup()
 {
+	vkDestroySampler(*m_pLogicalDevice, m_textureSampler, nullptr);
+	vkDestroyImageView(*m_pLogicalDevice, m_textureImageView, nullptr);
+
 	vkDestroyImage(*m_pLogicalDevice, m_textureImage, nullptr);
 	vkFreeMemory(*m_pLogicalDevice, m_textureImageMemory, nullptr);
 }
