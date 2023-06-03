@@ -185,7 +185,6 @@
     <ClCompile Include="VulkanEngine\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="resource.h" />
     <ClInclude Include="VulkanEngine\Buffers.h" />
     <ClInclude Include="VulkanEngine\DebugMessenger.h" />
     <ClInclude Include="VulkanEngine\Devices.h" />
@@ -196,9 +195,6 @@
     <ClInclude Include="VulkanEngine\Utilities.h" />
     <ClInclude Include="VulkanEngine\VulkanEngine.h" />
     <ClInclude Include="VulkanEngine\Window.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="ElectrumGame.rc" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\frag.spv">
