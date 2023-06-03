@@ -33,14 +33,15 @@ struct sSettings {
 	} debugSettings;
 	struct sGraphicsSettings {
 		VkPhysicalDeviceFeatures enabledFeatures = {};
-		bool tripleBuffering = true;
-		bool vsync = true;
-		bool rasterizerDepthClamp = false;
-		bool wireframe = true;
-		float wireframeThickness = 2.0f;
-		bool multisampling = false;
-		VkBool32 anisotropicFiltering = false;
-		float anisotropyLevel = 4.0f;
+		bool tripleBuffering = true; // Enable Triple buffering.
+		bool vsync = true; // Enable VSync.
+		bool rasterizerDepthClamp = false; // Enable depth clamping.
+		bool wireframe = true; // Enable Wireframe rendering.
+		float wireframeThickness = 2.0f; // Thickness of wireframes when using Wireframe rendering.
+		bool multisampling = false; // Enable Multisampling.
+		VkBool32 anisotropicFiltering = false; // Enable Anisotropic filtering.
+		float anisotropyLevel = 4.0f; // Anisotropy level (1.0f = no anisotropy).
+		bool colorBlendTexture = true; // Blend the texture with the color of the fragment.
 	} graphicsSettings;
 };
 

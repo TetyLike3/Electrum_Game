@@ -94,8 +94,9 @@ void VulkanEngine::initVulkan()
 	m_pSwapchain->createFramebuffers(m_pGraphicsPipeline->getRenderPass());
 
 	// Buffer Manager
-	m_pBufferManager = new BufferManager(m_pLogicalDevice, m_pWindow->getSurface(), m_pGraphicsPipeline, m_pSwapchain, MAX_FRAMES_IN_FLIGHT);
+	m_pBufferManager = new BufferManager(m_pLogicalDevice, m_pWindow->getSurface(), m_pGraphicsPipeline, m_pSwapchain, m_settings, MAX_FRAMES_IN_FLIGHT);
 	m_pBufferManager->initBuffers();
+
 
 	// Texture Image
 	m_pTextureImage = new Image("textures/image.png", m_pLogicalDevice, m_pBufferManager, &m_settings->graphicsSettings);

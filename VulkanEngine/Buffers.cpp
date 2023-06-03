@@ -10,7 +10,9 @@ void BufferManager::initBuffers()
 	mDebugPrint("Initializing buffers...");
 	
 	m_pCommandBuffer = new CommandBuffer(this);
+
 	m_pVertexBuffer = new VertexBuffer(this);
+
 	m_pUniformBufferObject = new UniformBufferObject(this);
 	m_pDescriptorSets = new DescriptorSets(this);
 
@@ -264,11 +266,11 @@ void CommandBuffer::cleanup()
 // ----------------------------------------------------- //
 
 
-const std::vector<VertexBuffer::sVertex> VertexBuffer::vertices = {
-	{{-0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}},
-	{{0.5f, -0.5f}, {0.2f, 0.0f, 0.8f}, {0.0f, 0.0f}},
-	{{0.5f, 0.5f}, {0.2f, 0.5f, 0.8f}, {0.0f, 1.0f}},
-	{{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}}
+std::vector<VertexBuffer::sVertex> VertexBuffer::vertices = {
+	{{-0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}, 0.0f},
+	{{0.5f, -0.5f}, {0.2f, 0.0f, 0.8f}, {0.0f, 0.0f}, 0.0f},
+	{{0.5f, 0.5f}, {0.2f, 0.5f, 0.8f}, {0.0f, 1.0f}, 0.0f},
+	{{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}, 0.0f}
 };
 
 const std::vector<uint16_t> VertexBuffer::indices = {
@@ -279,6 +281,13 @@ const std::vector<uint16_t> VertexBuffer::indices = {
 void VertexBuffer::createVertexBuffer()
 {
 	mfDebugPrint("Creating vertex buffer...");
+	
+	// TODO: Make this work lol
+	// Change the last values in the vertices vector to blend the texture with the vertex colors
+	for (auto& vertex : vertices)
+	{
+		vertex.colorBlendTex = m_pBufferManager->m_pSettings->graphicsSettings.colorBlendTexture; // Implicit bool -> float :)
+	}
 
 	VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
 

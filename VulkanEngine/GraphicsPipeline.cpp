@@ -183,7 +183,7 @@ void GraphicsPipeline::createGraphicsPipeline()
 	//Rasterizer
 	VkPipelineRasterizationStateCreateInfo rasterizer{
 		.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO,
-		//rasterizer.depthClampEnable = VK_FALSE;
+		.depthClampEnable = m_pGraphicsSettings->rasterizerDepthClamp,
 		.rasterizerDiscardEnable = VK_FALSE,
 		//rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
 		.cullMode = VK_CULL_MODE_BACK_BIT,
@@ -194,8 +194,7 @@ void GraphicsPipeline::createGraphicsPipeline()
 		.depthBiasSlopeFactor = 0.0f, // Optional
 		.lineWidth = m_pGraphicsSettings->wireframeThickness
 	};
-	m_pGraphicsSettings->rasterizerDepthClamp == true ? rasterizer.depthClampEnable = VK_TRUE : rasterizer.depthClampEnable = VK_FALSE;
-	m_pGraphicsSettings->wireframe == true ? rasterizer.polygonMode = VK_POLYGON_MODE_LINE : rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
+	m_pGraphicsSettings->wireframe ? rasterizer.polygonMode = VK_POLYGON_MODE_LINE : rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
 
 	mDebugPrint("Creating multisampler...");
 	VkPipelineMultisampleStateCreateInfo multisampling{
@@ -209,7 +208,7 @@ void GraphicsPipeline::createGraphicsPipeline()
 	};
 	m_pGraphicsSettings->multisampling == true ? multisampling.sampleShadingEnable = VK_TRUE : multisampling.sampleShadingEnable = VK_FALSE;
 
-	mDebugPrint("Creating colour blender...");
+	mDebugPrint("Creating color blender...");
 	VkPipelineColorBlendAttachmentState colorBlendAttachment{
 		.blendEnable = VK_TRUE,
 		.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA,

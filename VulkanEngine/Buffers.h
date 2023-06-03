@@ -34,11 +34,11 @@ class DescriptorSets;
 class BufferManager
 {
 public:
-	BufferManager(LogicalDevice* pLogicalDevice, VkSurfaceKHR* pSurface, GraphicsPipeline* pGraphicsPipeline, Swapchain* pSwapchain, int MAX_FRAMES_IN_FLIGHT)
+	BufferManager(LogicalDevice* pLogicalDevice, VkSurfaceKHR* pSurface, GraphicsPipeline* pGraphicsPipeline, Swapchain* pSwapchain, sSettings* pSettings, int MAX_FRAMES_IN_FLIGHT)
 		: m_pLogicalDevice(pLogicalDevice->getLogicalDevice()), m_pPhysicalDevice(pLogicalDevice->getPhysicalDevice()->getPhysicalDevice()), m_pSurface(pSurface),
-		m_pRenderPass(pGraphicsPipeline->getRenderPass()), m_pSwapchain(pSwapchain), m_MAX_FRAMES_IN_FLIGHT(MAX_FRAMES_IN_FLIGHT), m_pGraphicsPipeline(pGraphicsPipeline->getGraphicsPipeline()),
-		m_pGraphicsQueue(pLogicalDevice->getGraphicsQueue()), m_pDescriptorSetLayout(pGraphicsPipeline->getDescriptorSetLayout()), m_pPipelineLayout(pGraphicsPipeline->getVkPipelineLayout()),
-		m_pUtilities(Utilities::getInstance())
+		m_pRenderPass(pGraphicsPipeline->getRenderPass()), m_pSwapchain(pSwapchain), m_pSettings(pSettings), m_MAX_FRAMES_IN_FLIGHT(MAX_FRAMES_IN_FLIGHT),
+		m_pGraphicsPipeline(pGraphicsPipeline->getGraphicsPipeline()), m_pGraphicsQueue(pLogicalDevice->getGraphicsQueue()), m_pDescriptorSetLayout(pGraphicsPipeline->getDescriptorSetLayout()),
+		m_pPipelineLayout(pGraphicsPipeline->getVkPipelineLayout()), m_pUtilities(Utilities::getInstance())
 	{};
 
 	void initBuffers();
@@ -64,6 +64,7 @@ private:
 	VkPipeline* m_pGraphicsPipeline = nullptr;
 	VkPipelineLayout* m_pPipelineLayout = nullptr;
 	Utilities* m_pUtilities = nullptr;
+	sSettings* m_pSettings = nullptr;
 	int m_MAX_FRAMES_IN_FLIGHT = 1;
 	VkQueue* m_pGraphicsQueue = nullptr;
 	VkDescriptorSetLayout* m_pDescriptorSetLayout = nullptr;
@@ -140,6 +141,7 @@ public:
 		glm::vec2 pos;
 		glm::vec3 color;
 		glm::vec2 texCoord;
+		glm::float32 colorBlendTex;
 
 		static VkVertexInputBindingDescription getBindingDescription()
 		{
@@ -152,9 +154,9 @@ public:
 			return bindingDescription;
 		}
 
-		static std::array<VkVertexInputAttributeDescription, 3> getAttributeDescriptions()
+		static std::array<VkVertexInputAttributeDescription, 4> getAttributeDescriptions()
 		{
-			std::array<VkVertexInputAttributeDescription, 3> attributeDescriptions{
+			std::array<VkVertexInputAttributeDescription, 4> attributeDescriptions{
 				VkVertexInputAttributeDescription{
 					.location = 0,
 					.binding = 0,
@@ -172,6 +174,12 @@ public:
 					.binding = 0,
 					.format = VK_FORMAT_R32G32_SFLOAT,
 					.offset = offsetof(sVertex, texCoord)
+				},
+				VkVertexInputAttributeDescription{
+					.location = 3,
+					.binding = 0,
+					.format = VK_FORMAT_R16_SFLOAT,
+					.offset = offsetof(sVertex, colorBlendTex)
 				}
 			};
 
@@ -179,7 +187,7 @@ public:
 		}
 	};
 
-	static const std::vector<sVertex> vertices;
+	static std::vector<sVertex> vertices;
 	static const std::vector<uint16_t> indices;
 
 

@@ -13,8 +13,8 @@
 #include "VulkanEngine/Utilities.h"
 
 const std::map<std::string, uint32_t> versions = {
-	{ "gameVersion", VK_MAKE_API_VERSION(0,0,0,4) },
-	{ "engineVersion", VK_MAKE_API_VERSION(0,1,0,4) },
+	{ "gameVersion", VK_MAKE_API_VERSION(0,0,0,5) },
+	{ "engineVersion", VK_MAKE_API_VERSION(0,1,0,5) },
 	{ "apiVersion", VK_MAKE_API_VERSION(0,1,0,0) }
 };
 
@@ -44,7 +44,8 @@ sSettings settings{
 		.wireframeThickness = 4.0f,
 		.multisampling = false,
 		.anisotropicFiltering = true,
-		.anisotropyLevel = 16.0f
+		.anisotropyLevel = 16.0f,
+		.colorBlendTexture = true,
 	}
 };
 
