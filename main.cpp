@@ -37,7 +37,9 @@ sSettings settings{
 		.rasterizerDepthClamp = false,
 		.wireframe = true,
 		.wireframeThickness = 6.0f,
-		.multisampling = false
+		.multisampling = false,
+		.anisotropicFiltering = true,
+		.maxAnisotropy = 16.0f
 	}
 };
 
