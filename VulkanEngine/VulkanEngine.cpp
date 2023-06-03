@@ -100,6 +100,8 @@ void VulkanEngine::initVulkan()
 	// Texture Image
 	m_pTextureImage = new Image("textures/image.png", m_pLogicalDevice, m_pBufferManager, &m_settings->graphicsSettings);
 
+	m_pBufferManager->m_pDescriptorSets->createDescriptorSets(m_pTextureImage->getVkTextureImageView(), m_pTextureImage->getVkTextureSampler());
+
 	// Command buffer must be created seperately
 	m_pBufferManager->m_pCommandBuffer->createCommandBuffers();
 

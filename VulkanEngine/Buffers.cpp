@@ -265,10 +265,10 @@ void CommandBuffer::cleanup()
 
 
 const std::vector<VertexBuffer::sVertex> VertexBuffer::vertices = {
-	{{-0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}},
-	{{0.5f, -0.5f}, {0.2f, 0.0f, 0.8f}},
-	{{0.5f, 0.5f}, {0.2f, 0.5f, 0.8f}},
-	{{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}
+	{{-0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}},
+	{{0.5f, -0.5f}, {0.2f, 0.0f, 0.8f}, {0.0f, 0.0f}},
+	{{0.5f, 0.5f}, {0.2f, 0.5f, 0.8f}, {0.0f, 1.0f}},
+	{{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}}
 };
 
 const std::vector<uint16_t> VertexBuffer::indices = {
@@ -385,16 +385,29 @@ void DescriptorSets::createDescriptorPool()
 {
 	mfDebugPrint("Creating descriptor pool...");
 
-	VkDescriptorPoolSize poolSize{
-		.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-		.descriptorCount = static_cast<uint32_t>(m_pBufferManager->m_MAX_FRAMES_IN_FLIGHT)
+	std::array<VkDescriptorPoolSize, 2> poolSizes{
+		VkDescriptorPoolSize{
+			.type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+			.descriptorCount = static_cast<uint32_t>(m_pBufferManager->m_MAX_FRAMES_IN_FLIGHT)
+		},
+			VkDescriptorPoolSize{
+			.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+			.descriptorCount = static_cast<uint32_t>(m_pBufferManager->m_MAX_FRAMES_IN_FLIGHT)
+		},
+		/* Remember to change the array size when adding this
+		* 
+			VkDescriptorPoolSize{
+			.type = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+			.descriptorCount = static_cast<uint32_t>(m_pBufferManager->m_MAX_FRAMES_IN_FLIGHT)
+		}
+		*/
 	};
 
 	VkDescriptorPoolCreateInfo poolInfo{
 		.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO,
 		.maxSets = static_cast<uint32_t>(m_pBufferManager->m_MAX_FRAMES_IN_FLIGHT),
-		.poolSizeCount = 1,
-		.pPoolSizes = &poolSize
+		.poolSizeCount = static_cast<uint32_t>(poolSizes.size()),
+		.pPoolSizes = poolSizes.data()
 	};
 
 	if (vkCreateDescriptorPool(*m_pBufferManager->m_pLogicalDevice, &poolInfo, nullptr, &m_descriptorPool) != VK_SUCCESS) {
@@ -402,7 +415,7 @@ void DescriptorSets::createDescriptorPool()
 	}
 }
 
-void DescriptorSets::createDescriptorSets()
+void DescriptorSets::createDescriptorSets(VkImageView* pImageView, VkSampler* pImageSampler)
 {
 	mfDebugPrint("Creating descriptor sets...");
 
@@ -419,30 +432,50 @@ void DescriptorSets::createDescriptorSets()
 		throw std::runtime_error("failed to allocate descriptor sets!");
 	}
 
-	//std::vector<VkBuffer> uniformBuffers = *m_pBufferManager->m_pUniformBufferObject->getUniformBuffers();
 	for (size_t i = 0; i < m_pBufferManager->m_MAX_FRAMES_IN_FLIGHT; i++)
 	{
 		VkDescriptorBufferInfo bufferInfo{
 			.buffer = (*m_pBufferManager->m_pUniformBufferObject->getUniformBuffers())[i],
 			.offset = 0,
-			// Q: A validation error says this is too big, how do I fix this?
-			// A: 
 			.range = sizeof(UniformBufferObject::sUniformBufferObject)
 		};
 
-		VkWriteDescriptorSet descriptorWrite{
-			.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
-			.dstSet = m_descriptorSets[i],
-			.dstBinding = 0,
-			.dstArrayElement = 0,
-			.descriptorCount = 1,
-			.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-			.pImageInfo = nullptr, // Optional
-			.pBufferInfo = &bufferInfo,
-			.pTexelBufferView = nullptr // Optional
+		VkDescriptorImageInfo imageInfo{
+			.sampler = *pImageSampler,
+			.imageView = *pImageView,
+			.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
 		};
 
-		vkUpdateDescriptorSets(*m_pBufferManager->m_pLogicalDevice, 1, &descriptorWrite, 0, nullptr);
+		/*
+		VkDescriptorImageInfo heightmapInfo{
+			.sampler = *pHeightmapSampler,
+			.imageView = *pHeightmapView,
+			.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+		};
+		*/
+
+		std::array<VkWriteDescriptorSet, 2> descriptorWrites{
+			VkWriteDescriptorSet{
+				.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+				.dstSet = m_descriptorSets[i],
+				.dstBinding = 0,
+				.dstArrayElement = 0,
+				.descriptorCount = 1,
+				.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+				.pBufferInfo = &bufferInfo
+			},
+				VkWriteDescriptorSet{
+				.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET,
+				.dstSet = m_descriptorSets[i],
+				.dstBinding = 1,
+				.dstArrayElement = 0,
+				.descriptorCount = 1,
+				.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+				.pImageInfo = &imageInfo, // Optional
+			}
+		};
+
+		vkUpdateDescriptorSets(*m_pBufferManager->m_pLogicalDevice, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
 	}
 }
 

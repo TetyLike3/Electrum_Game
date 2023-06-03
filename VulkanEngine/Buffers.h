@@ -139,6 +139,7 @@ public:
 	struct sVertex {
 		glm::vec2 pos;
 		glm::vec3 color;
+		glm::vec2 texCoord;
 
 		static VkVertexInputBindingDescription getBindingDescription()
 		{
@@ -151,18 +152,28 @@ public:
 			return bindingDescription;
 		}
 
-		static std::array<VkVertexInputAttributeDescription, 2> getAttributeDescriptions()
+		static std::array<VkVertexInputAttributeDescription, 3> getAttributeDescriptions()
 		{
-			std::array<VkVertexInputAttributeDescription, 2> attributeDescriptions{};
-			attributeDescriptions[0].binding = 0;
-			attributeDescriptions[0].location = 0;
-			attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
-			attributeDescriptions[0].offset = offsetof(sVertex, pos);
-
-			attributeDescriptions[1].binding = 0;
-			attributeDescriptions[1].location = 1;
-			attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
-			attributeDescriptions[1].offset = offsetof(sVertex, color);
+			std::array<VkVertexInputAttributeDescription, 3> attributeDescriptions{
+				VkVertexInputAttributeDescription{
+					.location = 0,
+					.binding = 0,
+					.format = VK_FORMAT_R32G32_SFLOAT,
+					.offset = offsetof(sVertex, pos)
+				},
+				VkVertexInputAttributeDescription{
+					.location = 1,
+					.binding = 0,
+					.format = VK_FORMAT_R32G32B32_SFLOAT,
+					.offset = offsetof(sVertex, color)
+				},
+				VkVertexInputAttributeDescription{
+					.location = 2,
+					.binding = 0,
+					.format = VK_FORMAT_R32G32_SFLOAT,
+					.offset = offsetof(sVertex, texCoord)
+				}
+			};
 
 			return attributeDescriptions;
 		}
@@ -261,11 +272,11 @@ public:
 	DescriptorSets(BufferManager* pBufferManager) : m_pBufferManager(pBufferManager)
 	{
 		createDescriptorPool();
-		createDescriptorSets();
+		//createDescriptorSets(); // Called in VulkanEngine to get the image views and samplers
 	};
 
 	void createDescriptorPool();
-	void createDescriptorSets();
+	void createDescriptorSets(VkImageView* pImageView, VkSampler* pImageSampler);
 
 	void cleanup();
 

@@ -29,6 +29,9 @@ public:
 
 	void cleanup();
 
+	VkImageView* getVkTextureImageView() { return &m_textureImageView; };
+	VkSampler* getVkTextureSampler() { return &m_textureSampler; };
+
 private:
 	Utilities* m_pUtilities = nullptr;
 	VkDevice* m_pLogicalDevice = nullptr;

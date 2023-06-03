@@ -64,6 +64,7 @@ void GraphicsPipeline::createRenderPass()
 
 void GraphicsPipeline::createDescriptorSetLayout()
 {
+	mDebugPrint("Creating uniform buffer descriptor set layout...");
 	VkDescriptorSetLayoutBinding uboLayoutBinding{
 		.binding = 0,
 		.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
@@ -72,14 +73,36 @@ void GraphicsPipeline::createDescriptorSetLayout()
 		.pImmutableSamplers = nullptr
 	};
 
+	mDebugPrint("Creating texture sampler descriptor set layout...");
+	VkDescriptorSetLayoutBinding textureSamplerLayoutBinding{
+		.binding = 1,
+		.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+		.descriptorCount = 1,
+		.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT,
+		.pImmutableSamplers = nullptr
+	};
+
+	/*
+	mDebugPrint("Creating heightmap sampler descriptor set layout...");
+	VkDescriptorSetLayoutBinding heightSamplerLayoutBinding{
+		.binding = 2,
+		.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+		.descriptorCount = 1,
+		.stageFlags = VK_SHADER_STAGE_VERTEX_BIT,
+		.pImmutableSamplers = nullptr
+	};
+	*/
+
+	std::array<VkDescriptorSetLayoutBinding, 2> bindings = { uboLayoutBinding, textureSamplerLayoutBinding, /*heightSamplerLayoutBinding*/};
+
 	VkDescriptorSetLayoutCreateInfo layoutInfo{
 		.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
-		.bindingCount = 1,
-		.pBindings = &uboLayoutBinding
+		.bindingCount = static_cast<uint32_t>(bindings.size()),
+		.pBindings = bindings.data()
 	};
 
 	if (vkCreateDescriptorSetLayout(*m_pLogicalDevice, &layoutInfo, nullptr, &m_descriptorSetLayout) != VK_SUCCESS) {
-		throw std::runtime_error("failed to create descriptor set layout!");
+		throw std::runtime_error("failed to create descriptor set layouts!");
 	}
 }
 
