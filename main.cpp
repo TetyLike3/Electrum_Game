@@ -32,13 +32,18 @@ sSettings settings{
 		.enableValidationLayers = true
 	},
 	.graphicsSettings {
+		.enabledFeatures = {
+			.fillModeNonSolid = true,
+			.wideLines = true,
+			.samplerAnisotropy = true
+		},
 		.tripleBuffering = true,
 		.vsync = true,
 		.rasterizerDepthClamp = false,
 		.wireframe = true,
 		.wireframeThickness = 6.0f,
 		.multisampling = false,
-		.anisotropicFiltering = VK_FALSE,
+		.anisotropicFiltering = true,
 		.anisotropyLevel = 16.0f
 	}
 };

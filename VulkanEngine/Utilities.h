@@ -32,6 +32,7 @@ struct sSettings {
 		bool enableValidationLayers = true;
 	} debugSettings;
 	struct sGraphicsSettings {
+		VkPhysicalDeviceFeatures enabledFeatures = {};
 		bool tripleBuffering = true;
 		bool vsync = true;
 		bool rasterizerDepthClamp = false;

@@ -81,9 +81,9 @@ void VulkanEngine::initVulkan()
 
 	// Devices
 	m_pPhysicalDevice = new PhysicalDevice(&m_vkInstance, m_pWindow->getSurface());
-	m_pLogicalDevice = new LogicalDevice(m_pPhysicalDevice, m_pWindow->getSurface(), m_pWindow->getWindow(), &m_settings->debugSettings);
-
 	validateSettings(); // Ensure device supports current settings
+	m_pLogicalDevice = new LogicalDevice(m_pPhysicalDevice, m_pWindow->getSurface(), m_pWindow->getWindow(), m_settings);
+
 
 	// Swapchain
 	m_pSwapchain = new Swapchain(m_pLogicalDevice->getLogicalDevice(), m_pPhysicalDevice, m_pWindow->getWindow(), m_pWindow->getSurface());

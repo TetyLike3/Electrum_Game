@@ -52,8 +52,10 @@ bool PhysicalDevice::isDeviceSuitable(VkPhysicalDevice candidateDevice)
 		swapChainAdequate = !swapChainSupport.formats.empty() && !swapChainSupport.presentModes.empty();
 	}
 	
+	VkPhysicalDeviceFeatures supportedFeatures;
+	vkGetPhysicalDeviceFeatures(candidateDevice, &supportedFeatures);
 
-	bool finalResult = indices.isComplete() && extensionsSupported && swapChainAdequate;
+	bool finalResult = indices.isComplete() && extensionsSupported && swapChainAdequate && supportedFeatures.samplerAnisotropy;
 	mDebugPrint("Device suitable: " + std::to_string(finalResult));
 
 	return finalResult;
@@ -120,9 +122,12 @@ SwapChainSupportDetails PhysicalDevice::querySwapChainSupport(VkPhysicalDevice p
 
 
 
-void LogicalDevice::createLogicalDevice(sSettings::sDebugSettings* pDebugSettings)
+void LogicalDevice::createLogicalDevice(sSettings* pSettings)
 {
 	mDebugPrint("Creating logical device...");
+
+	sSettings::sDebugSettings pDebugSettings = pSettings->debugSettings;
+	VkPhysicalDeviceFeatures deviceFeatures = pSettings->graphicsSettings.enabledFeatures;
 
 	QueueFamilyIndices::sQueueFamilyIndices indices = QueueFamilyIndices::findQueueFamilies(*m_pPhysicalDevice->getPhysicalDevice(), *m_pSurface);
 
@@ -141,11 +146,6 @@ void LogicalDevice::createLogicalDevice(sSettings::sDebugSettings* pDebugSetting
 		queueCreateInfos.push_back(queueCreateInfo);
 	}
 
-	VkPhysicalDeviceFeatures deviceFeatures{
-		.fillModeNonSolid = VK_TRUE,
-		.wideLines = VK_TRUE,
-	};
-
 	VkDeviceCreateInfo createInfo{
 		.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO,
 		.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size()),
@@ -155,12 +155,12 @@ void LogicalDevice::createLogicalDevice(sSettings::sDebugSettings* pDebugSetting
 		.pEnabledFeatures = &deviceFeatures
 	};
 
-	if (pDebugSettings->debugMode)
+	if (pDebugSettings.debugMode)
 	{
-		auto layerCount = static_cast<uint32_t>(pDebugSettings->validationLayers.size());
+		auto layerCount = static_cast<uint32_t>(pDebugSettings.validationLayers.size());
 		layerCount == 1 ? mDebugPrint("Enabling 1 validation layer...") : mDebugPrint(std::format("Enabling {} validation layer(s)...", layerCount));
 		createInfo.enabledLayerCount = layerCount;
-		createInfo.ppEnabledLayerNames = pDebugSettings->validationLayers.data();
+		createInfo.ppEnabledLayerNames = pDebugSettings.validationLayers.data();
 	}
 	else {
 		mDebugPrint("Validation layers not enabled.");

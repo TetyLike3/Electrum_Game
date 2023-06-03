@@ -56,8 +56,8 @@ private:
 class LogicalDevice
 {
 public:
-	LogicalDevice(PhysicalDevice* pPhysicalDevice, VkSurfaceKHR* pSurface, GLFWwindow* pWindow, sSettings::sDebugSettings* pDebugSettings)
-		: m_pPhysicalDevice(pPhysicalDevice), m_pSurface(pSurface), m_pWindow(pWindow), m_pUtilities(Utilities::getInstance()) { createLogicalDevice(pDebugSettings); };
+	LogicalDevice(PhysicalDevice* pPhysicalDevice, VkSurfaceKHR* pSurface, GLFWwindow* pWindow, sSettings* pSettings)
+		: m_pPhysicalDevice(pPhysicalDevice), m_pSurface(pSurface), m_pWindow(pWindow), m_pUtilities(Utilities::getInstance()) { createLogicalDevice(pSettings); };
 
 
 	void cleanup();
@@ -79,5 +79,5 @@ private:
 	VkQueue m_presentQueue = VK_NULL_HANDLE;
 
 
-	void createLogicalDevice(sSettings::sDebugSettings* pDebugSettings);
+	void createLogicalDevice(sSettings* pSettings);
 };
