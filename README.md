@@ -5,7 +5,7 @@
 # Installation
 
 Head over to the releases tab, and download the latest (or other desired) release.
-Extract the contents into their own folder, and run ElectrumGame.exe.
+Extract the contents into their own folder, and run `ElectrumGame.exe`.
 Have fun!
 
 
