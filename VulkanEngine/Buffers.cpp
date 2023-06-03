@@ -471,7 +471,7 @@ void DescriptorSets::createDescriptorSets(VkImageView* pImageView, VkSampler* pI
 				.dstArrayElement = 0,
 				.descriptorCount = 1,
 				.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
-				.pImageInfo = &imageInfo, // Optional
+				.pImageInfo = &imageInfo
 			}
 		};
 

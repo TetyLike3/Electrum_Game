@@ -93,7 +93,7 @@ void GraphicsPipeline::createDescriptorSetLayout()
 	};
 	*/
 
-	std::array<VkDescriptorSetLayoutBinding, 2> bindings = { uboLayoutBinding, textureSamplerLayoutBinding, /*heightSamplerLayoutBinding*/};
+	std::array<VkDescriptorSetLayoutBinding, 2> bindings = { uboLayoutBinding, textureSamplerLayoutBinding /*, heightSamplerLayoutBinding */};
 
 	VkDescriptorSetLayoutCreateInfo layoutInfo{
 		.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,

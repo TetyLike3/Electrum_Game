@@ -17,6 +17,8 @@ public:
 		: m_imagePath(imagePath), m_pLogicalDevice(pLogicalDevice->getLogicalDevice()), m_pBufferManager(pBufferManager), m_pGraphicsSettings(pGraphicsSettings), m_pUtilities(Utilities::getInstance())
 	{
 		createTextureImage();
+		createTextureImageView();
+		createTextureSampler();
 	};
 
 	void createTextureImage();
