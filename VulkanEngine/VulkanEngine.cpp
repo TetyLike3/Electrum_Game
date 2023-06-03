@@ -85,7 +85,6 @@ void VulkanEngine::initVulkan()
 
 	// Swapchain
 	m_pSwapchain = new Swapchain(m_pLogicalDevice->getLogicalDevice(), m_pPhysicalDevice, m_pWindow->getWindow(), m_pWindow->getSurface());
-	m_pSwapchain->createImageViews();
 
 	// Graphics pipeline
 	m_pGraphicsPipeline = new GraphicsPipeline(m_pLogicalDevice->getLogicalDevice(), m_pSwapchain, &m_settings->graphicsSettings);

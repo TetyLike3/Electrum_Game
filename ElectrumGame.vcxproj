@@ -172,30 +172,30 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Buffers.cpp" />
-    <ClCompile Include="DebugMessenger.cpp" />
-    <ClCompile Include="Devices.cpp" />
-    <ClCompile Include="GraphicsPipeline.cpp" />
-    <ClCompile Include="Image.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="QueueFamilyIndices.cpp" />
-    <ClCompile Include="Swapchain.cpp" />
-    <ClCompile Include="Utilities.cpp" />
-    <ClCompile Include="VulkanEngine.cpp" />
-    <ClCompile Include="Window.cpp" />
+    <ClCompile Include="VulkanEngine\Buffers.cpp" />
+    <ClCompile Include="VulkanEngine\DebugMessenger.cpp" />
+    <ClCompile Include="VulkanEngine\Devices.cpp" />
+    <ClCompile Include="VulkanEngine\GraphicsPipeline.cpp" />
+    <ClCompile Include="VulkanEngine\Image.cpp" />
+    <ClCompile Include="VulkanEngine\QueueFamilyIndices.cpp" />
+    <ClCompile Include="VulkanEngine\Swapchain.cpp" />
+    <ClCompile Include="VulkanEngine\Utilities.cpp" />
+    <ClCompile Include="VulkanEngine\VulkanEngine.cpp" />
+    <ClCompile Include="VulkanEngine\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Buffers.h" />
-    <ClInclude Include="DebugMessenger.h" />
-    <ClInclude Include="Devices.h" />
-    <ClInclude Include="GraphicsPipeline.h" />
-    <ClInclude Include="Image.h" />
-    <ClInclude Include="QueueFamilyIndices.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="Swapchain.h" />
-    <ClInclude Include="Utilities.h" />
-    <ClInclude Include="VulkanEngine.h" />
-    <ClInclude Include="Window.h" />
+    <ClInclude Include="VulkanEngine\Buffers.h" />
+    <ClInclude Include="VulkanEngine\DebugMessenger.h" />
+    <ClInclude Include="VulkanEngine\Devices.h" />
+    <ClInclude Include="VulkanEngine\GraphicsPipeline.h" />
+    <ClInclude Include="VulkanEngine\Image.h" />
+    <ClInclude Include="VulkanEngine\QueueFamilyIndices.h" />
+    <ClInclude Include="VulkanEngine\SwapChain.h" />
+    <ClInclude Include="VulkanEngine\Utilities.h" />
+    <ClInclude Include="VulkanEngine\VulkanEngine.h" />
+    <ClInclude Include="VulkanEngine\Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ElectrumGame.rc" />

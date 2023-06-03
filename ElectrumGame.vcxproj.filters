@@ -36,70 +36,70 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanEngine.cpp">
+    <ClCompile Include="VulkanEngine\Buffers.cpp">
+      <Filter>Source Files\VulkanEngine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanEngine\Devices.cpp">
+      <Filter>Source Files\VulkanEngine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanEngine\GraphicsPipeline.cpp">
+      <Filter>Source Files\VulkanEngine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanEngine\Image.cpp">
+      <Filter>Source Files\VulkanEngine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanEngine\QueueFamilyIndices.cpp">
+      <Filter>Source Files\VulkanEngine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanEngine\Swapchain.cpp">
+      <Filter>Source Files\VulkanEngine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanEngine\VulkanEngine.cpp">
       <Filter>Source Files\VulkanEngine</Filter>
     </ClCompile>
-    <ClCompile Include="DebugMessenger.cpp">
+    <ClCompile Include="VulkanEngine\Utilities.cpp">
       <Filter>Source Files\VulkanEngine</Filter>
     </ClCompile>
-    <ClCompile Include="Utilities.cpp">
+    <ClCompile Include="VulkanEngine\Window.cpp">
+      <Filter>Source Files\VulkanEngine\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanEngine\DebugMessenger.cpp">
       <Filter>Source Files\VulkanEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="Window.cpp">
-      <Filter>Source Files\VulkanEngine\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Devices.cpp">
-      <Filter>Source Files\VulkanEngine\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="GraphicsPipeline.cpp">
-      <Filter>Source Files\VulkanEngine\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Swapchain.cpp">
-      <Filter>Source Files\VulkanEngine\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="QueueFamilyIndices.cpp">
-      <Filter>Source Files\VulkanEngine\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Buffers.cpp">
-      <Filter>Source Files\VulkanEngine\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="Image.cpp">
-      <Filter>Source Files\VulkanEngine\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="VulkanEngine.h">
-      <Filter>Header Files\VulkanEngine</Filter>
-    </ClInclude>
-    <ClInclude Include="DebugMessenger.h">
-      <Filter>Header Files\VulkanEngine</Filter>
-    </ClInclude>
-    <ClInclude Include="Utilities.h">
-      <Filter>Header Files\VulkanEngine</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Window.h">
+    <ClInclude Include="VulkanEngine\Buffers.h">
       <Filter>Header Files\VulkanEngine\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Swapchain.h">
+    <ClInclude Include="VulkanEngine\Devices.h">
       <Filter>Header Files\VulkanEngine\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="GraphicsPipeline.h">
+    <ClInclude Include="VulkanEngine\GraphicsPipeline.h">
       <Filter>Header Files\VulkanEngine\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Devices.h">
+    <ClInclude Include="VulkanEngine\Image.h">
       <Filter>Header Files\VulkanEngine\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="QueueFamilyIndices.h">
+    <ClInclude Include="VulkanEngine\QueueFamilyIndices.h">
       <Filter>Header Files\VulkanEngine\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Buffers.h">
+    <ClInclude Include="VulkanEngine\SwapChain.h">
       <Filter>Header Files\VulkanEngine\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Image.h">
+    <ClInclude Include="VulkanEngine\Window.h">
       <Filter>Header Files\VulkanEngine\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanEngine\DebugMessenger.h">
+      <Filter>Header Files\VulkanEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanEngine\Utilities.h">
+      <Filter>Header Files\VulkanEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanEngine\VulkanEngine.h">
+      <Filter>Header Files\VulkanEngine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

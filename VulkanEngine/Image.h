@@ -20,6 +20,8 @@ public:
 	};
 
 	void createTextureImage();
+	void createTextureImageView();
+	VkImageView createImageView(VkImage image, VkFormat format);
 	void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
 	void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
 	void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
@@ -35,5 +37,6 @@ private:
 	std::string m_imagePath = "";
 	VkImage m_textureImage = VK_NULL_HANDLE;
 	VkDeviceMemory m_textureImageMemory = VK_NULL_HANDLE;
+	VkImageView m_textureImageView = VK_NULL_HANDLE;
 };
 
