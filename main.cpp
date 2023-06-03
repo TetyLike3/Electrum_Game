@@ -13,8 +13,8 @@
 #include "VulkanEngine/Utilities.h"
 
 const std::map<std::string, uint32_t> versions = {
-	{ "gameVersion", VK_MAKE_API_VERSION(0,0,0,5) },
-	{ "engineVersion", VK_MAKE_API_VERSION(0,1,0,5) },
+	{ "gameVersion", VK_MAKE_API_VERSION(0,0,0,6) },
+	{ "engineVersion", VK_MAKE_API_VERSION(0,1,0,6) },
 	{ "apiVersion", VK_MAKE_API_VERSION(0,1,0,0) }
 };
 

@@ -413,7 +413,9 @@ VkFormat DepthBuffer::findSupportedFormat(VkPhysicalDevice* pPhysicalDevice, con
 
 void DepthBuffer::cleanup()
 {
-
+	vkDestroyImageView(*m_pBufferManager->m_pLogicalDevice, m_depthImageView, nullptr);
+	vkDestroyImage(*m_pBufferManager->m_pLogicalDevice, m_depthImage, nullptr);
+	vkFreeMemory(*m_pBufferManager->m_pLogicalDevice, m_depthImageMemory, nullptr);
 }
 
 
