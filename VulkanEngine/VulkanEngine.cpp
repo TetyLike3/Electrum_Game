@@ -292,10 +292,10 @@ void VulkanEngine::validateSettings()
 	vkGetPhysicalDeviceFeatures(*m_pPhysicalDevice->getPhysicalDevice(), &features);
 
 	// Check if the device supports anisotropic filtering
-	if (properties.limits.maxSamplerAnisotropy < m_settings->graphicsSettings.anisotrophyLevel)
+	if (properties.limits.maxSamplerAnisotropy < m_settings->graphicsSettings.anisotropyLevel)
 	{
-		mDebugPrint(std::format("Anisotropic filtering level of x{} is not supported by the device. Setting to x{}.", m_settings->graphicsSettings.anisotrophyLevel, properties.limits.maxSamplerAnisotropy));
-		m_settings->graphicsSettings.anisotrophyLevel = properties.limits.maxSamplerAnisotropy;
+		mDebugPrint(std::format("Anisotropic filtering level of x{} is not supported by the device. Setting to x{}.", m_settings->graphicsSettings.anisotropyLevel, properties.limits.maxSamplerAnisotropy));
+		m_settings->graphicsSettings.anisotropyLevel = properties.limits.maxSamplerAnisotropy;
 		settingsChanged++;
 	}
 

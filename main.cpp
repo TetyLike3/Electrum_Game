@@ -38,8 +38,8 @@ sSettings settings{
 		.wireframe = true,
 		.wireframeThickness = 6.0f,
 		.multisampling = false,
-		.anisotropicFiltering = true,
-		.anisotrophyLevel = 16.0f
+		.anisotropicFiltering = VK_FALSE,
+		.anisotropyLevel = 16.0f
 	}
 };
 
