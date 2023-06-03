@@ -12,7 +12,7 @@ void Image::createTextureImage()
 
 	int texWidth, texHeight, texChannels;
 	stbi_uc* pixels = stbi_load(m_imagePath.c_str(), &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
-	VkDeviceSize imageSize = texWidth * texHeight * 4;
+	VkDeviceSize imageSize = static_cast<VkDeviceSize>(texWidth * texHeight * 4);
 
 	if (!pixels)
 	{
@@ -31,10 +31,10 @@ void Image::createTextureImage()
 
 	stbi_image_free(pixels);
 
-	createImage(texWidth, texHeight, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_textureImage, m_textureImageMemory);
-	transitionImageLayout(m_textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+	createImage(*m_pLogicalDevice, m_pBufferManager, texWidth, texHeight, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_textureImage, m_textureImageMemory);
+	transitionImageLayout(m_pBufferManager, m_textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 	copyBufferToImage(stagingBuffer, m_textureImage, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight));
-	transitionImageLayout(m_textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+	transitionImageLayout(m_pBufferManager, m_textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
 	vkDestroyBuffer(*m_pLogicalDevice, stagingBuffer, nullptr);
 	vkFreeMemory(*m_pLogicalDevice, stagingBufferMemory, nullptr);
@@ -42,7 +42,7 @@ void Image::createTextureImage()
 
 void Image::createTextureImageView()
 {
-	m_textureImageView = createImageView(m_textureImage, VK_FORMAT_R8G8B8A8_SRGB);
+	m_textureImageView = createImageView(*m_pLogicalDevice, m_textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
 }
 
 void Image::createTextureSampler()
@@ -73,7 +73,7 @@ void Image::createTextureSampler()
 	}
 }
 
-VkImageView Image::createImageView(VkImage image, VkFormat format)
+VkImageView Image::createImageView(VkDevice pLogicalDevice, VkImage image, VkFormat format, VkImageAspectFlags aspectFlags)
 {
 	VkImageViewCreateInfo viewInfo{
 		.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
@@ -81,7 +81,7 @@ VkImageView Image::createImageView(VkImage image, VkFormat format)
 		.viewType = VK_IMAGE_VIEW_TYPE_2D,
 		.format = format,
 		.subresourceRange {
-			.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+			.aspectMask = aspectFlags,
 			.baseMipLevel = 0,
 			.levelCount = 1,
 			.baseArrayLayer = 0,
@@ -90,7 +90,7 @@ VkImageView Image::createImageView(VkImage image, VkFormat format)
 	};
 
 	VkImageView imageView;
-	if (vkCreateImageView(*m_pLogicalDevice, &viewInfo, nullptr, &imageView) != VK_SUCCESS)
+	if (vkCreateImageView(pLogicalDevice, &viewInfo, nullptr, &imageView) != VK_SUCCESS)
 	{
 		throw std::runtime_error("Failed to create texture image view!");
 	}
@@ -98,7 +98,7 @@ VkImageView Image::createImageView(VkImage image, VkFormat format)
 	return imageView;
 }
 
-void Image::createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory)
+void Image::createImage(VkDevice pLogicalDevice, BufferManager* pBufferManager, uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory)
 {
 	VkImageCreateInfo imageInfo{
 		.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
@@ -119,33 +119,33 @@ void Image::createImage(uint32_t width, uint32_t height, VkFormat format, VkImag
 		.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED
 	};
 
-	if (vkCreateImage(*m_pLogicalDevice, &imageInfo, nullptr, &image) != VK_SUCCESS)
+	if (vkCreateImage(pLogicalDevice, &imageInfo, nullptr, &image) != VK_SUCCESS)
 	{
 		throw std::runtime_error("Failed to create image!");
 	}
 
 	VkMemoryRequirements memRequirements;
-	vkGetImageMemoryRequirements(*m_pLogicalDevice, image, &memRequirements);
+	vkGetImageMemoryRequirements(pLogicalDevice, image, &memRequirements);
 
 	VkMemoryAllocateInfo allocInfo{
 		.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
 		.allocationSize = memRequirements.size,
-		.memoryTypeIndex = m_pBufferManager->findMemoryType(memRequirements.memoryTypeBits, properties)
+		.memoryTypeIndex = pBufferManager->findMemoryType(memRequirements.memoryTypeBits, properties)
 	};
 
-	if (vkAllocateMemory(*m_pLogicalDevice, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS)
+	if (vkAllocateMemory(pLogicalDevice, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS)
 	{
 		throw std::runtime_error("Failed to allocate image memory!");
 	}
 
-	vkBindImageMemory(*m_pLogicalDevice, image, imageMemory, 0);
+	vkBindImageMemory(pLogicalDevice, image, imageMemory, 0);
 }
 
-void Image::transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout)
+void Image::transitionImageLayout(BufferManager* pBufferManager, VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout)
 {
-	mDebugPrint("Transitioning image layout from " + std::to_string(oldLayout) + " to " + std::to_string(newLayout));
+	//mDebugPrint("Transitioning image layout from " + std::to_string(oldLayout) + " to " + std::to_string(newLayout));
 
-	CommandBuffer* pCommandBuffer = m_pBufferManager->getCommandBuffer();
+	CommandBuffer* pCommandBuffer = pBufferManager->getCommandBuffer();
 	VkCommandBuffer imgCommandBuffer = pCommandBuffer->beginSingleTimeCommands();
 
 	VkImageMemoryBarrier barrier{
@@ -169,25 +169,40 @@ void Image::transitionImageLayout(VkImage image, VkFormat format, VkImageLayout 
 	VkPipelineStageFlags sourceStage;
 	VkPipelineStageFlags destinationStage;
 
-	if (oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
-	{
+	if (newLayout == VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL) {
+		barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+
+		if (hasStencilComponent(format)) {
+			barrier.subresourceRange.aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
+		}
+	}
+	else {
+		barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+	}
+
+	if (oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) {
 		barrier.srcAccessMask = 0;
 		barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
 
 		sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
 		destinationStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
 	}
-	else if (oldLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL && newLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
-	{
+	else if (oldLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL && newLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL) {
 		barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
 		barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
 
 		sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
 		destinationStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
 	}
-	else
-	{
-		throw std::invalid_argument("Unsupported layout transition!");
+	else if (oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL) {
+		barrier.srcAccessMask = 0;
+		barrier.dstAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+
+		sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+		destinationStage = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
+	}
+	else {
+		throw std::invalid_argument("unsupported layout transition!");
 	}
 
 	vkCmdPipelineBarrier(
@@ -224,6 +239,11 @@ void Image::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, ui
 	vkCmdCopyBufferToImage(imgCommandBuffer, buffer, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
 	pCommandBuffer->endSingleTimeCommands(imgCommandBuffer);
+}
+
+bool Image::hasStencilComponent(VkFormat format)
+{
+	return format == VK_FORMAT_D32_SFLOAT_S8_UINT || format == VK_FORMAT_D24_UNORM_S8_UINT;
 }
 
 void Image::cleanup()

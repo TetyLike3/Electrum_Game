@@ -5,6 +5,7 @@
 
 #include "Utilities.h"
 #include "Devices.h"
+#include "Image.h"
 
 
 class Swapchain

@@ -24,9 +24,11 @@ public:
 	void createTextureImage();
 	void createTextureImageView();
 	void createTextureSampler();
-	VkImageView createImageView(VkImage image, VkFormat format);
-	void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
-	void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
+
+	static VkImageView createImageView(VkDevice pLogicalDevice, VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
+	static void createImage(VkDevice pLogicalDevice, BufferManager* pBufferManager, uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
+	static bool hasStencilComponent(VkFormat format);
+	static void transitionImageLayout(BufferManager* pBufferManager, VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
 	void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
 
 	void cleanup();
