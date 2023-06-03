@@ -9,6 +9,7 @@
 #include <chrono>
 #include <format>
 #include <fstream>
+#include <iterator>
 
 // Macro to print debug messages with class name argument autofilled
 #define mDebugPrint(x) m_pUtilities->debugPrint(x, this)
@@ -16,9 +17,9 @@
 
 struct sSettings {
 	struct sWindowSettings {
-		const char* title = "ElectrumGame";
-		uint32_t width = 1280;
-		uint32_t height = 720;
+		const char* title = "ElectrumGame"; // Window title.
+		uint32_t width = 1280; // Window width.
+		uint32_t height = 720; // Window height.
 	} windowSettings;
 	struct sDebugSettings {
 		#ifdef NDEBUG
@@ -26,13 +27,13 @@ struct sSettings {
 		#else
 			bool debugMode = true;
 		#endif
-		std::vector<const char*> validationLayers = {
+		std::vector<const char*> validationLayers = { // Validation layers to enable.
 			"VK_LAYER_KHRONOS_validation"
 		};
-		bool enableValidationLayers = true;
+		bool enableValidationLayers = true; // Enable validation layers.
 	} debugSettings;
 	struct sGraphicsSettings {
-		VkPhysicalDeviceFeatures enabledFeatures = {};
+		VkPhysicalDeviceFeatures enabledFeatures = {}; // Physical device features to enable.
 		bool tripleBuffering = true; // Enable Triple buffering.
 		bool vsync = true; // Enable VSync.
 		bool rasterizerDepthClamp = false; // Enable depth clamping.
