@@ -25,11 +25,17 @@ sSettings settings{
 		.height = 720,
 	},
 	.debugSettings {
+		#ifdef NDEBUG
+		.debugMode = false,
+		.validationLayers = {},
+		.enableValidationLayers = false,
+		#else
 		.debugMode = true,
 		.validationLayers = {
 			"VK_LAYER_KHRONOS_validation"
 		},
 		.enableValidationLayers = true
+		#endif
 	},
 	.graphicsSettings {
 		.enabledFeatures = {
@@ -64,12 +70,14 @@ int main()
 	catch (const std::exception& e)
 	{
 		std::cerr << e.what() << std::endl;
+		system("pause");
 		return EXIT_FAILURE;
 	}
 
 	VulkanEngine::destroyInstance();
 
 	std::cout << "Program ended successfully.\n";
+	system("pause");
 
 	return EXIT_SUCCESS;
 }

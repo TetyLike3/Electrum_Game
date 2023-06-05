@@ -72,7 +72,10 @@
     <ClCompile Include="VulkanEngine\DebugMessenger.cpp">
       <Filter>Source Files\VulkanEngine</Filter>
     </ClCompile>
-    <ClCompile Include="Block.cpp">
+    <ClCompile Include="VulkanEngine\Block.cpp">
+      <Filter>Source Files\VulkanEngine\Models</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanEngine\Model.cpp">
       <Filter>Source Files\VulkanEngine\Models</Filter>
     </ClCompile>
   </ItemGroup>
@@ -107,7 +110,10 @@
     <ClInclude Include="VulkanEngine\VulkanEngine.h">
       <Filter>Header Files\VulkanEngine</Filter>
     </ClInclude>
-    <ClInclude Include="Block.h">
+    <ClInclude Include="VulkanEngine\Block.h">
+      <Filter>Header Files\VulkanEngine\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanEngine\Model.h">
       <Filter>Header Files\VulkanEngine\Models</Filter>
     </ClInclude>
   </ItemGroup>

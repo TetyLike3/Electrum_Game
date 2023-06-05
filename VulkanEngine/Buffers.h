@@ -196,7 +196,7 @@ public:
 	};
 
 	static std::vector<sVertex> vertices;
-	static const std::vector<uint16_t> indices;
+	static const std::vector<uint32_t> indices;
 
 
 	/*
