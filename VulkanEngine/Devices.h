@@ -9,6 +9,7 @@
 #include <stdexcept>
 #include <optional>
 
+#include "StaticMembers.h"
 #include "Utilities.h"
 #include "QueueFamilyIndices.h"
 
@@ -27,15 +28,14 @@ struct SwapChainSupportDetails {
 
 
 
-
 class PhysicalDevice
 {
 public:
-	PhysicalDevice(VkInstance* pVkInstance, VkSurfaceKHR* pSurface) : m_pVkInstance(pVkInstance), m_pSurface(pSurface), m_pUtilities(Utilities::getInstance()) { pickPhysicalDevice(); };
+	PhysicalDevice() : m_pVkInstance(StaticMembers::getVkInstance()), m_pSurface(StaticMembers::getWindow()->getSurface()), m_pUtilities(Utilities::getInstance()) { pickPhysicalDevice(); };
 
 	SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice physicalDevice);
 
-	VkPhysicalDevice* getPhysicalDevice() { return &m_physicalDevice; };
+	VkPhysicalDevice* getVkPhysicalDevice() { return &m_physicalDevice; };
 
 private:
 	VkInstance* m_pVkInstance = nullptr;
@@ -56,13 +56,12 @@ private:
 class LogicalDevice
 {
 public:
-	LogicalDevice(PhysicalDevice* pPhysicalDevice, VkSurfaceKHR* pSurface, GLFWwindow* pWindow, sSettings* pSettings)
-		: m_pPhysicalDevice(pPhysicalDevice), m_pSurface(pSurface), m_pWindow(pWindow), m_pUtilities(Utilities::getInstance()) { createLogicalDevice(pSettings); };
+	LogicalDevice() : m_pPhysicalDevice(StaticMembers::getPhysicalDevice()), m_pSurface(StaticMembers::getVkSurfaceKHR()), m_pWindow(StaticMembers::getWindow()->getWindow()), m_pUtilities(Utilities::getInstance()) { createLogicalDevice(); };
 
 
 	void cleanup();
 
-	VkDevice* getLogicalDevice() { return &m_logicalDevice; };
+	VkDevice* getVkDevice() { return &m_logicalDevice; };
 	PhysicalDevice* getPhysicalDevice() { return m_pPhysicalDevice; };
 	VkQueue* getGraphicsQueue() { return &m_graphicsQueue; };
 
@@ -79,5 +78,5 @@ private:
 	VkQueue m_presentQueue = VK_NULL_HANDLE;
 
 
-	void createLogicalDevice(sSettings* pSettings);
+	void createLogicalDevice();
 };

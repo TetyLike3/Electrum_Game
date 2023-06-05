@@ -122,14 +122,16 @@ SwapChainSupportDetails PhysicalDevice::querySwapChainSupport(VkPhysicalDevice p
 
 
 
-void LogicalDevice::createLogicalDevice(sSettings* pSettings)
+void LogicalDevice::createLogicalDevice()
 {
 	mDebugPrint("Creating logical device...");
+
+	sSettings* pSettings = StaticMembers::getSettings();
 
 	sSettings::sDebugSettings pDebugSettings = pSettings->debugSettings;
 	VkPhysicalDeviceFeatures deviceFeatures = pSettings->graphicsSettings.enabledFeatures;
 
-	QueueFamilyIndices::sQueueFamilyIndices indices = QueueFamilyIndices::findQueueFamilies(*m_pPhysicalDevice->getPhysicalDevice(), *m_pSurface);
+	QueueFamilyIndices::sQueueFamilyIndices indices = QueueFamilyIndices::findQueueFamilies(*StaticMembers::getVkPhysicalDevice(), *m_pSurface);
 
 	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 	std::set<uint32_t> uniqueQueueFamilies = { indices.graphicsFamily.value(), indices.presentFamily.value() };
@@ -167,7 +169,7 @@ void LogicalDevice::createLogicalDevice(sSettings* pSettings)
 		createInfo.enabledLayerCount = 0;
 	}
 
-	if (vkCreateDevice(*m_pPhysicalDevice->getPhysicalDevice(), &createInfo, nullptr, &m_logicalDevice) != VK_SUCCESS)
+	if (vkCreateDevice(*StaticMembers::getVkPhysicalDevice(), &createInfo, nullptr, &m_logicalDevice) != VK_SUCCESS)
 	{
 		throw std::runtime_error("failed to create logical device!");
 	}

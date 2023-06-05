@@ -5,18 +5,25 @@
 
 #include <vector>
 
+#include "StaticMembers.h"
 #include "Utilities.h"
 #include "Devices.h"
 #include "Buffers.h"
 
-class BufferManager;
 
 class Image
 {
 public:
-	Image(std::string imagePath, LogicalDevice* pLogicalDevice, BufferManager* pBufferManager, sSettings::sGraphicsSettings* pGraphicsSettings)
-		: m_imagePath(imagePath), m_pLogicalDevice(pLogicalDevice->getLogicalDevice()), m_pBufferManager(pBufferManager), m_pGraphicsSettings(pGraphicsSettings), m_pUtilities(Utilities::getInstance())
+	Image(std::string imagePath)
+		: m_imagePath(imagePath), m_pUtilities(Utilities::getInstance())
 	{
+		if (m_pLogicalDevice == nullptr)
+			m_pLogicalDevice = StaticMembers::getVkDevice();
+		if (m_pBufferManager == nullptr)
+			m_pBufferManager = StaticMembers::getBufferManager();
+		if (m_pGraphicsSettings == nullptr)
+			m_pGraphicsSettings = &StaticMembers::getSettings()->graphicsSettings;
+
 		createTextureImage();
 		createTextureImageView();
 		createTextureSampler();
@@ -26,10 +33,10 @@ public:
 	void createTextureImageView();
 	void createTextureSampler();
 
-	static VkImageView createImageView(VkDevice pLogicalDevice, VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
-	static void createImage(VkDevice pLogicalDevice, BufferManager* pBufferManager, uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
+	static VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
+	static void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
 	static bool hasStencilComponent(VkFormat format);
-	static void transitionImageLayout(BufferManager* pBufferManager, VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
+	static void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
 	void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
 
 	void cleanup();
@@ -39,9 +46,9 @@ public:
 
 private:
 	Utilities* m_pUtilities = nullptr;
-	VkDevice* m_pLogicalDevice = nullptr;
-	BufferManager* m_pBufferManager = nullptr;
-	sSettings::sGraphicsSettings* m_pGraphicsSettings = nullptr;
+	static VkDevice* m_pLogicalDevice;
+	static BufferManager* m_pBufferManager;
+	static sSettings::sGraphicsSettings* m_pGraphicsSettings;
 
 
 	std::string m_imagePath = "";

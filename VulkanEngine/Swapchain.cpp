@@ -68,7 +68,7 @@ VkExtent2D Swapchain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilit
 void Swapchain::createSwapchain()
 {
 	//mDebugPrint("Creating swap chain...");
-	SwapChainSupportDetails swapChainSupport = m_pPhysicalDevice->querySwapChainSupport(*m_pPhysicalDevice->getPhysicalDevice());
+	SwapChainSupportDetails swapChainSupport = m_pPhysicalDevice->querySwapChainSupport(*StaticMembers::getVkPhysicalDevice());
 
 	VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
 	VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
@@ -92,7 +92,7 @@ void Swapchain::createSwapchain()
 		.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT
 	};
 
-	QueueFamilyIndices::sQueueFamilyIndices indices = QueueFamilyIndices::findQueueFamilies(*m_pPhysicalDevice->getPhysicalDevice(), *m_pSurface);
+	QueueFamilyIndices::sQueueFamilyIndices indices = QueueFamilyIndices::findQueueFamilies(*StaticMembers::getVkPhysicalDevice(), *m_pSurface);
 	uint32_t queueFamilyIndices[] = { indices.graphicsFamily.value(), indices.presentFamily.value() };
 
 	if (indices.graphicsFamily != indices.presentFamily)
@@ -136,7 +136,7 @@ void Swapchain::createImageViews()
 
 	for (size_t i = 0; i < m_swapchainImages.size(); i++)
 	{
-		m_swapchainImageViews[i] = Image::createImageView(*m_pLogicalDevice, m_swapchainImages[i], m_swapchainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+		m_swapchainImageViews[i] = Image::createImageView(m_swapchainImages[i], m_swapchainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 	}
 }
 
@@ -155,6 +155,7 @@ void Swapchain::recreateSwapchain(GLFWwindow* pWindow)
 
 	createSwapchain();
 	createImageViews();
+	if (m_pBufferManager != nullptr) m_pBufferManager = StaticMembers::getBufferManager();
 	m_pBufferManager->getDepthBuffer()->createDepthResources();
 	m_pBufferManager->getFramebuffer()->createFramebuffers();
 }

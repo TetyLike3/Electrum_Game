@@ -376,11 +376,11 @@ void DepthBuffer::createDepthResources()
 	VkExtent2D swapchainExtent = *m_pBufferManager->m_pSwapchain->getSwapchainExtent();
 
 	VkFormat depthFormat = findDepthFormat(m_pBufferManager->m_pPhysicalDevice);
-	Image::createImage(*m_pBufferManager->m_pLogicalDevice, m_pBufferManager, swapchainExtent.width, swapchainExtent.height, depthFormat, VK_IMAGE_TILING_OPTIMAL,
+	Image::createImage(swapchainExtent.width, swapchainExtent.height, depthFormat, VK_IMAGE_TILING_OPTIMAL,
 		VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_depthImage, m_depthImageMemory);
 
-	m_depthImageView = Image::createImageView(*m_pBufferManager->m_pLogicalDevice, m_depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
-	Image::transitionImageLayout(m_pBufferManager, m_depthImage, depthFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+	m_depthImageView = Image::createImageView(m_depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
+	Image::transitionImageLayout(m_depthImage, depthFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 }
 
 VkFormat DepthBuffer::findDepthFormat(VkPhysicalDevice* pPhysicalDevice)

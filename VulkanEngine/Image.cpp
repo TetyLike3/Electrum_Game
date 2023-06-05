@@ -3,7 +3,15 @@
 #include <stb_image.h>
 #pragma warning(pop)
 
+#include "VulkanEngine.h"
+
 #include "Image.h"
+
+
+
+VkDevice* Image::m_pLogicalDevice = nullptr;
+BufferManager* Image::m_pBufferManager = nullptr;
+sSettings::sGraphicsSettings* Image::m_pGraphicsSettings = nullptr;
 
 
 void Image::createTextureImage()
@@ -31,10 +39,10 @@ void Image::createTextureImage()
 
 	stbi_image_free(pixels);
 
-	createImage(*m_pLogicalDevice, m_pBufferManager, texWidth, texHeight, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_textureImage, m_textureImageMemory);
-	transitionImageLayout(m_pBufferManager, m_textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+	createImage(texWidth, texHeight, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_textureImage, m_textureImageMemory);
+	transitionImageLayout(m_textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 	copyBufferToImage(stagingBuffer, m_textureImage, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight));
-	transitionImageLayout(m_pBufferManager, m_textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+	transitionImageLayout(m_textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
 	vkDestroyBuffer(*m_pLogicalDevice, stagingBuffer, nullptr);
 	vkFreeMemory(*m_pLogicalDevice, stagingBufferMemory, nullptr);
@@ -42,7 +50,7 @@ void Image::createTextureImage()
 
 void Image::createTextureImageView()
 {
-	m_textureImageView = createImageView(*m_pLogicalDevice, m_textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
+	m_textureImageView = createImageView(m_textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
 }
 
 void Image::createTextureSampler()
@@ -73,7 +81,7 @@ void Image::createTextureSampler()
 	}
 }
 
-VkImageView Image::createImageView(VkDevice pLogicalDevice, VkImage image, VkFormat format, VkImageAspectFlags aspectFlags)
+VkImageView Image::createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags)
 {
 	VkImageViewCreateInfo viewInfo{
 		.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO,
@@ -90,7 +98,7 @@ VkImageView Image::createImageView(VkDevice pLogicalDevice, VkImage image, VkFor
 	};
 
 	VkImageView imageView;
-	if (vkCreateImageView(pLogicalDevice, &viewInfo, nullptr, &imageView) != VK_SUCCESS)
+	if (vkCreateImageView(*m_pLogicalDevice, &viewInfo, nullptr, &imageView) != VK_SUCCESS)
 	{
 		throw std::runtime_error("Failed to create texture image view!");
 	}
@@ -98,7 +106,7 @@ VkImageView Image::createImageView(VkDevice pLogicalDevice, VkImage image, VkFor
 	return imageView;
 }
 
-void Image::createImage(VkDevice pLogicalDevice, BufferManager* pBufferManager, uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory)
+void Image::createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory)
 {
 	VkImageCreateInfo imageInfo{
 		.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
@@ -119,33 +127,33 @@ void Image::createImage(VkDevice pLogicalDevice, BufferManager* pBufferManager, 
 		.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED
 	};
 
-	if (vkCreateImage(pLogicalDevice, &imageInfo, nullptr, &image) != VK_SUCCESS)
+	if (vkCreateImage(*m_pLogicalDevice, &imageInfo, nullptr, &image) != VK_SUCCESS)
 	{
 		throw std::runtime_error("Failed to create image!");
 	}
 
 	VkMemoryRequirements memRequirements;
-	vkGetImageMemoryRequirements(pLogicalDevice, image, &memRequirements);
+	vkGetImageMemoryRequirements(*m_pLogicalDevice, image, &memRequirements);
 
 	VkMemoryAllocateInfo allocInfo{
 		.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
 		.allocationSize = memRequirements.size,
-		.memoryTypeIndex = pBufferManager->findMemoryType(memRequirements.memoryTypeBits, properties)
+		.memoryTypeIndex = m_pBufferManager->findMemoryType(memRequirements.memoryTypeBits, properties)
 	};
 
-	if (vkAllocateMemory(pLogicalDevice, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS)
+	if (vkAllocateMemory(*m_pLogicalDevice, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS)
 	{
 		throw std::runtime_error("Failed to allocate image memory!");
 	}
 
-	vkBindImageMemory(pLogicalDevice, image, imageMemory, 0);
+	vkBindImageMemory(*m_pLogicalDevice, image, imageMemory, 0);
 }
 
-void Image::transitionImageLayout(BufferManager* pBufferManager, VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout)
+void Image::transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout)
 {
 	//mDebugPrint("Transitioning image layout from " + std::to_string(oldLayout) + " to " + std::to_string(newLayout));
 
-	CommandBuffer* pCommandBuffer = pBufferManager->getCommandBuffer();
+	CommandBuffer* pCommandBuffer = m_pBufferManager->getCommandBuffer();
 	VkCommandBuffer imgCommandBuffer = pCommandBuffer->beginSingleTimeCommands();
 
 	VkImageMemoryBarrier barrier{

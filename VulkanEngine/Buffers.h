@@ -8,6 +8,7 @@
 #include <vector>
 #include <stdexcept>
 
+#include "StaticMembers.h"
 #include "Utilities.h"
 #include "Swapchain.h"
 #include "Devices.h"
@@ -36,11 +37,11 @@ class DescriptorSets;
 class BufferManager
 {
 public:
-	BufferManager(LogicalDevice* pLogicalDevice, VkSurfaceKHR* pSurface, GraphicsPipeline* pGraphicsPipeline, Swapchain* pSwapchain, sSettings* pSettings, int MAX_FRAMES_IN_FLIGHT)
-		: m_pLogicalDevice(pLogicalDevice->getLogicalDevice()), m_pPhysicalDevice(pLogicalDevice->getPhysicalDevice()->getPhysicalDevice()), m_pSurface(pSurface),
-		m_pRenderPass(pGraphicsPipeline->getRenderPass()), m_pSwapchain(pSwapchain), m_pSettings(pSettings), m_MAX_FRAMES_IN_FLIGHT(MAX_FRAMES_IN_FLIGHT),
-		m_pGraphicsPipeline(pGraphicsPipeline->getGraphicsPipeline()), m_pGraphicsQueue(pLogicalDevice->getGraphicsQueue()), m_pDescriptorSetLayout(pGraphicsPipeline->getDescriptorSetLayout()),
-		m_pPipelineLayout(pGraphicsPipeline->getVkPipelineLayout()), m_pUtilities(Utilities::getInstance())
+	BufferManager() : m_pLogicalDevice(StaticMembers::getVkDevice()), m_pPhysicalDevice(StaticMembers::getVkPhysicalDevice()), m_pSurface(StaticMembers::getVkSurfaceKHR()),
+		m_pRenderPass(StaticMembers::getGraphicsPipeline()->getRenderPass()), m_pSwapchain(StaticMembers::getSwapchain()), m_pSettings(StaticMembers::getSettings()),
+		m_MAX_FRAMES_IN_FLIGHT(StaticMembers::getMAX_FRAMES_IN_FLIGHT()), m_pGraphicsPipeline(StaticMembers::getGraphicsPipeline()->getGraphicsPipeline()),
+		m_pGraphicsQueue(StaticMembers::getLogicalDevice()->getGraphicsQueue()), m_pDescriptorSetLayout(StaticMembers::getGraphicsPipeline()->getDescriptorSetLayout()),
+		m_pPipelineLayout(StaticMembers::getGraphicsPipeline()->getVkPipelineLayout()), m_pUtilities(Utilities::getInstance())
 	{};
 
 	void initBuffers();

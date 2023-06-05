@@ -9,6 +9,7 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
+
 #include "Utilities.h"
 #include "Window.h"
 #include "DebugMessenger.h"
@@ -22,6 +23,7 @@
 const int MAX_FRAMES_IN_FLIGHT = 2;
 
 
+
 enum class VkEngineState
 {
 	NONE,
@@ -30,6 +32,7 @@ enum class VkEngineState
 	CLEANUP,
 	EXIT
 };
+
 
 class VulkanEngine
 {
@@ -47,20 +50,11 @@ private:
 
 	Utilities* m_pUtilities = nullptr;
 
-	Window* m_pWindow = nullptr;
-
-	VkInstance m_vkInstance = VK_NULL_HANDLE;
-	DebugMessenger* m_pDebugMessenger = nullptr;
-	PhysicalDevice* m_pPhysicalDevice = nullptr;
-	LogicalDevice* m_pLogicalDevice = nullptr;
-	Swapchain* m_pSwapchain = nullptr;
-	GraphicsPipeline* m_pGraphicsPipeline = nullptr;
-	BufferManager* m_pBufferManager = nullptr;
+	static DebugMessenger* m_pDebugMessenger;
 	Image* m_pTextureImage = nullptr;
 
 
 	std::map<std::string, uint32_t> m_versions = {};
-	sSettings* m_settings = nullptr;
 
 
 	void initVulkan();
