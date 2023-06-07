@@ -173,6 +173,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="VulkanEngine\StaticMembers.cpp" />
     <ClCompile Include="VulkanEngine\Block.cpp" />
     <ClCompile Include="VulkanEngine\Buffers.cpp" />
     <ClCompile Include="VulkanEngine\DebugMessenger.cpp" />
@@ -187,6 +188,8 @@
     <ClCompile Include="VulkanEngine\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="VulkanEngine\StaticMembers.h" />
     <ClInclude Include="VulkanEngine\Block.h" />
     <ClInclude Include="VulkanEngine\Buffers.h" />
     <ClInclude Include="VulkanEngine\DebugMessenger.h" />
@@ -209,6 +212,12 @@
     <None Include="shaders\vert.spv">
       <DeploymentContent>true</DeploymentContent>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ElectrumGame.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="textures\Electrum_ConceptIcon.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

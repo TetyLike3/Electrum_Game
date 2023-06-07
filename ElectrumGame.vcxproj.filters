@@ -78,6 +78,9 @@
     <ClCompile Include="VulkanEngine\Model.cpp">
       <Filter>Source Files\VulkanEngine\Models</Filter>
     </ClCompile>
+    <ClCompile Include="VulkanEngine\StaticMembers.cpp">
+      <Filter>Source Files\VulkanEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VulkanEngine\Buffers.h">
@@ -116,6 +119,12 @@
     <ClInclude Include="VulkanEngine\Model.h">
       <Filter>Header Files\VulkanEngine\Models</Filter>
     </ClInclude>
+    <ClInclude Include="VulkanEngine\StaticMembers.h">
+      <Filter>Header Files\VulkanEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\shader.frag">
@@ -130,5 +139,15 @@
     <None Include="shaders\vert.spv">
       <Filter>Source Files\VulkanEngine\Shaders</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ElectrumGame.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="textures\Electrum_ConceptIcon.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
