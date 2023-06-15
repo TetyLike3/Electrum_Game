@@ -8,7 +8,8 @@
 // TODO: Disable debug prints after first swapchain creation
 
 
-Swapchain::Swapchain() : m_pLogicalDevice(StaticMembers::getVkDevice()), m_pPhysicalDevice(StaticMembers::getPhysicalDevice()), m_pWindow(StaticMembers::getWindow()->getWindow()), m_pSurface(StaticMembers::getVkSurfaceKHR()), m_pUtilities(Utilities::getInstance())
+Swapchain::Swapchain() : m_pLogicalDevice(StaticMembers::getVkDevice()), m_pPhysicalDevice(StaticMembers::getPhysicalDevice()), m_pWindow(StaticMembers::getWindow()->getWindow()),
+	m_pSurface(StaticMembers::getVkSurfaceKHR()), m_pBufferManager(StaticMembers::getBufferManager()), m_pUtilities(Utilities::getInstance())
 {
 	createSwapchain();
 	createImageViews();
@@ -163,7 +164,6 @@ void Swapchain::recreateSwapchain(GLFWwindow* pWindow)
 
 	createSwapchain();
 	createImageViews();
-	if (m_pBufferManager != nullptr) m_pBufferManager = StaticMembers::getBufferManager();
 	m_pBufferManager->getDepthBuffer()->createDepthResources();
 	m_pBufferManager->getFramebuffer()->createFramebuffers();
 }

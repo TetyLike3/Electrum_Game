@@ -151,7 +151,7 @@ void Image::createImage(uint32_t width, uint32_t height, VkFormat format, VkImag
 
 void Image::transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout)
 {
-	Utilities::getInstance()->debugPrint("Transitioning image layout from " + std::to_string(oldLayout) + " to " + std::to_string(newLayout), "Image");
+	//Utilities::getInstance()->debugPrint("Transitioning image layout from " + std::to_string(oldLayout) + " to " + std::to_string(newLayout), "Image");
 
 	CommandBuffer* pCommandBuffer = m_pBufferManager->getCommandBuffer();
 	VkCommandBuffer imgCommandBuffer = pCommandBuffer->beginSingleTimeCommands();

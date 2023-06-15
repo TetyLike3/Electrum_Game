@@ -56,6 +56,7 @@ void VulkanEngine::run(std::map<std::string, uint32_t> versions, sSettings* sett
 	mDebugPrint("API version: " + m_pUtilities->getVkAPIVersionString(m_versions["apiVersion"]));
 	mDebugPrint("Maximum frames in flight: " + std::to_string(MAX_FRAMES_IN_FLIGHT) + "\n");
 
+	StaticMembers::m_MAX_FRAMES_IN_FLIGHT = MAX_FRAMES_IN_FLIGHT;
 	StaticMembers::m_settings = settings;
 
 	Image::m_pGraphicsSettings = &StaticMembers::m_settings->graphicsSettings;
@@ -94,30 +95,47 @@ void VulkanEngine::initVulkan()
 
 	StaticMembers::m_pLogicalDevice = new LogicalDevice();
 	StaticMembers::m_pVkDevice = StaticMembers::m_pLogicalDevice->getVkDevice();
-
 	Image::m_pLogicalDevice = StaticMembers::m_pVkDevice;
+
+	// Buffer Manager
+	StaticMembers::m_pBufferManager = new BufferManager();
+	Image::m_pBufferManager = StaticMembers::m_pBufferManager;
+
+	// Initialise buffers
+	StaticMembers::m_pBufferManager->m_pCommandBuffer = new CommandBuffer(StaticMembers::m_pBufferManager);
+	StaticMembers::m_pBufferManager->m_pVertexBuffer = new VertexBuffer(StaticMembers::m_pBufferManager);
 
 
 	// Swapchain
 	StaticMembers::m_pSwapchain = new Swapchain();
+	StaticMembers::m_pBufferManager->m_pSwapchain = StaticMembers::m_pSwapchain;
+
+	// Initialise depth buffer
+	StaticMembers::m_pBufferManager->m_pDepthBuffer = new DepthBuffer(StaticMembers::m_pBufferManager);
+
 
 	// Graphics pipeline
 	StaticMembers::m_pGraphicsPipeline = new GraphicsPipeline();
+	StaticMembers::m_pBufferManager->m_pGraphicsPipeline = StaticMembers::m_pGraphicsPipeline->getGraphicsPipeline();
+	StaticMembers::m_pBufferManager->m_pRenderPass = StaticMembers::m_pGraphicsPipeline->getRenderPass();
+	StaticMembers::m_pBufferManager->m_pDescriptorSetLayout = StaticMembers::m_pGraphicsPipeline->getDescriptorSetLayout();
+	StaticMembers::m_pBufferManager->m_pPipelineLayout = StaticMembers::m_pGraphicsPipeline->getVkPipelineLayout();
 
+	// Initialise other buffers
+	StaticMembers::m_pBufferManager->m_pFramebuffer = new Framebuffer(StaticMembers::m_pBufferManager);
+	StaticMembers::m_pBufferManager->m_pUniformBufferObject = new UniformBufferObject(StaticMembers::m_pBufferManager);
+	StaticMembers::m_pBufferManager->m_pDescriptorSets = new DescriptorSets(StaticMembers::m_pBufferManager);
 
-	// Buffer Manager
-	StaticMembers::m_pBufferManager = new BufferManager();
-	StaticMembers::m_pBufferManager->initBuffers();
-
-	Image::m_pBufferManager = StaticMembers::m_pBufferManager;
 
 	// Texture Image
 	m_pTextureImage = new Image("textures/image.png");
+
 
 	StaticMembers::m_pBufferManager->m_pDescriptorSets->createDescriptorSets(m_pTextureImage->getVkTextureImageView(), m_pTextureImage->getVkTextureSampler());
 
 	// Command buffer must be created seperately
 	StaticMembers::m_pBufferManager->m_pCommandBuffer->createCommandBuffers();
+
 
 	// Sync objects
 	StaticMembers::m_pWindow->createSyncObjects();

@@ -35,6 +35,7 @@ class BufferManager
 public:
 	BufferManager();
 
+	// Don't use this, initialize each one individually to avoid nullptr errors.
 	void initBuffers();
 
 	void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& pBuffer, VkDeviceMemory& pDeviceMemory);
@@ -133,14 +134,14 @@ public:
 
 	void cleanup();
 
-	VkCommandPool* getVkCommandPool() { return &m_commandPool; }
-	std::vector<VkCommandBuffer>* getCommandBuffers() { return &m_commandBuffers; }
+	VkCommandPool* getVkCommandPool() { return &sm_commandPool; }
+	std::vector<VkCommandBuffer>* getCommandBuffers() { return &sm_commandBuffers; }
 
 private:
 	BufferManager* m_pBufferManager = nullptr;
 
-	VkCommandPool m_commandPool = VK_NULL_HANDLE;
-	std::vector<VkCommandBuffer> m_commandBuffers = {};
+	static VkCommandPool sm_commandPool;
+	static std::vector<VkCommandBuffer> sm_commandBuffers;
 };
 
 

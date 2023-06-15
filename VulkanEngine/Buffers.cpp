@@ -34,8 +34,6 @@ void BufferManager::initBuffers()
 	mDebugPrint("Initializing uniform buffers..."); m_pUniformBufferObject = new UniformBufferObject(this);
 	mDebugPrint("Initializing descriptor sets..."); m_pDescriptorSets = new DescriptorSets(this);
 
-	mDebugPrint("Creating command buffers..."); m_pCommandBuffer->createCommandBuffers();
-
 	mDebugPrint("Buffers initialized.");
 }
 
@@ -123,6 +121,9 @@ void BufferManager::cleanup()
 /// ------------------ Command Bufffer ------------------ //
 // ----------------------------------------------------- //
 
+VkCommandPool CommandBuffer::sm_commandPool = VK_NULL_HANDLE;
+std::vector<VkCommandBuffer> CommandBuffer::sm_commandBuffers = {};
+
 void CommandBuffer::createCommandPool()
 {
 	mfDebugPrint("Creating command pool...");
@@ -136,7 +137,7 @@ void CommandBuffer::createCommandPool()
 		.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value()
 	};
 
-	if (vkCreateCommandPool(*m_pBufferManager->m_pLogicalDevice, &poolInfo, nullptr, &m_commandPool) != VK_SUCCESS) {
+	if (vkCreateCommandPool(*m_pBufferManager->m_pLogicalDevice, &poolInfo, nullptr, &sm_commandPool) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create command pool!");
 	}
 }
@@ -145,7 +146,7 @@ VkCommandBuffer CommandBuffer::beginSingleTimeCommands()
 {
 	VkCommandBufferAllocateInfo allocInfo{
 		.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
-		.commandPool = m_commandPool,
+		.commandPool = sm_commandPool,
 		.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
 		.commandBufferCount = 1
 	};
@@ -176,23 +177,23 @@ void CommandBuffer::endSingleTimeCommands(VkCommandBuffer commandBuffer)
 	vkQueueSubmit(*m_pBufferManager->m_pGraphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
 	vkQueueWaitIdle(*m_pBufferManager->m_pGraphicsQueue);
 
-	vkFreeCommandBuffers(*m_pBufferManager->m_pLogicalDevice, m_commandPool, 1, &commandBuffer);
+	vkFreeCommandBuffers(*m_pBufferManager->m_pLogicalDevice, sm_commandPool, 1, &commandBuffer);
 }
 
 void CommandBuffer::createCommandBuffers()
 {
 	mfDebugPrint("Creating command buffers...");
 
-	m_commandBuffers.resize(m_pBufferManager->m_MAX_FRAMES_IN_FLIGHT);
+	sm_commandBuffers.resize(m_pBufferManager->m_MAX_FRAMES_IN_FLIGHT);
 
 	VkCommandBufferAllocateInfo allocInfo{
 		.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
-		.commandPool = m_commandPool,
+		.commandPool = sm_commandPool,
 		.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
-		.commandBufferCount = (uint32_t)m_commandBuffers.size()
+		.commandBufferCount = (uint32_t)sm_commandBuffers.size()
 	};
 
-	if (vkAllocateCommandBuffers(*m_pBufferManager->m_pLogicalDevice, &allocInfo, m_commandBuffers.data()) != VK_SUCCESS) {
+	if (vkAllocateCommandBuffers(*m_pBufferManager->m_pLogicalDevice, &allocInfo, sm_commandBuffers.data()) != VK_SUCCESS) {
 		throw std::runtime_error("failed to allocate command buffers!");
 	}
 }
@@ -273,7 +274,7 @@ void CommandBuffer::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t 
 
 void CommandBuffer::cleanup()
 {
-	vkDestroyCommandPool(*m_pBufferManager->m_pLogicalDevice, m_commandPool, nullptr);
+	vkDestroyCommandPool(*m_pBufferManager->m_pLogicalDevice, sm_commandPool, nullptr);
 }
 
 
