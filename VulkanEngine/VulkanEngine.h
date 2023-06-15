@@ -10,14 +10,14 @@
 #include <GLFW/glfw3.h>
 
 
-#include "Utilities.h"
-#include "Window.h"
-#include "DebugMessenger.h"
-#include "Devices.h"
-#include "Swapchain.h"
-#include "GraphicsPipeline.h"
-#include "Buffers.h"
-#include "Image.h"
+#include "Utilities/Utilities.h"
+#include "Utilities/DebugMessenger.h"
+#include "Graphics/Window.h"
+#include "Graphics/Devices.h"
+#include "Graphics/Swapchain.h"
+#include "Graphics/GraphicsPipeline.h"
+#include "Graphics/Buffers.h"
+#include "Graphics/Image.h"
 
 
 const int MAX_FRAMES_IN_FLIGHT = 2;

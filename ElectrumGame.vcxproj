@@ -174,33 +174,33 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="VulkanEngine\StaticMembers.cpp" />
-    <ClCompile Include="VulkanEngine\Block.cpp" />
-    <ClCompile Include="VulkanEngine\Buffers.cpp" />
-    <ClCompile Include="VulkanEngine\DebugMessenger.cpp" />
-    <ClCompile Include="VulkanEngine\Devices.cpp" />
-    <ClCompile Include="VulkanEngine\GraphicsPipeline.cpp" />
-    <ClCompile Include="VulkanEngine\Image.cpp" />
-    <ClCompile Include="VulkanEngine\Model.cpp" />
-    <ClCompile Include="VulkanEngine\QueueFamilyIndices.cpp" />
-    <ClCompile Include="VulkanEngine\Swapchain.cpp" />
-    <ClCompile Include="VulkanEngine\Utilities.cpp" />
+    <ClCompile Include="VulkanEngine\Models\Block.cpp" />
+    <ClCompile Include="VulkanEngine\Graphics\Buffers.cpp" />
+    <ClCompile Include="VulkanEngine\Utilities\DebugMessenger.cpp" />
+    <ClCompile Include="VulkanEngine\Graphics\Devices.cpp" />
+    <ClCompile Include="VulkanEngine\Graphics\GraphicsPipeline.cpp" />
+    <ClCompile Include="VulkanEngine\Graphics\Image.cpp" />
+    <ClCompile Include="VulkanEngine\Models\Model.cpp" />
+    <ClCompile Include="VulkanEngine\Graphics\QueueFamilyIndices.cpp" />
+    <ClCompile Include="VulkanEngine\Graphics\Swapchain.cpp" />
+    <ClCompile Include="VulkanEngine\Utilities\Utilities.cpp" />
     <ClCompile Include="VulkanEngine\VulkanEngine.cpp" />
-    <ClCompile Include="VulkanEngine\Window.cpp" />
+    <ClCompile Include="VulkanEngine\Graphics\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VulkanEngine\StaticMembers.h" />
-    <ClInclude Include="VulkanEngine\Block.h" />
-    <ClInclude Include="VulkanEngine\Buffers.h" />
-    <ClInclude Include="VulkanEngine\DebugMessenger.h" />
-    <ClInclude Include="VulkanEngine\Devices.h" />
-    <ClInclude Include="VulkanEngine\GraphicsPipeline.h" />
-    <ClInclude Include="VulkanEngine\Image.h" />
-    <ClInclude Include="VulkanEngine\Model.h" />
-    <ClInclude Include="VulkanEngine\QueueFamilyIndices.h" />
-    <ClInclude Include="VulkanEngine\Swapchain.h" />
-    <ClInclude Include="VulkanEngine\Utilities.h" />
+    <ClInclude Include="VulkanEngine\Models\Block.h" />
+    <ClInclude Include="VulkanEngine\Graphics\Buffers.h" />
+    <ClInclude Include="VulkanEngine\Utilities\DebugMessenger.h" />
+    <ClInclude Include="VulkanEngine\Graphics\Devices.h" />
+    <ClInclude Include="VulkanEngine\Graphics\GraphicsPipeline.h" />
+    <ClInclude Include="VulkanEngine\Graphics\Image.h" />
+    <ClInclude Include="VulkanEngine\Models\Model.h" />
+    <ClInclude Include="VulkanEngine\Graphics\QueueFamilyIndices.h" />
+    <ClInclude Include="VulkanEngine\Graphics\Swapchain.h" />
+    <ClInclude Include="VulkanEngine\Utilities\Utilities.h" />
     <ClInclude Include="VulkanEngine\VulkanEngine.h" />
-    <ClInclude Include="VulkanEngine\Window.h" />
+    <ClInclude Include="VulkanEngine\Graphics\Window.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\frag.spv">

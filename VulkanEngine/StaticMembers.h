@@ -10,7 +10,7 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
-#include "Utilities.h"
+#include "Utilities/Utilities.h"
 
 
 class VulkanEngine;

@@ -3,8 +3,8 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
-#include "Image.h"
-#include "Utilities.h"
+#include "../Graphics/Image.h"
+#include "../Utilities/Utilities.h"
 
 
 

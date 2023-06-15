@@ -10,7 +10,7 @@
 #include <map>
 
 #include "VulkanEngine/VulkanEngine.h"
-#include "VulkanEngine/Utilities.h"
+#include "VulkanEngine/Utilities/Utilities.h"
 
 const std::map<std::string, uint32_t> versions = {
 	{ "gameVersion", VK_MAKE_API_VERSION(0,0,7,0) },
