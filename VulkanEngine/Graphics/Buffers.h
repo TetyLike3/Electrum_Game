@@ -8,7 +8,7 @@
 #include <vector>
 #include <stdexcept>
 
-#include "StaticMembers.h"
+#include "../StaticMembers.h"
 
 
 #define mfDebugPrint(x) m_pBufferManager->m_pUtilities->debugPrint(x,this)
@@ -160,7 +160,7 @@ public:
 		glm::vec3 pos;
 		glm::vec3 color;
 		glm::vec2 texCoord;
-		glm::float16 colorBlendTex;
+		glm::lowp_f32 colorBlendTex;
 
 		static VkVertexInputBindingDescription getBindingDescription()
 		{

@@ -9,7 +9,7 @@
 #include <stdexcept>
 #include <optional>
 
-#include "StaticMembers.h"
+#include "../StaticMembers.h"
 #include "QueueFamilyIndices.h"
 
 

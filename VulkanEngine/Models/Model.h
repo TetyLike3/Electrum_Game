@@ -5,9 +5,9 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
 
-#include "Utilities.h"
-#include "Buffers.h"
-#include "Image.h"
+#include "../Utilities/Utilities.h"
+#include "../Graphics/Buffers.h"
+#include "../Graphics/Image.h"
 
 
 

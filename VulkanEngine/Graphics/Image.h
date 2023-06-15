@@ -5,8 +5,8 @@
 
 #include <vector>
 
-#include "StaticMembers.h"
-#include "Utilities.h"
+#include "../StaticMembers.h"
+#include "../Utilities/Utilities.h"
 #include "Devices.h"
 #include "Buffers.h"
 
