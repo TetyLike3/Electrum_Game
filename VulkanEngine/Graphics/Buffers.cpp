@@ -1,6 +1,7 @@
 #include "Image.h"
 #include "Swapchain.h"
 #include "GraphicsPipeline.h"
+#include "../Models/Model.h"
 
 #include "Buffers.h"
 
@@ -260,7 +261,7 @@ void CommandBuffer::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t 
 	vkCmdBindIndexBuffer(commandBuffer, *m_pBufferManager->m_pVertexBuffer->getVkIndexBuffer(), 0, VK_INDEX_TYPE_UINT16);
 	
 	vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, *m_pBufferManager->m_pPipelineLayout, 0, 1, &(*m_pBufferManager->m_pDescriptorSets->getVkDescriptorSets())[imageIndex], 0, nullptr);
-	vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(VertexBuffer::indices.size()), 1, 0, 0, 0);
+	vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>((*m_pBufferManager->m_pVertexBuffer->getIndices()).size()), 1, 0, 0, 0);
 
 	vkCmdEndRenderPass(commandBuffer);
 
@@ -289,7 +290,8 @@ void CommandBuffer::cleanup()
 // ----------------------------------------------------- //
 
 
-std::vector<VertexBuffer::sVertex> VertexBuffer::vertices = {
+/*
+std::vector<Model::sVertex> VertexBuffer::vertices = {
 	{{-0.5f, -0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}, 0.5f},
 	{{0.5f, -0.5f, 0.0f}, {0.2f, 0.0f, 0.8f}, {0.0f, 0.0f}, 0.5f},
 	{{0.5f, 0.5f, 0.0f}, {0.2f, 0.5f, 0.8f}, {0.0f, 1.0f}, 0.5f},
@@ -311,11 +313,25 @@ const std::vector<uint32_t> VertexBuffer::indices = {
 	4, 5, 6, 6, 7, 4,
 	8, 9, 10, 10, 11, 8
 };
+*/
 
 
 void VertexBuffer::createVertexBuffer()
 {
 	mfDebugPrint("Creating vertex buffer...");
+
+	for (auto& model : *StaticMembers::getModels())
+	{
+		for (auto& vertex : model.getVertices())
+		{
+			vertices.push_back(vertex);
+		}
+
+		for (auto& index : model.getIndices())
+		{
+			indices.push_back(index);
+		}
+	};
 	
 	// TODO: Make this work lol
 	// Change the last values in the vertices vector to blend the texture with the vertex colors

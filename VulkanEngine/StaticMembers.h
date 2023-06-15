@@ -21,6 +21,8 @@ class LogicalDevice;
 class Swapchain;
 class GraphicsPipeline;
 class BufferManager;
+class Model;
+struct sVertex;
 
 class StaticMembers
 {
@@ -49,6 +51,8 @@ public:
 
 	static sSettings* getSettings();
 
+	static std::vector<Model>* getModels();
+
 private:
 	// Static members
 	static VkInstance m_vkInstance;
@@ -64,6 +68,8 @@ private:
 
 	static int m_MAX_FRAMES_IN_FLIGHT;
 	static sSettings* m_settings;
+
+	static std::vector<Model>* m_models;
 
 	friend class VulkanEngine;
 };

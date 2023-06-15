@@ -15,6 +15,8 @@ BufferManager* StaticMembers::m_pBufferManager = nullptr;
 int StaticMembers::m_MAX_FRAMES_IN_FLIGHT = 0;
 sSettings* StaticMembers::m_settings = nullptr;
 
+std::vector<Model>* StaticMembers::m_models = {};
+
 
 // Member Get/Set functions
 
@@ -39,3 +41,5 @@ BufferManager* StaticMembers::getBufferManager() { return m_pBufferManager; };
 int StaticMembers::getMAX_FRAMES_IN_FLIGHT() { return m_MAX_FRAMES_IN_FLIGHT; };
 
 sSettings* StaticMembers::getSettings() { return m_settings; };
+
+std::vector<Model>* StaticMembers::getModels() { return m_models; };

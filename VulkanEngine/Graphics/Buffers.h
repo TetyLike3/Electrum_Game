@@ -152,64 +152,9 @@ private:
 /// ------------------- Vertex Buffer ------------------- //
 // ----------------------------------------------------- //
 
-
 class VertexBuffer
 {
 public:
-	struct sVertex {
-		glm::vec3 pos;
-		glm::vec3 color;
-		glm::vec2 texCoord;
-		glm::lowp_f32 colorBlendTex;
-
-		static VkVertexInputBindingDescription getBindingDescription()
-		{
-			VkVertexInputBindingDescription bindingDescription{
-				.binding = 0,
-				.stride = sizeof(sVertex),
-				.inputRate = VK_VERTEX_INPUT_RATE_VERTEX
-			};
-
-			return bindingDescription;
-		}
-
-		static std::array<VkVertexInputAttributeDescription, 4> getAttributeDescriptions()
-		{
-			std::array<VkVertexInputAttributeDescription, 4> attributeDescriptions{
-				VkVertexInputAttributeDescription{
-					.location = 0,
-					.binding = 0,
-					.format = VK_FORMAT_R32G32B32_SFLOAT,
-					.offset = offsetof(sVertex, pos)
-				},
-				VkVertexInputAttributeDescription{
-					.location = 1,
-					.binding = 0,
-					.format = VK_FORMAT_R32G32B32_SFLOAT,
-					.offset = offsetof(sVertex, color)
-				},
-				VkVertexInputAttributeDescription{
-					.location = 2,
-					.binding = 0,
-					.format = VK_FORMAT_R32G32_SFLOAT,
-					.offset = offsetof(sVertex, texCoord)
-				},
-				VkVertexInputAttributeDescription{
-					.location = 3,
-					.binding = 0,
-					.format = VK_FORMAT_R16_SFLOAT,
-					.offset = offsetof(sVertex, colorBlendTex)
-				}
-			};
-
-			return attributeDescriptions;
-		}
-	};
-
-	static std::vector<sVertex> vertices;
-	static const std::vector<uint32_t> indices;
-
-
 	/*
 	VertexBuffer(LogicalDevice* pLogicalDevice, VkCommandPool* pCommandPool)
 		: m_pLogicalDevice(pLogicalDevice->getLogicalDevice()), m_pPhysicalDevice(pLogicalDevice->getPhysicalDevice()->getPhysicalDevice()),
@@ -230,12 +175,16 @@ public:
 
 	void cleanup();
 
+	std::vector<sVertex>* getVertices() { return &vertices; }
+	std::vector<uint32_t>* getIndices() { return &indices; }
 	VkBuffer* getVkVertexBuffer() { return &m_vertexBuffer; }
 	VkBuffer* getVkIndexBuffer() { return &m_indexBuffer; }
 
 private:
 	BufferManager* m_pBufferManager = nullptr;
 
+	std::vector<sVertex> vertices;
+	std::vector<uint32_t> indices;
 	VkBuffer m_vertexBuffer = VK_NULL_HANDLE;
 	VkDeviceMemory m_vertexBufferMemory = VK_NULL_HANDLE;
 	VkBuffer m_indexBuffer = VK_NULL_HANDLE;

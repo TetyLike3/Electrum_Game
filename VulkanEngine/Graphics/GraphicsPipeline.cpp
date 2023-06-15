@@ -1,4 +1,5 @@
 #include "Buffers.h"
+#include "../Models/Model.h"
 
 #include "GraphicsPipeline.h"
 
@@ -152,8 +153,8 @@ void GraphicsPipeline::createGraphicsPipeline()
 	};
 
 	VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
-	auto bindingDescription = VertexBuffer::sVertex::getBindingDescription();
-	auto attributeDescriptions = VertexBuffer::sVertex::getAttributeDescriptions();
+	auto bindingDescription = sVertex::getBindingDescription();
+	auto attributeDescriptions = sVertex::getAttributeDescriptions();
 
 	VkPipelineVertexInputStateCreateInfo vertexInputInfo{
 		.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,

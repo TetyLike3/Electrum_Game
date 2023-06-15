@@ -101,6 +101,11 @@ void VulkanEngine::initVulkan()
 	StaticMembers::m_pBufferManager = new BufferManager();
 	Image::m_pBufferManager = StaticMembers::m_pBufferManager;
 
+	// Model
+	m_pModel = new Model("models/DTO_Crate.fbx", "textures/DTO_Crate.png");
+	StaticMembers::m_models->push_back(*m_pModel);
+
+
 	// Initialise buffers
 	StaticMembers::m_pBufferManager->m_pCommandBuffer = new CommandBuffer(StaticMembers::m_pBufferManager);
 	StaticMembers::m_pBufferManager->m_pVertexBuffer = new VertexBuffer(StaticMembers::m_pBufferManager);
