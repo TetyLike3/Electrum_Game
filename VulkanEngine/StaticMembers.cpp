@@ -1,12 +1,10 @@
-#include "Devices.h"
 #include "Window.h"
+#include "Devices.h"
 #include "Swapchain.h"
 #include "GraphicsPipeline.h"
 #include "Buffers.h"
 
 #include "StaticMembers.h"
-
-//StaticMembers* StaticMembers::m_pInstance = nullptr;
 
 
 VkInstance StaticMembers::m_vkInstance = VK_NULL_HANDLE;
@@ -23,18 +21,6 @@ BufferManager* StaticMembers::m_pBufferManager = nullptr;
 int StaticMembers::m_MAX_FRAMES_IN_FLIGHT = 0;
 sSettings* StaticMembers::m_settings = nullptr;
 
-
-/*
-StaticMembers* StaticMembers::getInstance()
-{
-	if (m_pInstance == nullptr)
-	{
-		m_pInstance = new StaticMembers();
-	}
-
-	return m_pInstance;
-}
-*/
 
 // Member Get/Set functions
 

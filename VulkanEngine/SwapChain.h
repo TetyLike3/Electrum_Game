@@ -5,10 +5,7 @@
 
 #include "StaticMembers.h"
 #include "Utilities.h"
-#include "Devices.h"
 #include "Image.h"
-#include "Buffers.h"
-
 
 class BufferManager;
 

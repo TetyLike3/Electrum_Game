@@ -1,6 +1,11 @@
 #pragma once
 
 
+// This class is used to store all the other classes used in VulkanEngine. It should prevent the need to pass around masses of pointers to all the classes.
+// It should also make it easier to add new classes to the engine.
+
+// This class is accessed using :: notation, e.g. StaticMembers::getVkInstance().
+
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -17,13 +22,9 @@ class Swapchain;
 class GraphicsPipeline;
 class BufferManager;
 
-
 class StaticMembers
 {
 public:
-	//static StaticMembers* getInstance();
-
-
 	// Member Get/Set functions
 
 	static VkInstance* getVkInstance();
@@ -49,9 +50,6 @@ public:
 	static sSettings* getSettings();
 
 private:
-	//StaticMembers();
-	//static StaticMembers* m_pInstance;
-
 	// Static members
 	static VkInstance m_vkInstance;
 	static Window* m_pWindow;

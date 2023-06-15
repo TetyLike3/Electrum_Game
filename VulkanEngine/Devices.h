@@ -12,6 +12,7 @@
 #include "StaticMembers.h"
 #include "Utilities.h"
 #include "QueueFamilyIndices.h"
+#include "Window.h"
 
 
 
@@ -25,6 +26,9 @@ struct SwapChainSupportDetails {
 	std::vector<VkSurfaceFormatKHR> formats = {};
 	std::vector<VkPresentModeKHR> presentModes = {};
 };
+
+
+
 
 
 
