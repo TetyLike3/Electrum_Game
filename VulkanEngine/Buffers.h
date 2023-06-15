@@ -93,11 +93,29 @@ private:
 
 
 
+//// ------------------------------------------------------- //
+/// ------------------ Buffer Base class ------------------ //
+// ------------------------------------------------------- //
 
 
-//// ----------------------------------------------------- //
-/// ------------------ Command Bufffer ------------------ //
-// ----------------------------------------------------- //
+class BaseBuffer
+{
+public:
+	BaseBuffer(BufferManager* pBufferManager) : m_pBufferManager(pBufferManager) {};
+
+	//virtual void createBuffer() = 0;
+	virtual void cleanup() = 0;
+
+protected:
+	BufferManager* m_pBufferManager = nullptr;
+};
+
+
+
+
+//// ---------------------------------------------------- //
+/// ------------------ Command Buffer ------------------ //
+// ---------------------------------------------------- //
 
 
 class CommandBuffer
