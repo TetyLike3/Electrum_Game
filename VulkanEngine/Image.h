@@ -14,8 +14,7 @@
 class Image
 {
 public:
-	Image(std::string imagePath)
-		: m_imagePath(imagePath), m_pUtilities(Utilities::getInstance())
+	Image(std::string imagePath) : m_imagePath(imagePath), m_pUtilities(Utilities::getInstance())
 	{
 		if (m_pLogicalDevice == nullptr)
 			m_pLogicalDevice = StaticMembers::getVkDevice();

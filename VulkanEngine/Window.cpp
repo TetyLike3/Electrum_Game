@@ -1,6 +1,13 @@
+#include "Devices.h"
+#include "Buffers.h"
+#include "Swapchain.h"
+
 #include "Window.h"
 
 
+
+
+Window::Window() : m_pVkInstance(StaticMembers::getVkInstance()), m_MAX_FRAMES_IN_FLIGHT(StaticMembers::getMAX_FRAMES_IN_FLIGHT()), m_pUtilities(Utilities::getInstance()) { initWindow(); };
 
 void Window::initWindow()
 {

@@ -1,9 +1,3 @@
-#include "Window.h"
-#include "Devices.h"
-#include "Swapchain.h"
-#include "GraphicsPipeline.h"
-#include "Buffers.h"
-
 #include "StaticMembers.h"
 
 

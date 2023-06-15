@@ -1,4 +1,6 @@
 #include "Image.h"
+#include "Swapchain.h"
+#include "GraphicsPipeline.h"
 
 #include "Buffers.h"
 
@@ -6,6 +8,14 @@
 //// ----------------------------------------------------- //
 /// ------------------ Buffer Manager ------------------- //
 // ----------------------------------------------------- //
+
+
+BufferManager::BufferManager() : m_pLogicalDevice(StaticMembers::getVkDevice()), m_pPhysicalDevice(StaticMembers::getVkPhysicalDevice()), m_pSurface(StaticMembers::getVkSurfaceKHR()),
+m_pRenderPass(StaticMembers::getGraphicsPipeline()->getRenderPass()), m_pSwapchain(StaticMembers::getSwapchain()), m_pSettings(StaticMembers::getSettings()),
+m_MAX_FRAMES_IN_FLIGHT(StaticMembers::getMAX_FRAMES_IN_FLIGHT()), m_pGraphicsPipeline(StaticMembers::getGraphicsPipeline()->getGraphicsPipeline()),
+m_pGraphicsQueue(StaticMembers::getLogicalDevice()->getGraphicsQueue()), m_pDescriptorSetLayout(StaticMembers::getGraphicsPipeline()->getDescriptorSetLayout()),
+m_pPipelineLayout(StaticMembers::getGraphicsPipeline()->getVkPipelineLayout()), m_pUtilities(Utilities::getInstance())
+{};
 
 void BufferManager::initBuffers()
 {

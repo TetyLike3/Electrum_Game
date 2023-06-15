@@ -39,6 +39,9 @@ void VulkanEngine::destroyInstance()
 VulkanEngine::VulkanEngine() {}
 
 
+DebugMessenger* VulkanEngine::m_pDebugMessenger = nullptr;
+
+
 
 void VulkanEngine::run(std::map<std::string, uint32_t> versions, sSettings* settings)
 {
@@ -79,6 +82,7 @@ void VulkanEngine::initVulkan()
 
 	// Surface
 	StaticMembers::m_pWindow->createSurface();
+	StaticMembers::m_pVkSurface = StaticMembers::m_pWindow->getSurface();
 
 	// Devices
 	StaticMembers::m_pPhysicalDevice = new PhysicalDevice();

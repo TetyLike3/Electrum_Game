@@ -1,3 +1,5 @@
+#include "Window.h"
+
 #include "Swapchain.h"
 
 //#define mDebugPrint(...) if(m_firstRun) {m_pUtilities->debugPrint(...,this)}
@@ -5,6 +7,12 @@
 
 // TODO: Disable debug prints after first swapchain creation
 
+
+Swapchain::Swapchain() : m_pLogicalDevice(StaticMembers::getVkDevice()), m_pPhysicalDevice(StaticMembers::getPhysicalDevice()), m_pWindow(StaticMembers::getWindow()->getWindow()), m_pSurface(StaticMembers::getVkSurfaceKHR()), m_pUtilities(Utilities::getInstance())
+{
+	createSwapchain();
+	createImageViews();
+};
 
 // TODO: Add ranking system to choose best swap chain format
 VkSurfaceFormatKHR Swapchain::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats)

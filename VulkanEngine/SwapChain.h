@@ -4,7 +4,6 @@
 #include <GLFW/glfw3.h>
 
 #include "StaticMembers.h"
-#include "Utilities.h"
 #include "Image.h"
 
 class BufferManager;
@@ -12,11 +11,7 @@ class BufferManager;
 class Swapchain
 {
 public:
-	Swapchain() : m_pLogicalDevice(StaticMembers::getVkDevice()), m_pPhysicalDevice(StaticMembers::getPhysicalDevice()), m_pWindow(StaticMembers::getWindow()->getWindow()), m_pSurface(StaticMembers::getVkSurfaceKHR()), m_pUtilities(Utilities::getInstance())
-	{
-		createSwapchain();
-		createImageViews();
-	};
+	Swapchain();
 
 	void cleanup();
 

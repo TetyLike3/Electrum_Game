@@ -10,9 +10,7 @@
 #include <optional>
 
 #include "StaticMembers.h"
-#include "Utilities.h"
 #include "QueueFamilyIndices.h"
-#include "Window.h"
 
 
 
@@ -35,7 +33,7 @@ struct SwapChainSupportDetails {
 class PhysicalDevice
 {
 public:
-	PhysicalDevice() : m_pVkInstance(StaticMembers::getVkInstance()), m_pSurface(StaticMembers::getWindow()->getSurface()), m_pUtilities(Utilities::getInstance()) { pickPhysicalDevice(); };
+	PhysicalDevice();
 
 	SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice physicalDevice);
 
@@ -60,7 +58,7 @@ private:
 class LogicalDevice
 {
 public:
-	LogicalDevice() : m_pPhysicalDevice(StaticMembers::getPhysicalDevice()), m_pSurface(StaticMembers::getVkSurfaceKHR()), m_pWindow(StaticMembers::getWindow()->getWindow()), m_pUtilities(Utilities::getInstance()) { createLogicalDevice(); };
+	LogicalDevice();
 
 
 	void cleanup();

@@ -1,6 +1,10 @@
+#include "Window.h"
+
 #include "Devices.h"
 
 
+
+PhysicalDevice::PhysicalDevice() : m_pVkInstance(StaticMembers::getVkInstance()), m_pSurface(StaticMembers::getWindow()->getSurface()), m_pUtilities(Utilities::getInstance()) { pickPhysicalDevice(); };
 
 VkPhysicalDevice* PhysicalDevice::pickPhysicalDevice()
 {
@@ -121,6 +125,9 @@ SwapChainSupportDetails PhysicalDevice::querySwapChainSupport(VkPhysicalDevice p
 
 
 
+
+
+LogicalDevice::LogicalDevice() : m_pPhysicalDevice(StaticMembers::getPhysicalDevice()), m_pSurface(StaticMembers::getVkSurfaceKHR()), m_pWindow(StaticMembers::getWindow()->getWindow()), m_pUtilities(Utilities::getInstance()) { createLogicalDevice(); };
 
 void LogicalDevice::createLogicalDevice()
 {
