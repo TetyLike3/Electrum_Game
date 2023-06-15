@@ -3,8 +3,8 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
-#include "StaticMembers.h"
-#include "Utilities.h"
+#include "../StaticMembers.h"
+#include "../Utilities/Utilities.h"
 #include "Swapchain.h"
 #include "Devices.h"
 

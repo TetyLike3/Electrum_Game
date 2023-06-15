@@ -3,7 +3,7 @@
 #include <stb_image.h>
 #pragma warning(pop)
 
-#include "VulkanEngine.h"
+#include "../VulkanEngine.h"
 
 #include "Image.h"
 
