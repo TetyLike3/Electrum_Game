@@ -1,3 +1,5 @@
+#include "Window.h"
+
 #include "Swapchain.h"
 
 //#define mDebugPrint(...) if(m_firstRun) {m_pUtilities->debugPrint(...,this)}
@@ -5,6 +7,13 @@
 
 // TODO: Disable debug prints after first swapchain creation
 
+
+Swapchain::Swapchain() : m_pLogicalDevice(StaticMembers::getVkDevice()), m_pPhysicalDevice(StaticMembers::getPhysicalDevice()), m_pWindow(StaticMembers::getWindow()->getWindow()),
+	m_pSurface(StaticMembers::getVkSurfaceKHR()), m_pBufferManager(StaticMembers::getBufferManager()), m_pUtilities(Utilities::getInstance())
+{
+	createSwapchain();
+	createImageViews();
+};
 
 // TODO: Add ranking system to choose best swap chain format
 VkSurfaceFormatKHR Swapchain::chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats)
@@ -68,7 +77,7 @@ VkExtent2D Swapchain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilit
 void Swapchain::createSwapchain()
 {
 	//mDebugPrint("Creating swap chain...");
-	SwapChainSupportDetails swapChainSupport = m_pPhysicalDevice->querySwapChainSupport(*m_pPhysicalDevice->getPhysicalDevice());
+	SwapChainSupportDetails swapChainSupport = m_pPhysicalDevice->querySwapChainSupport(*StaticMembers::getVkPhysicalDevice());
 
 	VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
 	VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
@@ -92,7 +101,7 @@ void Swapchain::createSwapchain()
 		.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT
 	};
 
-	QueueFamilyIndices::sQueueFamilyIndices indices = QueueFamilyIndices::findQueueFamilies(*m_pPhysicalDevice->getPhysicalDevice(), *m_pSurface);
+	QueueFamilyIndices::sQueueFamilyIndices indices = QueueFamilyIndices::findQueueFamilies(*StaticMembers::getVkPhysicalDevice(), *m_pSurface);
 	uint32_t queueFamilyIndices[] = { indices.graphicsFamily.value(), indices.presentFamily.value() };
 
 	if (indices.graphicsFamily != indices.presentFamily)
@@ -136,7 +145,7 @@ void Swapchain::createImageViews()
 
 	for (size_t i = 0; i < m_swapchainImages.size(); i++)
 	{
-		m_swapchainImageViews[i] = Image::createImageView(*m_pLogicalDevice, m_swapchainImages[i], m_swapchainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+		m_swapchainImageViews[i] = Image::createImageView(m_swapchainImages[i], m_swapchainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
 	}
 }
 

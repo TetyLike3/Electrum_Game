@@ -3,23 +3,15 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
-#include "Utilities.h"
-#include "Devices.h"
+#include "StaticMembers.h"
 #include "Image.h"
-#include "Buffers.h"
-
 
 class BufferManager;
 
 class Swapchain
 {
 public:
-	Swapchain(VkDevice* pLogicalDevice, PhysicalDevice* pPhysicalDevice, GLFWwindow* pWindow,VkSurfaceKHR* pSurface)
-		: m_pLogicalDevice(pLogicalDevice), m_pPhysicalDevice(pPhysicalDevice), m_pWindow(pWindow), m_pSurface(pSurface), m_pUtilities(Utilities::getInstance())
-	{
-		createSwapchain();
-		createImageViews();
-	};
+	Swapchain();
 
 	void cleanup();
 
@@ -31,8 +23,6 @@ public:
 	VkExtent2D* getSwapchainExtent() { return &m_swapchainExtent; }
 	VkFormat* getSwapchainImageFormat() { return &m_swapchainImageFormat; }
 	std::vector<VkImageView>* getSwapchainImageViews() { return &m_swapchainImageViews; }
-
-	void setBufferManager(BufferManager* pBufferManager) { m_pBufferManager = pBufferManager; }
 
 private:
 	Utilities* m_pUtilities = nullptr;

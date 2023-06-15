@@ -1,4 +1,6 @@
 #include "Image.h"
+#include "Swapchain.h"
+#include "GraphicsPipeline.h"
 
 #include "Buffers.h"
 
@@ -7,19 +9,30 @@
 /// ------------------ Buffer Manager ------------------- //
 // ----------------------------------------------------- //
 
+
+VkPhysicalDevice* BufferManager::m_pPhysicalDevice = nullptr;
+
+BufferManager::BufferManager() : m_pLogicalDevice(StaticMembers::getVkDevice()), m_pSurface(StaticMembers::getVkSurfaceKHR()),
+m_pRenderPass(StaticMembers::getGraphicsPipeline()->getRenderPass()), m_pSwapchain(StaticMembers::getSwapchain()), m_pSettings(StaticMembers::getSettings()),
+m_MAX_FRAMES_IN_FLIGHT(StaticMembers::getMAX_FRAMES_IN_FLIGHT()), m_pGraphicsPipeline(StaticMembers::getGraphicsPipeline()->getGraphicsPipeline()),
+m_pGraphicsQueue(StaticMembers::getLogicalDevice()->getGraphicsQueue()), m_pDescriptorSetLayout(StaticMembers::getGraphicsPipeline()->getDescriptorSetLayout()),
+m_pPipelineLayout(StaticMembers::getGraphicsPipeline()->getVkPipelineLayout()), m_pUtilities(Utilities::getInstance())
+{
+	if (m_pPhysicalDevice == nullptr)
+		m_pPhysicalDevice = StaticMembers::getVkPhysicalDevice();
+};
+
 void BufferManager::initBuffers()
 {
 	mDebugPrint("Initializing buffers...");
 	
-	m_pCommandBuffer = new CommandBuffer(this);
+	mDebugPrint("Initializing command buffers..."); m_pCommandBuffer = new CommandBuffer(this);
 
-	m_pVertexBuffer = new VertexBuffer(this);
-	m_pDepthBuffer = new DepthBuffer(this);
-	m_pFramebuffer = new Framebuffer(this);
-	m_pUniformBufferObject = new UniformBufferObject(this);
-	m_pDescriptorSets = new DescriptorSets(this);
-
-	m_pCommandBuffer->createCommandBuffers();
+	mDebugPrint("Initializing vertex buffer..."); m_pVertexBuffer = new VertexBuffer(this);
+	mDebugPrint("Initializing depth buffer..."); m_pDepthBuffer = new DepthBuffer(this);
+	mDebugPrint("Initializing framebuffer..."); m_pFramebuffer = new Framebuffer(this);
+	mDebugPrint("Initializing uniform buffers..."); m_pUniformBufferObject = new UniformBufferObject(this);
+	mDebugPrint("Initializing descriptor sets..."); m_pDescriptorSets = new DescriptorSets(this);
 
 	mDebugPrint("Buffers initialized.");
 }
@@ -108,6 +121,9 @@ void BufferManager::cleanup()
 /// ------------------ Command Bufffer ------------------ //
 // ----------------------------------------------------- //
 
+VkCommandPool CommandBuffer::sm_commandPool = VK_NULL_HANDLE;
+std::vector<VkCommandBuffer> CommandBuffer::sm_commandBuffers = {};
+
 void CommandBuffer::createCommandPool()
 {
 	mfDebugPrint("Creating command pool...");
@@ -121,7 +137,7 @@ void CommandBuffer::createCommandPool()
 		.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value()
 	};
 
-	if (vkCreateCommandPool(*m_pBufferManager->m_pLogicalDevice, &poolInfo, nullptr, &m_commandPool) != VK_SUCCESS) {
+	if (vkCreateCommandPool(*m_pBufferManager->m_pLogicalDevice, &poolInfo, nullptr, &sm_commandPool) != VK_SUCCESS) {
 		throw std::runtime_error("failed to create command pool!");
 	}
 }
@@ -130,7 +146,7 @@ VkCommandBuffer CommandBuffer::beginSingleTimeCommands()
 {
 	VkCommandBufferAllocateInfo allocInfo{
 		.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
-		.commandPool = m_commandPool,
+		.commandPool = sm_commandPool,
 		.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
 		.commandBufferCount = 1
 	};
@@ -161,23 +177,23 @@ void CommandBuffer::endSingleTimeCommands(VkCommandBuffer commandBuffer)
 	vkQueueSubmit(*m_pBufferManager->m_pGraphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
 	vkQueueWaitIdle(*m_pBufferManager->m_pGraphicsQueue);
 
-	vkFreeCommandBuffers(*m_pBufferManager->m_pLogicalDevice, m_commandPool, 1, &commandBuffer);
+	vkFreeCommandBuffers(*m_pBufferManager->m_pLogicalDevice, sm_commandPool, 1, &commandBuffer);
 }
 
 void CommandBuffer::createCommandBuffers()
 {
 	mfDebugPrint("Creating command buffers...");
 
-	m_commandBuffers.resize(m_pBufferManager->m_MAX_FRAMES_IN_FLIGHT);
+	sm_commandBuffers.resize(m_pBufferManager->m_MAX_FRAMES_IN_FLIGHT);
 
 	VkCommandBufferAllocateInfo allocInfo{
 		.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO,
-		.commandPool = m_commandPool,
+		.commandPool = sm_commandPool,
 		.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY,
-		.commandBufferCount = (uint32_t)m_commandBuffers.size()
+		.commandBufferCount = (uint32_t)sm_commandBuffers.size()
 	};
 
-	if (vkAllocateCommandBuffers(*m_pBufferManager->m_pLogicalDevice, &allocInfo, m_commandBuffers.data()) != VK_SUCCESS) {
+	if (vkAllocateCommandBuffers(*m_pBufferManager->m_pLogicalDevice, &allocInfo, sm_commandBuffers.data()) != VK_SUCCESS) {
 		throw std::runtime_error("failed to allocate command buffers!");
 	}
 }
@@ -258,7 +274,7 @@ void CommandBuffer::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t 
 
 void CommandBuffer::cleanup()
 {
-	vkDestroyCommandPool(*m_pBufferManager->m_pLogicalDevice, m_commandPool, nullptr);
+	vkDestroyCommandPool(*m_pBufferManager->m_pLogicalDevice, sm_commandPool, nullptr);
 }
 
 
@@ -274,13 +290,13 @@ void CommandBuffer::cleanup()
 
 
 std::vector<VertexBuffer::sVertex> VertexBuffer::vertices = {
-	{{-0.5f, -0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}, 0.0f},
-	{{0.5f, -0.5f, 0.0f}, {0.2f, 0.0f, 0.8f}, {0.0f, 0.0f}, 0.0f},
-	{{0.5f, 0.5f, 0.0f}, {0.2f, 0.5f, 0.8f}, {0.0f, 1.0f}, 0.0f},
-	{{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}, 0.0f},
+	{{-0.5f, -0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}, 0.5f},
+	{{0.5f, -0.5f, 0.0f}, {0.2f, 0.0f, 0.8f}, {0.0f, 0.0f}, 0.5f},
+	{{0.5f, 0.5f, 0.0f}, {0.2f, 0.5f, 0.8f}, {0.0f, 1.0f}, 0.5f},
+	{{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}, 0.5f},
 
-	{{0.5f, -0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}, 0.0f},
-	{{1.5f, -0.5f, -0.5f}, {0.2f, 0.0f, 0.8f}, {0.0f, 0.0f}, 0.0f},
+	{{0.5f, -0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}, 0.5f},
+	{{1.5f, -0.5f, -0.5f}, {0.2f, 0.0f, 0.8f}, {0.0f, 0.0f}, 0.5f},
 	{{1.5f, 0.5f, -0.5f}, {0.2f, 0.5f, 0.8f}, {0.0f, 1.0f}, 0.0f},
 	{{0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}, 0.0f},
 
@@ -376,11 +392,11 @@ void DepthBuffer::createDepthResources()
 	VkExtent2D swapchainExtent = *m_pBufferManager->m_pSwapchain->getSwapchainExtent();
 
 	VkFormat depthFormat = findDepthFormat(m_pBufferManager->m_pPhysicalDevice);
-	Image::createImage(*m_pBufferManager->m_pLogicalDevice, m_pBufferManager, swapchainExtent.width, swapchainExtent.height, depthFormat, VK_IMAGE_TILING_OPTIMAL,
+	Image::createImage(swapchainExtent.width, swapchainExtent.height, depthFormat, VK_IMAGE_TILING_OPTIMAL,
 		VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_depthImage, m_depthImageMemory);
 
-	m_depthImageView = Image::createImageView(*m_pBufferManager->m_pLogicalDevice, m_depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
-	Image::transitionImageLayout(m_pBufferManager, m_depthImage, depthFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
+	m_depthImageView = Image::createImageView(m_depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
+	Image::transitionImageLayout(m_depthImage, depthFormat, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 }
 
 VkFormat DepthBuffer::findDepthFormat(VkPhysicalDevice* pPhysicalDevice)
