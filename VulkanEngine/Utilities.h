@@ -56,7 +56,7 @@ public:
 	template<typename CLASSNAME>
 	// Prints a debug message with the class name and timestamp.
 	inline void debugPrint(std::string message, CLASSNAME* that) { iDebugPrint(message, std::string(typeid(that).name())); };
-	inline void debugPrint(std::string message, std::string className) { iDebugPrint(message, className); };
+	inline static void debugPrint(std::string message, std::string className) { m_pInstance->iDebugPrint(message, className); };
 
 	inline std::string getVkAPIVersionString(uint32_t version)
 	{

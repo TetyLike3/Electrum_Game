@@ -1,17 +1,26 @@
+#include "Devices.h"
+#include "Buffers.h"
+#include "Swapchain.h"
+
 #include "Window.h"
 
 
 
-void Window::initWindow(sSettings::sWindowSettings* windowSettings)
+
+Window::Window() : m_pVkInstance(StaticMembers::getVkInstance()), m_MAX_FRAMES_IN_FLIGHT(StaticMembers::getMAX_FRAMES_IN_FLIGHT()), m_pUtilities(Utilities::getInstance()) { initWindow(); };
+
+void Window::initWindow()
 {
 	mDebugPrint("Initializing window...");
+
+	sSettings::sWindowSettings windowSettings = StaticMembers::getSettings()->windowSettings;
 
 	glfwInit();
 
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 	//glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
-	m_pWindow = glfwCreateWindow(windowSettings->width, windowSettings->height, windowSettings->title, nullptr, nullptr);
+	m_pWindow = glfwCreateWindow(windowSettings.width, windowSettings.height, windowSettings.title, nullptr, nullptr);
 	glfwSetWindowUserPointer(m_pWindow, this);
 	glfwSetFramebufferSizeCallback(m_pWindow, framebufferResizeCallback);
 }
@@ -33,16 +42,16 @@ void Window::createSurface()
 	}
 }
 
-void Window::createSyncObjects(LogicalDevice* pLogicalDevice, Swapchain* pSwapchain, CommandBuffer* pCommandBuffer, UniformBufferObject* pUniformBufferObject)
+void Window::createSyncObjects()
 {
 	mDebugPrint("Creating sync objects...");
 
 	// Define these variables here since we need to use them from now on
-	m_pLogicalDevice = pLogicalDevice->getLogicalDevice();
-	m_pGraphicsQueue = pLogicalDevice->getGraphicsQueue();
-	m_pSwapchain = pSwapchain;
-	m_pCommandBuffer = pCommandBuffer;
-	m_pUniformBufferObject = pUniformBufferObject;
+	m_pLogicalDevice = StaticMembers::getVkDevice();
+	m_pGraphicsQueue = StaticMembers::getLogicalDevice()->getGraphicsQueue();
+	m_pSwapchain = StaticMembers::getSwapchain();
+	m_pCommandBuffer = StaticMembers::getBufferManager()->getCommandBuffer();
+	m_pUniformBufferObject = StaticMembers::getBufferManager()->getUniformBufferObject();
 
 	// Resize the vectors to the correct size
 	m_imageAvailableSemaphores.resize(m_MAX_FRAMES_IN_FLIGHT);

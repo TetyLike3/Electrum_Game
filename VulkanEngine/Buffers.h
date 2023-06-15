@@ -8,10 +8,7 @@
 #include <vector>
 #include <stdexcept>
 
-#include "Utilities.h"
-#include "Swapchain.h"
-#include "Devices.h"
-#include "GraphicsPipeline.h"
+#include "StaticMembers.h"
 
 
 #define mfDebugPrint(x) m_pBufferManager->m_pUtilities->debugPrint(x,this)
@@ -36,18 +33,14 @@ class DescriptorSets;
 class BufferManager
 {
 public:
-	BufferManager(LogicalDevice* pLogicalDevice, VkSurfaceKHR* pSurface, GraphicsPipeline* pGraphicsPipeline, Swapchain* pSwapchain, sSettings* pSettings, int MAX_FRAMES_IN_FLIGHT)
-		: m_pLogicalDevice(pLogicalDevice->getLogicalDevice()), m_pPhysicalDevice(pLogicalDevice->getPhysicalDevice()->getPhysicalDevice()), m_pSurface(pSurface),
-		m_pRenderPass(pGraphicsPipeline->getRenderPass()), m_pSwapchain(pSwapchain), m_pSettings(pSettings), m_MAX_FRAMES_IN_FLIGHT(MAX_FRAMES_IN_FLIGHT),
-		m_pGraphicsPipeline(pGraphicsPipeline->getGraphicsPipeline()), m_pGraphicsQueue(pLogicalDevice->getGraphicsQueue()), m_pDescriptorSetLayout(pGraphicsPipeline->getDescriptorSetLayout()),
-		m_pPipelineLayout(pGraphicsPipeline->getVkPipelineLayout()), m_pUtilities(Utilities::getInstance())
-	{};
+	BufferManager();
 
+	// Don't use this, initialize each one individually to avoid nullptr errors.
 	void initBuffers();
 
 	void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& pBuffer, VkDeviceMemory& pDeviceMemory);
 	void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
-	uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+	static uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
 	// Don't use this, clean up each one individually to avoid nullptr errors.
 	void cleanup();
@@ -61,7 +54,7 @@ public:
 
 private:
 	VkDevice* m_pLogicalDevice = nullptr;
-	VkPhysicalDevice* m_pPhysicalDevice = nullptr;
+	static VkPhysicalDevice* m_pPhysicalDevice;
 	VkSurfaceKHR* m_pSurface = nullptr;
 	VkRenderPass* m_pRenderPass = nullptr;
 	Swapchain* m_pSwapchain = nullptr;
@@ -92,11 +85,29 @@ private:
 
 
 
+//// ------------------------------------------------------- //
+/// ------------------ Buffer Base class ------------------ //
+// ------------------------------------------------------- //
 
 
-//// ----------------------------------------------------- //
-/// ------------------ Command Bufffer ------------------ //
-// ----------------------------------------------------- //
+class BaseBuffer
+{
+public:
+	BaseBuffer(BufferManager* pBufferManager) : m_pBufferManager(pBufferManager) {};
+
+	//virtual void createBuffer() = 0;
+	virtual void cleanup() = 0;
+
+protected:
+	BufferManager* m_pBufferManager = nullptr;
+};
+
+
+
+
+//// ---------------------------------------------------- //
+/// ------------------ Command Buffer ------------------ //
+// ---------------------------------------------------- //
 
 
 class CommandBuffer
@@ -123,14 +134,14 @@ public:
 
 	void cleanup();
 
-	VkCommandPool* getVkCommandPool() { return &m_commandPool; }
-	std::vector<VkCommandBuffer>* getCommandBuffers() { return &m_commandBuffers; }
+	VkCommandPool* getVkCommandPool() { return &sm_commandPool; }
+	std::vector<VkCommandBuffer>* getCommandBuffers() { return &sm_commandBuffers; }
 
 private:
 	BufferManager* m_pBufferManager = nullptr;
 
-	VkCommandPool m_commandPool = VK_NULL_HANDLE;
-	std::vector<VkCommandBuffer> m_commandBuffers = {};
+	static VkCommandPool sm_commandPool;
+	static std::vector<VkCommandBuffer> sm_commandBuffers;
 };
 
 

@@ -78,6 +78,9 @@
     <ClCompile Include="VulkanEngine\Model.cpp">
       <Filter>Source Files\VulkanEngine\Models</Filter>
     </ClCompile>
+    <ClCompile Include="VulkanEngine\StaticMembers.cpp">
+      <Filter>Source Files\VulkanEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VulkanEngine\Buffers.h">
@@ -115,6 +118,9 @@
     </ClInclude>
     <ClInclude Include="VulkanEngine\Model.h">
       <Filter>Header Files\VulkanEngine\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanEngine\StaticMembers.h">
+      <Filter>Header Files\VulkanEngine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

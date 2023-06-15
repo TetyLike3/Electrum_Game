@@ -173,6 +173,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="VulkanEngine\StaticMembers.cpp" />
     <ClCompile Include="VulkanEngine\Block.cpp" />
     <ClCompile Include="VulkanEngine\Buffers.cpp" />
     <ClCompile Include="VulkanEngine\DebugMessenger.cpp" />
@@ -187,6 +188,7 @@
     <ClCompile Include="VulkanEngine\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="VulkanEngine\StaticMembers.h" />
     <ClInclude Include="VulkanEngine\Block.h" />
     <ClInclude Include="VulkanEngine\Buffers.h" />
     <ClInclude Include="VulkanEngine\DebugMessenger.h" />

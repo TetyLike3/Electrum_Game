@@ -10,25 +10,24 @@
 #include <iostream>
 #include <chrono>
 
-#include "Utilities.h"
-#include "Buffers.h"
-#include "Swapchain.h"
+#include "StaticMembers.h"
 
 
 
 //const uint32_t WIDTH = 1280;
 //const uint32_t HEIGHT = 720;
 
-
+class CommandBuffer;
+class UniformBufferObject;
 
 class Window
 {
 public:
-	Window(VkInstance* pVkInstance, int MAX_FRAMES_IN_FLIGHT) : m_pVkInstance(pVkInstance), m_MAX_FRAMES_IN_FLIGHT(MAX_FRAMES_IN_FLIGHT), m_pUtilities(Utilities::getInstance()) {};
+	Window();
 
-	void initWindow(sSettings::sWindowSettings* windowSettings);
+	void initWindow();
 	void createSurface();
-	void createSyncObjects(LogicalDevice* pLogicalDevice, Swapchain* pSwapchain, CommandBuffer* pCommandBuffer, UniformBufferObject* pUniformBufferObject);
+	void createSyncObjects();
 
 	void mainLoop();
 
