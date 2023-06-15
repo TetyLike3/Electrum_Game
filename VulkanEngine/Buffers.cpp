@@ -10,26 +10,31 @@
 // ----------------------------------------------------- //
 
 
-BufferManager::BufferManager() : m_pLogicalDevice(StaticMembers::getVkDevice()), m_pPhysicalDevice(StaticMembers::getVkPhysicalDevice()), m_pSurface(StaticMembers::getVkSurfaceKHR()),
+VkPhysicalDevice* BufferManager::m_pPhysicalDevice = nullptr;
+
+BufferManager::BufferManager() : m_pLogicalDevice(StaticMembers::getVkDevice()), m_pSurface(StaticMembers::getVkSurfaceKHR()),
 m_pRenderPass(StaticMembers::getGraphicsPipeline()->getRenderPass()), m_pSwapchain(StaticMembers::getSwapchain()), m_pSettings(StaticMembers::getSettings()),
 m_MAX_FRAMES_IN_FLIGHT(StaticMembers::getMAX_FRAMES_IN_FLIGHT()), m_pGraphicsPipeline(StaticMembers::getGraphicsPipeline()->getGraphicsPipeline()),
 m_pGraphicsQueue(StaticMembers::getLogicalDevice()->getGraphicsQueue()), m_pDescriptorSetLayout(StaticMembers::getGraphicsPipeline()->getDescriptorSetLayout()),
 m_pPipelineLayout(StaticMembers::getGraphicsPipeline()->getVkPipelineLayout()), m_pUtilities(Utilities::getInstance())
-{};
+{
+	if (m_pPhysicalDevice == nullptr)
+		m_pPhysicalDevice = StaticMembers::getVkPhysicalDevice();
+};
 
 void BufferManager::initBuffers()
 {
 	mDebugPrint("Initializing buffers...");
 	
-	m_pCommandBuffer = new CommandBuffer(this);
+	mDebugPrint("Initializing command buffers..."); m_pCommandBuffer = new CommandBuffer(this);
 
-	m_pVertexBuffer = new VertexBuffer(this);
-	m_pDepthBuffer = new DepthBuffer(this);
-	m_pFramebuffer = new Framebuffer(this);
-	m_pUniformBufferObject = new UniformBufferObject(this);
-	m_pDescriptorSets = new DescriptorSets(this);
+	mDebugPrint("Initializing vertex buffer..."); m_pVertexBuffer = new VertexBuffer(this);
+	mDebugPrint("Initializing depth buffer..."); m_pDepthBuffer = new DepthBuffer(this);
+	mDebugPrint("Initializing framebuffer..."); m_pFramebuffer = new Framebuffer(this);
+	mDebugPrint("Initializing uniform buffers..."); m_pUniformBufferObject = new UniformBufferObject(this);
+	mDebugPrint("Initializing descriptor sets..."); m_pDescriptorSets = new DescriptorSets(this);
 
-	m_pCommandBuffer->createCommandBuffers();
+	mDebugPrint("Creating command buffers..."); m_pCommandBuffer->createCommandBuffers();
 
 	mDebugPrint("Buffers initialized.");
 }

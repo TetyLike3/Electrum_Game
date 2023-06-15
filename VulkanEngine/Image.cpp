@@ -138,7 +138,7 @@ void Image::createImage(uint32_t width, uint32_t height, VkFormat format, VkImag
 	VkMemoryAllocateInfo allocInfo{
 		.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
 		.allocationSize = memRequirements.size,
-		.memoryTypeIndex = m_pBufferManager->findMemoryType(memRequirements.memoryTypeBits, properties)
+		.memoryTypeIndex = BufferManager::findMemoryType(memRequirements.memoryTypeBits, properties)
 	};
 
 	if (vkAllocateMemory(*m_pLogicalDevice, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS)
@@ -151,7 +151,7 @@ void Image::createImage(uint32_t width, uint32_t height, VkFormat format, VkImag
 
 void Image::transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout)
 {
-	//mDebugPrint("Transitioning image layout from " + std::to_string(oldLayout) + " to " + std::to_string(newLayout));
+	Utilities::getInstance()->debugPrint("Transitioning image layout from " + std::to_string(oldLayout) + " to " + std::to_string(newLayout), "Image");
 
 	CommandBuffer* pCommandBuffer = m_pBufferManager->getCommandBuffer();
 	VkCommandBuffer imgCommandBuffer = pCommandBuffer->beginSingleTimeCommands();

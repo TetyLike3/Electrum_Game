@@ -39,7 +39,7 @@ public:
 
 	void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& pBuffer, VkDeviceMemory& pDeviceMemory);
 	void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
-	uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+	static uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
 	// Don't use this, clean up each one individually to avoid nullptr errors.
 	void cleanup();
@@ -53,7 +53,7 @@ public:
 
 private:
 	VkDevice* m_pLogicalDevice = nullptr;
-	VkPhysicalDevice* m_pPhysicalDevice = nullptr;
+	static VkPhysicalDevice* m_pPhysicalDevice;
 	VkSurfaceKHR* m_pSurface = nullptr;
 	VkRenderPass* m_pRenderPass = nullptr;
 	Swapchain* m_pSwapchain = nullptr;

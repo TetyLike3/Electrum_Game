@@ -11,18 +11,14 @@
 #include "Buffers.h"
 
 
+
+class VulkanEngine;
+
 class Image
 {
 public:
 	Image(std::string imagePath) : m_imagePath(imagePath), m_pUtilities(Utilities::getInstance())
 	{
-		if (m_pLogicalDevice == nullptr)
-			m_pLogicalDevice = StaticMembers::getVkDevice();
-		if (m_pBufferManager == nullptr)
-			m_pBufferManager = StaticMembers::getBufferManager();
-		if (m_pGraphicsSettings == nullptr)
-			m_pGraphicsSettings = &StaticMembers::getSettings()->graphicsSettings;
-
 		createTextureImage();
 		createTextureImageView();
 		createTextureSampler();
@@ -55,5 +51,7 @@ private:
 	VkDeviceMemory m_textureImageMemory = VK_NULL_HANDLE;
 	VkImageView m_textureImageView = VK_NULL_HANDLE;
 	VkSampler m_textureSampler = VK_NULL_HANDLE;
+
+	friend class VulkanEngine;
 };
 

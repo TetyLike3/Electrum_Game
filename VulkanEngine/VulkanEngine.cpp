@@ -58,6 +58,8 @@ void VulkanEngine::run(std::map<std::string, uint32_t> versions, sSettings* sett
 
 	StaticMembers::m_settings = settings;
 
+	Image::m_pGraphicsSettings = &StaticMembers::m_settings->graphicsSettings;
+
 	mDebugPrint("Creating window...");
 	StaticMembers::m_pWindow = new Window();
 
@@ -93,6 +95,8 @@ void VulkanEngine::initVulkan()
 	StaticMembers::m_pLogicalDevice = new LogicalDevice();
 	StaticMembers::m_pVkDevice = StaticMembers::m_pLogicalDevice->getVkDevice();
 
+	Image::m_pLogicalDevice = StaticMembers::m_pVkDevice;
+
 
 	// Swapchain
 	StaticMembers::m_pSwapchain = new Swapchain();
@@ -104,6 +108,8 @@ void VulkanEngine::initVulkan()
 	// Buffer Manager
 	StaticMembers::m_pBufferManager = new BufferManager();
 	StaticMembers::m_pBufferManager->initBuffers();
+
+	Image::m_pBufferManager = StaticMembers::m_pBufferManager;
 
 	// Texture Image
 	m_pTextureImage = new Image("textures/image.png");
