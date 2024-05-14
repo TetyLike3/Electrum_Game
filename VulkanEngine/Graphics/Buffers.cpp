@@ -28,7 +28,7 @@ void BufferManager::initBuffers()
 	
 	mDebugPrint("Initializing command buffers..."); m_pCommandBuffer = new CommandBuffer(this);
 
-	mDebugPrint("Initializing vertex buffer..."); m_pVertexBuffer = new VertexBuffer(this);
+	mDebugPrint("Initializing vertex buffer..."); m_pVertexBuffer = new VertexBuffer(this, std::vector<Vertex> {}, std::vector<uint32_t> {});
 	mDebugPrint("Initializing depth buffer..."); m_pDepthBuffer = new DepthBuffer(this);
 	mDebugPrint("Initializing framebuffer..."); m_pFramebuffer = new Framebuffer(this);
 	mDebugPrint("Initializing uniform buffers..."); m_pUniformBufferObject = new UniformBufferObject(this);
@@ -257,10 +257,10 @@ void CommandBuffer::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t 
 	VkBuffer vertexBuffers[] = { *m_pBufferManager->m_pVertexBuffer->getVkVertexBuffer() };
 	VkDeviceSize offsets[] = { 0 };
 	vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-	vkCmdBindIndexBuffer(commandBuffer, *m_pBufferManager->m_pVertexBuffer->getVkIndexBuffer(), 0, VK_INDEX_TYPE_UINT16);
+	vkCmdBindIndexBuffer(commandBuffer, *m_pBufferManager->m_pVertexBuffer->getVkIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
 	
 	vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, *m_pBufferManager->m_pPipelineLayout, 0, 1, &(*m_pBufferManager->m_pDescriptorSets->getVkDescriptorSets())[imageIndex], 0, nullptr);
-	vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(VertexBuffer::indices.size()), 1, 0, 0, 0);
+	vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(m_pBufferManager->m_pVertexBuffer->m_indices.size()), 1, 0, 0, 0);
 
 	vkCmdEndRenderPass(commandBuffer);
 
@@ -289,16 +289,17 @@ void CommandBuffer::cleanup()
 // ----------------------------------------------------- //
 
 
-std::vector<VertexBuffer::sVertex> VertexBuffer::vertices = {
-	{{-0.5f, -0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}, 0.5f},
-	{{0.5f, -0.5f, 0.0f}, {0.2f, 0.0f, 0.8f}, {0.0f, 0.0f}, 0.5f},
-	{{0.5f, 0.5f, 0.0f}, {0.2f, 0.5f, 0.8f}, {0.0f, 1.0f}, 0.5f},
-	{{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}, 0.5f},
+/*
+std::vector<Vertex> VertexBuffer::vertices = {
+	{{-1.0f, -1.0f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}, 0.0f},
+	{{1.0f, -1.0f, 0.0f}, {0.2f, 0.0f, 0.8f}, {0.0f, 0.0f}, 0.0f},
+	{{1.0f, 1.0f, 0.0f}, {0.2f, 0.5f, 0.8f}, {0.0f, 1.0f}, 0.0f},
+	{{-1.0f, 1.0f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}, 0.0f},
 
-	{{0.5f, -0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}, 0.5f},
-	{{1.5f, -0.5f, -0.5f}, {0.2f, 0.0f, 0.8f}, {0.0f, 0.0f}, 0.5f},
-	{{1.5f, 0.5f, -0.5f}, {0.2f, 0.5f, 0.8f}, {0.0f, 1.0f}, 0.0f},
-	{{0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}, 0.0f},
+	{{-1.0f, 0.0f, -1.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}, 0.0f},
+	{{1.0f, 0.0f, -1.0f}, {0.2f, 0.0f, 0.8f}, {0.0f, 0.0f}, 0.0f},
+	{{1.0f, 0.0f, 1.0f}, {0.2f, 0.5f, 0.8f}, {0.0f, 1.0f}, 0.0f},
+	{{-1.0f, 0.0f, -1.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}, 0.0f},
 
 	{{-0.5f, 0.5f, -1.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}, 0.0f},
 	{{0.5f, 0.5f, -1.0f}, {0.2f, 0.0f, 0.8f}, {0.0f, 0.0f}, 0.0f},
@@ -311,6 +312,7 @@ const std::vector<uint32_t> VertexBuffer::indices = {
 	4, 5, 6, 6, 7, 4,
 	8, 9, 10, 10, 11, 8
 };
+*/
 
 
 void VertexBuffer::createVertexBuffer()
@@ -319,12 +321,12 @@ void VertexBuffer::createVertexBuffer()
 	
 	// TODO: Make this work lol
 	// Change the last values in the vertices vector to blend the texture with the vertex colors
-	for (auto& vertex : vertices)
+	for (auto& vertex : m_vertices)
 	{
 		vertex.colorBlendTex = m_pBufferManager->m_pSettings->graphicsSettings.colorBlendTexture; // Implicit bool -> float :)
 	}
 
-	VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
+	VkDeviceSize bufferSize = sizeof(m_vertices[0]) * m_vertices.size();
 
 	VkBuffer stagingBuffer;
 	VkDeviceMemory stagingBufferMemory;
@@ -332,7 +334,7 @@ void VertexBuffer::createVertexBuffer()
 
 	void* data;
 	vkMapMemory(*m_pBufferManager->m_pLogicalDevice, stagingBufferMemory, 0, bufferSize, 0, &data);
-	memcpy(data, vertices.data(), (size_t)bufferSize);
+	memcpy(data, m_vertices.data(), (size_t)bufferSize);
 	vkUnmapMemory(*m_pBufferManager->m_pLogicalDevice, stagingBufferMemory);
 
 	m_pBufferManager->createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_vertexBuffer, m_vertexBufferMemory);
@@ -347,7 +349,7 @@ void VertexBuffer::createIndexBuffer()
 {
 	mfDebugPrint("Creating index buffer...");
 
-	VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
+	VkDeviceSize bufferSize = sizeof(m_indices[0]) * m_indices.size();
 
 	VkBuffer stagingBuffer;
 	VkDeviceMemory stagingBufferMemory;
@@ -355,7 +357,7 @@ void VertexBuffer::createIndexBuffer()
 
 	void* data;
 	vkMapMemory(*m_pBufferManager->m_pLogicalDevice, stagingBufferMemory, 0, bufferSize, 0, &data);
-	memcpy(data, indices.data(), (size_t)bufferSize);
+	memcpy(data, m_indices.data(), (size_t)bufferSize);
 	vkUnmapMemory(*m_pBufferManager->m_pLogicalDevice, stagingBufferMemory);
 
 	m_pBufferManager->createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, m_indexBuffer, m_indexBufferMemory);

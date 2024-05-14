@@ -42,85 +42,88 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanEngine\Buffers.cpp">
-      <Filter>Source Files\VulkanEngine\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="VulkanEngine\Devices.cpp">
-      <Filter>Source Files\VulkanEngine\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="VulkanEngine\GraphicsPipeline.cpp">
-      <Filter>Source Files\VulkanEngine\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="VulkanEngine\Image.cpp">
-      <Filter>Source Files\VulkanEngine\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="VulkanEngine\QueueFamilyIndices.cpp">
-      <Filter>Source Files\VulkanEngine\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="VulkanEngine\Swapchain.cpp">
-      <Filter>Source Files\VulkanEngine\Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="VulkanEngine\VulkanEngine.cpp">
       <Filter>Source Files\VulkanEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="VulkanEngine\Utilities.cpp">
-      <Filter>Source Files\VulkanEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="VulkanEngine\Window.cpp">
-      <Filter>Source Files\VulkanEngine\Graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="VulkanEngine\DebugMessenger.cpp">
-      <Filter>Source Files\VulkanEngine</Filter>
-    </ClCompile>
-    <ClCompile Include="VulkanEngine\Block.cpp">
-      <Filter>Source Files\VulkanEngine\Models</Filter>
-    </ClCompile>
-    <ClCompile Include="VulkanEngine\Model.cpp">
-      <Filter>Source Files\VulkanEngine\Models</Filter>
     </ClCompile>
     <ClCompile Include="VulkanEngine\StaticMembers.cpp">
       <Filter>Source Files\VulkanEngine</Filter>
     </ClCompile>
+    <ClCompile Include="VulkanEngine\Models\Block.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanEngine\Graphics\Buffers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanEngine\Utilities\DebugMessenger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanEngine\Graphics\Devices.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanEngine\Graphics\GraphicsPipeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanEngine\Graphics\Image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanEngine\Models\Model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanEngine\Graphics\QueueFamilyIndices.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanEngine\Graphics\Swapchain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanEngine\Utilities\Utilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VulkanEngine\Graphics\Window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="VulkanEngine\Buffers.h">
-      <Filter>Header Files\VulkanEngine\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="VulkanEngine\Devices.h">
-      <Filter>Header Files\VulkanEngine\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="VulkanEngine\GraphicsPipeline.h">
-      <Filter>Header Files\VulkanEngine\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="VulkanEngine\Image.h">
-      <Filter>Header Files\VulkanEngine\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="VulkanEngine\QueueFamilyIndices.h">
-      <Filter>Header Files\VulkanEngine\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="VulkanEngine\Swapchain.h">
-      <Filter>Header Files\VulkanEngine\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="VulkanEngine\Window.h">
-      <Filter>Header Files\VulkanEngine\Graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="VulkanEngine\DebugMessenger.h">
-      <Filter>Header Files\VulkanEngine</Filter>
-    </ClInclude>
-    <ClInclude Include="VulkanEngine\Utilities.h">
-      <Filter>Header Files\VulkanEngine</Filter>
-    </ClInclude>
     <ClInclude Include="VulkanEngine\VulkanEngine.h">
       <Filter>Header Files\VulkanEngine</Filter>
     </ClInclude>
-    <ClInclude Include="VulkanEngine\Block.h">
-      <Filter>Header Files\VulkanEngine\Models</Filter>
-    </ClInclude>
-    <ClInclude Include="VulkanEngine\Model.h">
-      <Filter>Header Files\VulkanEngine\Models</Filter>
-    </ClInclude>
     <ClInclude Include="VulkanEngine\StaticMembers.h">
       <Filter>Header Files\VulkanEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanEngine\Models\Block.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanEngine\Graphics\Buffers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanEngine\Utilities\DebugMessenger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanEngine\Graphics\Devices.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanEngine\Graphics\GraphicsPipeline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanEngine\Graphics\Image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanEngine\Models\Model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanEngine\Graphics\QueueFamilyIndices.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanEngine\Graphics\Swapchain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanEngine\Utilities\Utilities.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanEngine\Graphics\Window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VulkanEngine\Graphics\Vertex.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -9,6 +9,7 @@
 #include <stdexcept>
 
 #include "../StaticMembers.h"
+#include "Vertex.h"
 
 
 #define mfDebugPrint(x) m_pBufferManager->m_pUtilities->debugPrint(x,this)
@@ -156,60 +157,8 @@ private:
 class VertexBuffer
 {
 public:
-	struct sVertex {
-		glm::vec3 pos;
-		glm::vec3 color;
-		glm::vec2 texCoord;
-		glm::lowp_f32 colorBlendTex;
-
-		static VkVertexInputBindingDescription getBindingDescription()
-		{
-			VkVertexInputBindingDescription bindingDescription{
-				.binding = 0,
-				.stride = sizeof(sVertex),
-				.inputRate = VK_VERTEX_INPUT_RATE_VERTEX
-			};
-
-			return bindingDescription;
-		}
-
-		static std::array<VkVertexInputAttributeDescription, 4> getAttributeDescriptions()
-		{
-			std::array<VkVertexInputAttributeDescription, 4> attributeDescriptions{
-				VkVertexInputAttributeDescription{
-					.location = 0,
-					.binding = 0,
-					.format = VK_FORMAT_R32G32B32_SFLOAT,
-					.offset = offsetof(sVertex, pos)
-				},
-				VkVertexInputAttributeDescription{
-					.location = 1,
-					.binding = 0,
-					.format = VK_FORMAT_R32G32B32_SFLOAT,
-					.offset = offsetof(sVertex, color)
-				},
-				VkVertexInputAttributeDescription{
-					.location = 2,
-					.binding = 0,
-					.format = VK_FORMAT_R32G32_SFLOAT,
-					.offset = offsetof(sVertex, texCoord)
-				},
-				VkVertexInputAttributeDescription{
-					.location = 3,
-					.binding = 0,
-					.format = VK_FORMAT_R16_SFLOAT,
-					.offset = offsetof(sVertex, colorBlendTex)
-				}
-			};
-
-			return attributeDescriptions;
-		}
-	};
-
-	static std::vector<sVertex> vertices;
-	static const std::vector<uint32_t> indices;
-
-
+	std::vector<Vertex> m_vertices;
+	std::vector<uint32_t> m_indices;
 	/*
 	VertexBuffer(LogicalDevice* pLogicalDevice, VkCommandPool* pCommandPool)
 		: m_pLogicalDevice(pLogicalDevice->getLogicalDevice()), m_pPhysicalDevice(pLogicalDevice->getPhysicalDevice()->getPhysicalDevice()),
@@ -218,7 +167,7 @@ public:
 		createVertexBuffer(); createIndexBuffer();
 	};
 	*/
-	VertexBuffer(BufferManager* pBufferManager) : m_pBufferManager(pBufferManager)
+	VertexBuffer(BufferManager* pBufferManager, std::vector<Vertex> vertices, std::vector<uint32_t> indices) : m_pBufferManager(pBufferManager), m_vertices(vertices), m_indices(indices)
 	{
 		createVertexBuffer();
 		createIndexBuffer();

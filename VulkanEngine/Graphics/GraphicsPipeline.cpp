@@ -152,8 +152,8 @@ void GraphicsPipeline::createGraphicsPipeline()
 	};
 
 	VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo, fragShaderStageInfo };
-	auto bindingDescription = VertexBuffer::sVertex::getBindingDescription();
-	auto attributeDescriptions = VertexBuffer::sVertex::getAttributeDescriptions();
+	auto bindingDescription = Vertex::getBindingDescription();
+	auto attributeDescriptions = Vertex::getAttributeDescriptions();
 
 	VkPipelineVertexInputStateCreateInfo vertexInputInfo{
 		.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO,

@@ -101,10 +101,15 @@ void VulkanEngine::initVulkan()
 	StaticMembers::m_pBufferManager = new BufferManager();
 	Image::m_pBufferManager = StaticMembers::m_pBufferManager;
 
-	// Initialise buffers
-	StaticMembers::m_pBufferManager->m_pCommandBuffer = new CommandBuffer(StaticMembers::m_pBufferManager);
-	StaticMembers::m_pBufferManager->m_pVertexBuffer = new VertexBuffer(StaticMembers::m_pBufferManager);
+	// Load model
+	m_pTestModel = new Model("models/DTO_Crate.fbx","textures/DTO_Crate.png");
 
+	// Initialise buffers
+	StaticMembers::m_pBufferManager->m_pVertexBuffer = new VertexBuffer(StaticMembers::m_pBufferManager, m_pTestModel->m_vertices, m_pTestModel->m_indices);
+	StaticMembers::m_pBufferManager->m_pCommandBuffer = new CommandBuffer(StaticMembers::m_pBufferManager);
+
+	// Command buffer must be created seperately
+	StaticMembers::m_pBufferManager->m_pCommandBuffer->createCommandBuffers();
 
 	// Swapchain
 	StaticMembers::m_pSwapchain = new Swapchain();
@@ -133,8 +138,6 @@ void VulkanEngine::initVulkan()
 
 	StaticMembers::m_pBufferManager->m_pDescriptorSets->createDescriptorSets(m_pTextureImage->getVkTextureImageView(), m_pTextureImage->getVkTextureSampler());
 
-	// Command buffer must be created seperately
-	StaticMembers::m_pBufferManager->m_pCommandBuffer->createCommandBuffers();
 
 
 	// Sync objects

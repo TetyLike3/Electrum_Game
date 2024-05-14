@@ -7,6 +7,7 @@
 #include "../Utilities/Utilities.h"
 #include "Swapchain.h"
 #include "Devices.h"
+#include "Vertex.h"
 
 
 class Swapchain;

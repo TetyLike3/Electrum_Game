@@ -18,6 +18,7 @@
 #include "Graphics/GraphicsPipeline.h"
 #include "Graphics/Buffers.h"
 #include "Graphics/Image.h"
+#include "Models/Model.h"
 
 
 const int MAX_FRAMES_IN_FLIGHT = 2;
@@ -52,6 +53,7 @@ private:
 
 	static DebugMessenger* m_pDebugMessenger;
 	Image* m_pTextureImage = nullptr;
+	Model* m_pTestModel = nullptr;
 
 
 	std::map<std::string, uint32_t> m_versions = {};
