@@ -1,5 +1,3 @@
-#include "StaticMembers.h"
-
 #include "VulkanEngine.h"
 
 
@@ -8,13 +6,13 @@ VulkanEngine* VulkanEngine::m_pInstance = nullptr;
 
 VulkanEngine* VulkanEngine::getInstance()
 {
-	nativeDebugPrint("Instance requested", true);
+	//nativeDebugPrint("Instance requested", true);
 	if (m_pInstance == nullptr)
 	{
 		m_pInstance = new VulkanEngine();
 		nativeDebugPrint("Instance created");
 	}
-	nativeDebugPrint("Instance retrieved");
+	//nativeDebugPrint("Instance retrieved");
 	return m_pInstance;
 }
 
@@ -56,13 +54,13 @@ void VulkanEngine::run(std::map<std::string, uint32_t> versions, sSettings* sett
 	mDebugPrint("API version: " + m_pUtilities->getVkAPIVersionString(m_versions["apiVersion"]));
 	mDebugPrint("Maximum frames in flight: " + std::to_string(MAX_FRAMES_IN_FLIGHT) + "\n");
 
-	StaticMembers::m_MAX_FRAMES_IN_FLIGHT = MAX_FRAMES_IN_FLIGHT;
-	StaticMembers::m_settings = settings;
+	m_MAX_FRAMES_IN_FLIGHT = MAX_FRAMES_IN_FLIGHT;
+	m_settings = settings;
 
-	Image::m_pGraphicsSettings = &StaticMembers::m_settings->graphicsSettings;
+	Image::m_pGraphicsSettings = &m_settings->graphicsSettings;
 
 	mDebugPrint("Creating window...");
-	StaticMembers::m_pWindow = new Window();
+	m_pWindow = new Window();
 
 	mDebugPrint("Initialising Vulkan...");
 	initVulkan();
@@ -81,67 +79,94 @@ void VulkanEngine::initVulkan()
 	// Debug messenger
 	mDebugPrint("Creating debug messenger...");
 	m_pDebugMessenger = new DebugMessenger();
-	m_pDebugMessenger->setupDebugMessenger(StaticMembers::getVkInstance(), StaticMembers::getSettings()->debugSettings.debugMode);
+	m_pDebugMessenger->setupDebugMessenger(&m_vkInstance, m_settings->debugSettings.debugMode);
 
 	// Surface
-	StaticMembers::m_pWindow->createSurface();
-	StaticMembers::m_pVkSurface = StaticMembers::m_pWindow->getSurface();
+	m_pWindow->createSurface();
+	m_pVkSurface = m_pWindow->getSurface();
 
 	// Devices
-	StaticMembers::m_pPhysicalDevice = new PhysicalDevice();
-	StaticMembers::m_pVkPhysicalDevice = StaticMembers::m_pPhysicalDevice->getVkPhysicalDevice();
+	m_pPhysicalDevice = new PhysicalDevice();
+	m_pVkPhysicalDevice = m_pPhysicalDevice->getVkPhysicalDevice();
 
 	validateSettings(); // Ensure device supports current settings
 
-	StaticMembers::m_pLogicalDevice = new LogicalDevice();
-	StaticMembers::m_pVkDevice = StaticMembers::m_pLogicalDevice->getVkDevice();
-	Image::m_pLogicalDevice = StaticMembers::m_pVkDevice;
+	m_pLogicalDevice = new LogicalDevice();
+	m_pVkDevice = m_pLogicalDevice->getVkDevice();
+	Image::m_pLogicalDevice = m_pVkDevice;
 
 	// Buffer Manager
-	StaticMembers::m_pBufferManager = new BufferManager();
-	Image::m_pBufferManager = StaticMembers::m_pBufferManager;
+	m_pBufferManager = new BufferManager();
+	Image::m_pBufferManager = m_pBufferManager;
 
-	// Load model
-	m_pTestModel = new Model("models/DTO_Crate.fbx","textures/DTO_Crate.png");
 
-	// Initialise buffers
-	StaticMembers::m_pBufferManager->m_pVertexBuffer = new VertexBuffer(StaticMembers::m_pBufferManager, m_pTestModel->m_vertices, m_pTestModel->m_indices);
-	StaticMembers::m_pBufferManager->m_pCommandBuffer = new CommandBuffer(StaticMembers::m_pBufferManager);
+	// Command buffer
+	m_pBufferManager->m_pCommandBuffer = new CommandBuffer(m_pBufferManager);
+
+	// Create blocks
+	std::vector<Vertex> loadedVertices;
+	std::vector<uint32_t> loadedIndices;
+	for (size_t i = 1; i < 4; i++) {
+		glm::vec3 newPos = {};
+		newPos.x = 1.0f * i;
+		newPos.y = 1.0f * i;
+
+		Block* newBlock = new Block(newPos, "textures/image.png");
+		newBlock->buildModel();
+		m_pLoadedBlocks.push_back(newBlock);
+		
+		std::vector<Vertex> blockVertices = newBlock->getVertices();
+		std::vector<uint32_t> blockIndices = newBlock->getIndices();
+
+		loadedVertices.reserve(loadedVertices.size() + blockVertices.size()); // Preallocate memory
+		loadedVertices.insert(loadedVertices.end(), blockVertices.begin(), blockVertices.end());
+		loadedIndices.reserve(loadedIndices.size() + blockIndices.size()); // Preallocate memory
+		loadedIndices.insert(loadedIndices.end(), blockIndices.begin(), blockIndices.end());
+	}
+	//m_pTestModel = new Model("models/DTO_Crate.obj", "textures/DTO_Crate_tex_Diffuse.png");
+
+
+	if (loadedVertices.size() == 0) {
+		std::runtime_error("Tried to start without any loaded vertices.");
+	}
+	if (loadedIndices.size() == 0) {
+		std::runtime_error("Tried to start with empty vertex index array.");
+	}
+
+	// Vertex buffer
+	m_pBufferManager->m_pVertexBuffer = new VertexBuffer(m_pBufferManager, loadedVertices, loadedIndices);
 
 	// Command buffer must be created seperately
-	StaticMembers::m_pBufferManager->m_pCommandBuffer->createCommandBuffers();
+	m_pBufferManager->m_pCommandBuffer->createCommandBuffers();
 
 	// Swapchain
-	StaticMembers::m_pSwapchain = new Swapchain();
-	StaticMembers::m_pBufferManager->m_pSwapchain = StaticMembers::m_pSwapchain;
+	m_pSwapchain = new Swapchain();
+	m_pBufferManager->m_pSwapchain = m_pSwapchain;
 
 	// Initialise depth buffer
-	StaticMembers::m_pBufferManager->m_pDepthBuffer = new DepthBuffer(StaticMembers::m_pBufferManager);
+	m_pBufferManager->m_pDepthBuffer = new DepthBuffer(m_pBufferManager);
 
 
 	// Graphics pipeline
-	StaticMembers::m_pGraphicsPipeline = new GraphicsPipeline();
-	StaticMembers::m_pBufferManager->m_pGraphicsPipeline = StaticMembers::m_pGraphicsPipeline->getGraphicsPipeline();
-	StaticMembers::m_pBufferManager->m_pRenderPass = StaticMembers::m_pGraphicsPipeline->getRenderPass();
-	StaticMembers::m_pBufferManager->m_pDescriptorSetLayout = StaticMembers::m_pGraphicsPipeline->getDescriptorSetLayout();
-	StaticMembers::m_pBufferManager->m_pPipelineLayout = StaticMembers::m_pGraphicsPipeline->getVkPipelineLayout();
+	m_pGraphicsPipeline = new GraphicsPipeline();
+	m_pBufferManager->m_pGraphicsPipeline = m_pGraphicsPipeline->getGraphicsPipeline();
+	m_pBufferManager->m_pRenderPass = m_pGraphicsPipeline->getRenderPass();
+	m_pBufferManager->m_pDescriptorSetLayout = m_pGraphicsPipeline->getDescriptorSetLayout();
+	m_pBufferManager->m_pPipelineLayout = m_pGraphicsPipeline->getVkPipelineLayout();
 
 	// Initialise other buffers
-	StaticMembers::m_pBufferManager->m_pFramebuffer = new Framebuffer(StaticMembers::m_pBufferManager);
-	StaticMembers::m_pBufferManager->m_pUniformBufferObject = new UniformBufferObject(StaticMembers::m_pBufferManager);
-	StaticMembers::m_pBufferManager->m_pDescriptorSets = new DescriptorSets(StaticMembers::m_pBufferManager);
+	m_pBufferManager->m_pFramebuffer = new Framebuffer(m_pBufferManager);
+	m_pBufferManager->m_pUniformBufferObject = new UniformBufferObject(m_pBufferManager);
+	m_pBufferManager->m_pDescriptorSets = new DescriptorSets(m_pBufferManager);
 
 
 	// Texture Image
 	m_pTextureImage = new Image("textures/image.png");
 
-
-	StaticMembers::m_pBufferManager->m_pDescriptorSets->createDescriptorSets(m_pTextureImage->getVkTextureImageView(), m_pTextureImage->getVkTextureSampler());
-
-
+	m_pBufferManager->m_pDescriptorSets->createDescriptorSets(m_pTextureImage->getVkTextureImageView(), m_pTextureImage->getVkTextureSampler());
 
 	// Sync objects
-	StaticMembers::m_pWindow->createSyncObjects();
+	m_pWindow->createSyncObjects();
 
 }
 
@@ -149,7 +174,7 @@ void VulkanEngine::createInstance()
 {
 	mDebugPrint("Creating Vulkan instance...");
 
-	if (StaticMembers::m_settings->debugSettings.debugMode && !checkValidationLayerSupport())
+	if (m_settings->debugSettings.debugMode && !checkValidationLayerSupport())
 	{
 		throw std::runtime_error("validation layers requested, but not available!");
 	}
@@ -174,12 +199,12 @@ void VulkanEngine::createInstance()
 	createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
 	createInfo.ppEnabledExtensionNames = extensions.data();
 
-	if (StaticMembers::m_settings->debugSettings.debugMode)
+	if (m_settings->debugSettings.debugMode)
 	{
-		auto layerCount = static_cast<uint32_t>(StaticMembers::m_settings->debugSettings.validationLayers.size());
+		auto layerCount = static_cast<uint32_t>(m_settings->debugSettings.validationLayers.size());
 		layerCount == 1 ? mDebugPrint("Enabling 1 validation layer...") : mDebugPrint(std::format("Enabling {} validation layer(s)...", layerCount));
 		createInfo.enabledLayerCount = layerCount;
-		createInfo.ppEnabledLayerNames = StaticMembers::m_settings->debugSettings.validationLayers.data();
+		createInfo.ppEnabledLayerNames = m_settings->debugSettings.validationLayers.data();
 	}
 	else
 	{
@@ -187,7 +212,7 @@ void VulkanEngine::createInstance()
 		createInfo.enabledLayerCount = 0;
 	}
 
-	if (vkCreateInstance(&createInfo, nullptr, StaticMembers::getVkInstance()) != VK_SUCCESS)
+	if (vkCreateInstance(&createInfo, nullptr, &m_vkInstance) != VK_SUCCESS)
 	{
 		throw std::runtime_error("failed to create instance!");
 	}
@@ -198,52 +223,59 @@ void VulkanEngine::createInstance()
 
 void VulkanEngine::mainLoop()
 {
-	StaticMembers::m_pWindow->mainLoop();
+	m_pWindow->mainLoop();
 }
 
 
 void VulkanEngine::cleanup()
 {
 	mDebugPrint("Cleaning up sync objects...");
-	StaticMembers::m_pWindow->cleanupSyncObjects();
+	m_pWindow->cleanupSyncObjects();
 
 	//mDebugPrint("Cleaning up buffers...");
 	//m_pBufferManager->cleanup();
 
 	mDebugPrint("Cleaning up command buffer...");
-	StaticMembers::m_pBufferManager->m_pCommandBuffer->cleanup();
-	delete StaticMembers::m_pBufferManager->m_pCommandBuffer;
+	m_pBufferManager->m_pCommandBuffer->cleanup();
+	delete m_pBufferManager->m_pCommandBuffer;
 
 	mDebugPrint("Cleaning up uniform buffer objects...");
-	StaticMembers::m_pBufferManager->m_pUniformBufferObject->cleanup();
-	delete StaticMembers::m_pBufferManager->m_pUniformBufferObject;
+	m_pBufferManager->m_pUniformBufferObject->cleanup();
+	delete m_pBufferManager->m_pUniformBufferObject;
 
 	mDebugPrint("Cleaning up graphics pipeline...");
-	StaticMembers::m_pGraphicsPipeline->cleanup();
-	delete StaticMembers::m_pGraphicsPipeline;
+	m_pGraphicsPipeline->cleanup();
+	delete m_pGraphicsPipeline;
 
 	mDebugPrint("Cleaning up swapchain...");
-	StaticMembers::m_pSwapchain->cleanup();
-	delete StaticMembers::m_pSwapchain;
+	m_pSwapchain->cleanup();
+	delete m_pSwapchain;
+
+	mDebugPrint("Cleaning up loaded blocks...");
+	for (size_t i = 3; i > 0; i--) {
+		Block* block = m_pLoadedBlocks.at(i-1);
+		block->cleanup();
+		delete block;
+	}
 
 	mDebugPrint("Cleaning up texture image...");
 	m_pTextureImage->cleanup();
 	delete m_pTextureImage;
 
 	mDebugPrint("Cleaning up descriptor sets...");
-	StaticMembers::m_pBufferManager->m_pDescriptorSets->cleanup();
-	delete StaticMembers::m_pBufferManager->m_pDescriptorSets;
+	m_pBufferManager->m_pDescriptorSets->cleanup();
+	delete m_pBufferManager->m_pDescriptorSets;
 
 	mDebugPrint("Cleaning up vertex buffer...");
-	StaticMembers::m_pBufferManager->m_pVertexBuffer->cleanup();
-	delete StaticMembers::m_pBufferManager->m_pVertexBuffer;
-	delete StaticMembers::m_pBufferManager;
+	m_pBufferManager->m_pVertexBuffer->cleanup();
+	delete m_pBufferManager->m_pVertexBuffer;
+	delete m_pBufferManager;
 
 	mDebugPrint("Cleaning up logical device...");
-	StaticMembers::m_pLogicalDevice->cleanup();
-	delete StaticMembers::m_pLogicalDevice;
+	m_pLogicalDevice->cleanup();
+	delete m_pLogicalDevice;
 
-	if (StaticMembers::m_settings->debugSettings.debugMode)
+	if (m_settings->debugSettings.debugMode)
 	{
 		mDebugPrint("Cleaning up debug messenger...");
 		m_pDebugMessenger->cleanup();
@@ -251,14 +283,14 @@ void VulkanEngine::cleanup()
 	}
 
 	mDebugPrint("Cleaning up surface...");
-	StaticMembers::m_pWindow->cleanupSurface();
+	m_pWindow->cleanupSurface();
 
 	mDebugPrint("Cleaning up Vulkan instance...");
-	vkDestroyInstance(StaticMembers::m_vkInstance, nullptr);
+	vkDestroyInstance(m_vkInstance, nullptr);
 
 	mDebugPrint("Cleaning up window...");
-	StaticMembers::m_pWindow->cleanupWindow();
-	delete StaticMembers::m_pWindow;
+	m_pWindow->cleanupWindow();
+	delete m_pWindow;
 }
 
 
@@ -274,7 +306,7 @@ bool VulkanEngine::checkValidationLayerSupport()
 	std::vector<VkLayerProperties> availableLayers(layerCount);
 	vkEnumerateInstanceLayerProperties(&layerCount, availableLayers.data());
 
-	for (const char* layerName : StaticMembers::m_settings->debugSettings.validationLayers)
+	for (const char* layerName : m_settings->debugSettings.validationLayers)
 	{
 		bool layerFound = false;
 
@@ -308,7 +340,7 @@ std::vector<const char*> VulkanEngine::getRequiredExtensions()
 
 	std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
 
-	if (StaticMembers::m_settings->debugSettings.debugMode)
+	if (m_settings->debugSettings.debugMode)
 	{
 		mDebugPrint("Enabling validation layer extensions...");
 		extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
@@ -324,15 +356,15 @@ void VulkanEngine::validateSettings()
 	int settingsChanged = 0;
 
 	VkPhysicalDeviceProperties properties{};
-	vkGetPhysicalDeviceProperties(*StaticMembers::m_pVkPhysicalDevice, &properties);
+	vkGetPhysicalDeviceProperties(*m_pVkPhysicalDevice, &properties);
 	VkPhysicalDeviceFeatures features{};
-	vkGetPhysicalDeviceFeatures(*StaticMembers::m_pVkPhysicalDevice, &features);
+	vkGetPhysicalDeviceFeatures(*m_pVkPhysicalDevice, &features);
 
 	// Check if the device supports anisotropic filtering
-	if (properties.limits.maxSamplerAnisotropy < StaticMembers::m_settings->graphicsSettings.anisotropyLevel)
+	if (properties.limits.maxSamplerAnisotropy < m_settings->graphicsSettings.anisotropyLevel)
 	{
-		mDebugPrint(std::format("Anisotropic filtering level of x{} is not supported by the device. Setting to x{}.", StaticMembers::m_settings->graphicsSettings.anisotropyLevel, properties.limits.maxSamplerAnisotropy));
-		StaticMembers::m_settings->graphicsSettings.anisotropyLevel = properties.limits.maxSamplerAnisotropy;
+		mDebugPrint(std::format("Anisotropic filtering level of x{} is not supported by the device. Setting to x{}.", m_settings->graphicsSettings.anisotropyLevel, properties.limits.maxSamplerAnisotropy));
+		m_settings->graphicsSettings.anisotropyLevel = properties.limits.maxSamplerAnisotropy;
 		settingsChanged++;
 	}
 
@@ -340,13 +372,13 @@ void VulkanEngine::validateSettings()
 	if (!features.fillModeNonSolid)
 	{
 		mDebugPrint("Wireframe rendering is not supported by the device. Setting to false.");
-		StaticMembers::m_settings->graphicsSettings.wireframe = false;
+		m_settings->graphicsSettings.wireframe = false;
 		settingsChanged++;
 	}
 	if (!features.wideLines)
 	{
 		mDebugPrint("Wide lines are not supported by the device. Setting wireframe thickness to 1px.");
-		StaticMembers::m_settings->graphicsSettings.wireframeThickness = 1.0f;
+		m_settings->graphicsSettings.wireframeThickness = 1.0f;
 		settingsChanged++;
 	}
 

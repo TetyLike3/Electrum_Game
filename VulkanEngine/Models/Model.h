@@ -15,7 +15,7 @@ public:
 	};
 
 	void createModel();
-
+	void cleanup();
 
 private:
 	Utilities* m_pUtilities = nullptr;

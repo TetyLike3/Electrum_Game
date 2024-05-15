@@ -1,3 +1,4 @@
+#include "../VulkanEngine.h"
 #include "Devices.h"
 #include "Buffers.h"
 #include "Swapchain.h"
@@ -7,13 +8,13 @@
 
 
 
-Window::Window() : m_pVkInstance(StaticMembers::getVkInstance()), m_MAX_FRAMES_IN_FLIGHT(StaticMembers::getMAX_FRAMES_IN_FLIGHT()), m_pUtilities(Utilities::getInstance()) { initWindow(); };
+Window::Window() : m_pVkInstance(&VulkanEngine::getInstance()->m_vkInstance), m_MAX_FRAMES_IN_FLIGHT(VulkanEngine::getInstance()->m_MAX_FRAMES_IN_FLIGHT), m_pUtilities(Utilities::getInstance()) { initWindow(); };
 
 void Window::initWindow()
 {
 	mDebugPrint("Initializing window...");
 
-	sSettings::sWindowSettings windowSettings = StaticMembers::getSettings()->windowSettings;
+	sSettings::sWindowSettings windowSettings = VulkanEngine::getInstance()->m_settings->windowSettings;
 
 	glfwInit();
 
@@ -47,11 +48,11 @@ void Window::createSyncObjects()
 	mDebugPrint("Creating sync objects...");
 
 	// Define these variables here since we need to use them from now on
-	m_pLogicalDevice = StaticMembers::getVkDevice();
-	m_pGraphicsQueue = StaticMembers::getLogicalDevice()->getGraphicsQueue();
-	m_pSwapchain = StaticMembers::getSwapchain();
-	m_pCommandBuffer = StaticMembers::getBufferManager()->getCommandBuffer();
-	m_pUniformBufferObject = StaticMembers::getBufferManager()->getUniformBufferObject();
+	m_pLogicalDevice = VulkanEngine::getInstance()->m_pLogicalDevice->getVkDevice();
+	m_pGraphicsQueue = VulkanEngine::getInstance()->m_pLogicalDevice->getGraphicsQueue();
+	m_pSwapchain = VulkanEngine::getInstance()->m_pSwapchain;
+	m_pCommandBuffer = VulkanEngine::getInstance()->m_pBufferManager->getCommandBuffer();
+	m_pUniformBufferObject = VulkanEngine::getInstance()->m_pBufferManager->getUniformBufferObject();
 
 	// Resize the vectors to the correct size
 	m_imageAvailableSemaphores.resize(m_MAX_FRAMES_IN_FLIGHT);
@@ -183,8 +184,8 @@ void Window::updateUniformBuffer(uint32_t currentImage)
 	VkExtent2D swapchainExtent = *m_pSwapchain->getSwapchainExtent();
 
 	UniformBufferObject::sUniformBufferObject ubo{
-		.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(1.0f, 50.0f, 0.0f)),
-		.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 4.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)),
+		.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(120.0f), glm::vec3(1.0f, 0.1f, 0.6f)),
+		.view = glm::lookAt(glm::vec3(5.0f, /*(8.0f * glm::sin(time)) + 4.0f*/ 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)),
 		.proj = glm::perspective(glm::radians(70.0f), swapchainExtent.width / (float)swapchainExtent.height, 0.1f, 10.0f)
 	};
 	ubo.proj[1][1] *= -1; // Flip the y axis to account for Vulkan's inverted y axis

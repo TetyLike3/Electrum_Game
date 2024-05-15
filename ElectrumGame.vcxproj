@@ -173,7 +173,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="VulkanEngine\StaticMembers.cpp" />
     <ClCompile Include="VulkanEngine\Models\Block.cpp" />
     <ClCompile Include="VulkanEngine\Graphics\Buffers.cpp" />
     <ClCompile Include="VulkanEngine\Utilities\DebugMessenger.cpp" />
@@ -189,7 +188,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VulkanEngine\Graphics\Vertex.h" />
-    <ClInclude Include="VulkanEngine\StaticMembers.h" />
     <ClInclude Include="VulkanEngine\Models\Block.h" />
     <ClInclude Include="VulkanEngine\Graphics\Buffers.h" />
     <ClInclude Include="VulkanEngine\Utilities\DebugMessenger.h" />

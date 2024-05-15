@@ -45,9 +45,6 @@
     <ClCompile Include="VulkanEngine\VulkanEngine.cpp">
       <Filter>Source Files\VulkanEngine</Filter>
     </ClCompile>
-    <ClCompile Include="VulkanEngine\StaticMembers.cpp">
-      <Filter>Source Files\VulkanEngine</Filter>
-    </ClCompile>
     <ClCompile Include="VulkanEngine\Models\Block.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -84,9 +81,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VulkanEngine\VulkanEngine.h">
-      <Filter>Header Files\VulkanEngine</Filter>
-    </ClInclude>
-    <ClInclude Include="VulkanEngine\StaticMembers.h">
       <Filter>Header Files\VulkanEngine</Filter>
     </ClInclude>
     <ClInclude Include="VulkanEngine\Models\Block.h">

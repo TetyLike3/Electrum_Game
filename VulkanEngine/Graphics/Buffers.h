@@ -8,8 +8,8 @@
 #include <vector>
 #include <stdexcept>
 
-#include "../StaticMembers.h"
 #include "Vertex.h"
+#include "Swapchain.h"
 
 
 #define mfDebugPrint(x) m_pBufferManager->m_pUtilities->debugPrint(x,this)

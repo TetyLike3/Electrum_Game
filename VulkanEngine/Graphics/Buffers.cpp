@@ -1,3 +1,4 @@
+#include "../VulkanEngine.h"
 #include "Image.h"
 #include "Swapchain.h"
 #include "GraphicsPipeline.h"
@@ -12,14 +13,14 @@
 
 VkPhysicalDevice* BufferManager::m_pPhysicalDevice = nullptr;
 
-BufferManager::BufferManager() : m_pLogicalDevice(StaticMembers::getVkDevice()), m_pSurface(StaticMembers::getVkSurfaceKHR()),
-m_pRenderPass(StaticMembers::getGraphicsPipeline()->getRenderPass()), m_pSwapchain(StaticMembers::getSwapchain()), m_pSettings(StaticMembers::getSettings()),
-m_MAX_FRAMES_IN_FLIGHT(StaticMembers::getMAX_FRAMES_IN_FLIGHT()), m_pGraphicsPipeline(StaticMembers::getGraphicsPipeline()->getGraphicsPipeline()),
-m_pGraphicsQueue(StaticMembers::getLogicalDevice()->getGraphicsQueue()), m_pDescriptorSetLayout(StaticMembers::getGraphicsPipeline()->getDescriptorSetLayout()),
-m_pPipelineLayout(StaticMembers::getGraphicsPipeline()->getVkPipelineLayout()), m_pUtilities(Utilities::getInstance())
+BufferManager::BufferManager() : m_pLogicalDevice(VulkanEngine::getInstance()->m_pLogicalDevice->getVkDevice()), m_pSurface(VulkanEngine::getInstance()->m_pVkSurface),
+m_pRenderPass(VulkanEngine::getInstance()->m_pGraphicsPipeline->getRenderPass()), m_pSwapchain(VulkanEngine::getInstance()->m_pSwapchain), m_pSettings(VulkanEngine::getInstance()->m_settings),
+m_MAX_FRAMES_IN_FLIGHT(VulkanEngine::getInstance()->m_MAX_FRAMES_IN_FLIGHT), m_pGraphicsPipeline(VulkanEngine::getInstance()->m_pGraphicsPipeline->getGraphicsPipeline()),
+m_pGraphicsQueue(VulkanEngine::getInstance()->m_pLogicalDevice->getGraphicsQueue()), m_pDescriptorSetLayout(VulkanEngine::getInstance()->m_pGraphicsPipeline->getDescriptorSetLayout()),
+m_pPipelineLayout(VulkanEngine::getInstance()->m_pGraphicsPipeline->getVkPipelineLayout()), m_pUtilities(Utilities::getInstance())
 {
 	if (m_pPhysicalDevice == nullptr)
-		m_pPhysicalDevice = StaticMembers::getVkPhysicalDevice();
+		m_pPhysicalDevice = VulkanEngine::getInstance()->m_pPhysicalDevice->getVkPhysicalDevice();
 };
 
 void BufferManager::initBuffers()
