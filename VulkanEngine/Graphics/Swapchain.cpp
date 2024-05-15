@@ -1,4 +1,6 @@
+#include "../VulkanEngine.h"
 #include "Window.h"
+#include "Image.h"
 
 #include "Swapchain.h"
 
@@ -8,8 +10,8 @@
 // TODO: Disable debug prints after first swapchain creation
 
 
-Swapchain::Swapchain() : m_pLogicalDevice(StaticMembers::getVkDevice()), m_pPhysicalDevice(StaticMembers::getPhysicalDevice()), m_pWindow(StaticMembers::getWindow()->getWindow()),
-	m_pSurface(StaticMembers::getVkSurfaceKHR()), m_pBufferManager(StaticMembers::getBufferManager()), m_pUtilities(Utilities::getInstance())
+Swapchain::Swapchain() : m_pLogicalDevice(VulkanEngine::getInstance()->m_pLogicalDevice->getVkDevice()), m_pPhysicalDevice(VulkanEngine::getInstance()->m_pPhysicalDevice), m_pWindow(VulkanEngine::getInstance()->m_pWindow->getWindow()),
+	m_pSurface(VulkanEngine::getInstance()->m_pVkSurface), m_pBufferManager(VulkanEngine::getInstance()->m_pBufferManager), m_pUtilities(Utilities::getInstance())
 {
 	createSwapchain();
 	createImageViews();
@@ -66,9 +68,9 @@ VkExtent2D Swapchain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilit
 			static_cast<uint32_t>(width),
 			static_cast<uint32_t>(height)
 		};
-
-		actualExtent.width = std::clamp(actualExtent.width, capabilities.minImageExtent.width, capabilities.maxImageExtent.width);
-		actualExtent.height = std::clamp(actualExtent.height, capabilities.minImageExtent.height, capabilities.maxImageExtent.height);
+		
+		actualExtent.width = glm::clamp(actualExtent.width, capabilities.minImageExtent.width, capabilities.maxImageExtent.width);
+		actualExtent.height = glm::clamp(actualExtent.height, capabilities.minImageExtent.height, capabilities.maxImageExtent.height);
 
 		return actualExtent;
 	}
@@ -77,7 +79,7 @@ VkExtent2D Swapchain::chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilit
 void Swapchain::createSwapchain()
 {
 	//mDebugPrint("Creating swap chain...");
-	SwapChainSupportDetails swapChainSupport = m_pPhysicalDevice->querySwapChainSupport(*StaticMembers::getVkPhysicalDevice());
+	SwapChainSupportDetails swapChainSupport = m_pPhysicalDevice->querySwapChainSupport(*m_pPhysicalDevice->getVkPhysicalDevice());
 
 	VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
 	VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
@@ -101,7 +103,7 @@ void Swapchain::createSwapchain()
 		.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT
 	};
 
-	QueueFamilyIndices::sQueueFamilyIndices indices = QueueFamilyIndices::findQueueFamilies(*StaticMembers::getVkPhysicalDevice(), *m_pSurface);
+	QueueFamilyIndices::sQueueFamilyIndices indices = QueueFamilyIndices::findQueueFamilies(*m_pPhysicalDevice->getVkPhysicalDevice(), *m_pSurface);
 	uint32_t queueFamilyIndices[] = { indices.graphicsFamily.value(), indices.presentFamily.value() };
 
 	if (indices.graphicsFamily != indices.presentFamily)

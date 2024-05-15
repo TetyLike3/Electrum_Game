@@ -1,10 +1,11 @@
+#include "../VulkanEngine.h"
 #include "Window.h"
 
 #include "Devices.h"
 
 
 
-PhysicalDevice::PhysicalDevice() : m_pVkInstance(StaticMembers::getVkInstance()), m_pSurface(StaticMembers::getWindow()->getSurface()), m_pUtilities(Utilities::getInstance()) { pickPhysicalDevice(); };
+PhysicalDevice::PhysicalDevice() : m_pVkInstance(&VulkanEngine::getInstance()->m_vkInstance), m_pSurface(VulkanEngine::getInstance()->m_pWindow->getSurface()), m_pUtilities(Utilities::getInstance()) { pickPhysicalDevice(); };
 
 VkPhysicalDevice* PhysicalDevice::pickPhysicalDevice()
 {
@@ -127,18 +128,18 @@ SwapChainSupportDetails PhysicalDevice::querySwapChainSupport(VkPhysicalDevice p
 
 
 
-LogicalDevice::LogicalDevice() : m_pPhysicalDevice(StaticMembers::getPhysicalDevice()), m_pSurface(StaticMembers::getVkSurfaceKHR()), m_pWindow(StaticMembers::getWindow()->getWindow()), m_pUtilities(Utilities::getInstance()) { createLogicalDevice(); };
+LogicalDevice::LogicalDevice() : m_pPhysicalDevice(VulkanEngine::getInstance()->m_pPhysicalDevice), m_pSurface(VulkanEngine::getInstance()->m_pVkSurface), m_pWindow(VulkanEngine::getInstance()->m_pWindow->getWindow()), m_pUtilities(Utilities::getInstance()) { createLogicalDevice(); };
 
 void LogicalDevice::createLogicalDevice()
 {
 	mDebugPrint("Creating logical device...");
 
-	sSettings* pSettings = StaticMembers::getSettings();
+	sSettings* pSettings = VulkanEngine::getInstance()->m_settings;
 
 	sSettings::sDebugSettings pDebugSettings = pSettings->debugSettings;
 	VkPhysicalDeviceFeatures deviceFeatures = pSettings->graphicsSettings.enabledFeatures;
 
-	QueueFamilyIndices::sQueueFamilyIndices indices = QueueFamilyIndices::findQueueFamilies(*StaticMembers::getVkPhysicalDevice(), *m_pSurface);
+	QueueFamilyIndices::sQueueFamilyIndices indices = QueueFamilyIndices::findQueueFamilies(*VulkanEngine::getInstance()->m_pPhysicalDevice->getVkPhysicalDevice(), *m_pSurface);
 
 	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 	std::set<uint32_t> uniqueQueueFamilies = { indices.graphicsFamily.value(), indices.presentFamily.value() };
@@ -176,7 +177,7 @@ void LogicalDevice::createLogicalDevice()
 		createInfo.enabledLayerCount = 0;
 	}
 
-	if (vkCreateDevice(*StaticMembers::getVkPhysicalDevice(), &createInfo, nullptr, &m_logicalDevice) != VK_SUCCESS)
+	if (vkCreateDevice(*VulkanEngine::getInstance()->m_pPhysicalDevice->getVkPhysicalDevice(), &createInfo, nullptr, &m_logicalDevice) != VK_SUCCESS)
 	{
 		throw std::runtime_error("failed to create logical device!");
 	}

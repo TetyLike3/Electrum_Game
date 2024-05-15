@@ -3,10 +3,10 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
-#include "../StaticMembers.h"
 #include "../Utilities/Utilities.h"
 #include "Swapchain.h"
 #include "Devices.h"
+#include "Vertex.h"
 
 
 class Swapchain;
@@ -15,13 +15,7 @@ class GraphicsPipeline
 {
 public:
 
-	GraphicsPipeline() : m_pLogicalDevice(StaticMembers::getVkDevice()), m_pPhysicalDevice(StaticMembers::getVkPhysicalDevice()),
-		m_pSwapchain(StaticMembers::getSwapchain()), m_pGraphicsSettings(&StaticMembers::getSettings()->graphicsSettings), m_pUtilities(Utilities::getInstance())
-	{
-		createRenderPass();
-		createDescriptorSetLayout();
-		createGraphicsPipeline();
-	};
+	GraphicsPipeline();
 
 	void createRenderPass();
 	void createDescriptorSetLayout();

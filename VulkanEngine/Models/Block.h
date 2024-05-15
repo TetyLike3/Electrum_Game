@@ -2,20 +2,31 @@
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 
-#include "../Graphics/Image.h"
 #include "../Utilities/Utilities.h"
+#include "../Graphics/Image.h"
+#include "../Graphics/Vertex.h"
 
 
 
 class Block
 {
 public:
-	Block(uint8_t size, std::string texturePath) : m_size(size), m_pUtilities(Utilities::getInstance()) {};
+	Block(glm::vec3 pos, std::string texturePath) : m_pos(pos), m_pUtilities(Utilities::getInstance()) {};
+
+	void buildModel();
+	void cleanup();
+
+	std::vector<Vertex> getVertices() { return m_vertices; };
+	std::vector<uint32_t> getIndices() { return m_indices; };
 
 private:
 	Utilities* m_pUtilities = nullptr;
 
-	uint8_t m_size = 1;
+	glm::vec3 m_pos;
+
+	std::vector<Vertex> m_vertices;
+	std::vector<uint32_t> m_indices;
 	Image* m_pTextureImage = nullptr;
 };

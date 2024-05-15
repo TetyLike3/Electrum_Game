@@ -3,10 +3,8 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
-#include "../StaticMembers.h"
-#include "Image.h"
-
 class BufferManager;
+class PhysicalDevice;
 
 class Swapchain
 {
