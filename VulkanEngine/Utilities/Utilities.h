@@ -33,9 +33,11 @@ struct sSettings {
 		bool enableValidationLayers = true; // Enable validation layers.
 	} debugSettings;
 	struct sGraphicsSettings {
+		int maxFramesInFlight = 2; // How many frames the CPU can queue for rendering at once.
 		VkPhysicalDeviceFeatures enabledFeatures = {}; // Physical device features to enable.
 		bool tripleBuffering = true; // Enable Triple buffering.
 		bool vsync = true; // Enable VSync.
+		int maxFramerate = 0; // Maximum frame rate of the engine (0 for unlimited).
 		bool rasterizerDepthClamp = false; // Enable depth clamping.
 		bool wireframe = true; // Enable Wireframe rendering.
 		float wireframeThickness = 2.0f; // Thickness of wireframes when using Wireframe rendering.

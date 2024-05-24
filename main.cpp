@@ -13,8 +13,8 @@
 #include "VulkanEngine/Utilities/Utilities.h"
 
 const std::map<std::string, uint32_t> versions = {
-	{ "gameVersion", VK_MAKE_API_VERSION(0,0,7,0) },
-	{ "engineVersion", VK_MAKE_API_VERSION(0,0,7,0) },
+	{ "gameVersion", VK_MAKE_API_VERSION(0,0,8,0) },
+	{ "engineVersion", VK_MAKE_API_VERSION(0,0,8,0) },
 	{ "apiVersion", VK_MAKE_API_VERSION(0,1,0,0) }
 };
 
@@ -38,6 +38,7 @@ sSettings settings{
 		#endif
 	},
 	.graphicsSettings {
+		.maxFramesInFlight = 1,
 		.enabledFeatures = {
 			.fillModeNonSolid = true,
 			.wideLines = true,
@@ -45,10 +46,11 @@ sSettings settings{
 		},
 		.tripleBuffering = true,
 		.vsync = true,
+		.maxFramerate = 1,
 		.rasterizerDepthClamp = false,
 		.wireframe = false,
-		.wireframeThickness = 4.0f,
-		.multisampling = false,
+		.wireframeThickness = 8.0f,
+		.multisampling = true,
 		.anisotropicFiltering = true,
 		.anisotropyLevel = 16.0f,
 		.colorBlendTexture = true,

@@ -211,7 +211,7 @@ void GraphicsPipeline::createGraphicsPipeline()
 		.depthClampEnable = m_pGraphicsSettings->rasterizerDepthClamp,
 		.rasterizerDiscardEnable = VK_FALSE,
 		//rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
-		.cullMode = VK_CULL_MODE_BACK_BIT,
+		//.cullMode = VK_CULL_MODE_BACK_BIT,
 		.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE,
 		.depthBiasEnable = VK_FALSE,
 		.depthBiasConstantFactor = 0.0f, // Optional
@@ -220,6 +220,7 @@ void GraphicsPipeline::createGraphicsPipeline()
 		.lineWidth = m_pGraphicsSettings->wireframeThickness
 	};
 	m_pGraphicsSettings->wireframe ? rasterizer.polygonMode = VK_POLYGON_MODE_LINE : rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
+	m_pGraphicsSettings->wireframe ? rasterizer.cullMode = VK_CULL_MODE_NONE : rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
 
 	mDebugPrint("Creating multisampler...");
 	VkPipelineMultisampleStateCreateInfo multisampling{

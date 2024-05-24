@@ -22,10 +22,6 @@
 #include "Models/Block.h"
 
 
-const int MAX_FRAMES_IN_FLIGHT = 2;
-
-
-
 enum class VkEngineState
 {
 	NONE,
@@ -62,7 +58,7 @@ private:
 	static DebugMessenger* m_pDebugMessenger;
 
 	std::vector<Block*> m_pLoadedBlocks;
-	Image* m_pTextureImage;
+	Image* m_pTextureImage = nullptr;
 
 	VkInstance m_vkInstance = VK_NULL_HANDLE;
 	Window* m_pWindow = nullptr;

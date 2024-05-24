@@ -8,7 +8,11 @@
 
 
 
-Window::Window() : m_pVkInstance(&VulkanEngine::getInstance()->m_vkInstance), m_MAX_FRAMES_IN_FLIGHT(VulkanEngine::getInstance()->m_MAX_FRAMES_IN_FLIGHT), m_pUtilities(Utilities::getInstance()) { initWindow(); };
+Window::Window() : m_pVkInstance(&VulkanEngine::getInstance()->m_vkInstance), m_MAX_FRAMES_IN_FLIGHT(VulkanEngine::getInstance()->m_MAX_FRAMES_IN_FLIGHT), m_pUtilities(Utilities::getInstance()),
+					m_pGraphicsSettings(&VulkanEngine::getInstance()->m_settings->graphicsSettings)
+{
+	initWindow();
+};
 
 void Window::initWindow()
 {
@@ -24,6 +28,9 @@ void Window::initWindow()
 	m_pWindow = glfwCreateWindow(windowSettings.width, windowSettings.height, windowSettings.title, nullptr, nullptr);
 	glfwSetWindowUserPointer(m_pWindow, this);
 	glfwSetFramebufferSizeCallback(m_pWindow, framebufferResizeCallback);
+
+	if (m_pGraphicsSettings->vsync) m_pGraphicsSettings->maxFramerate = 60; // TODO: Check for display's refresh rate
+	if (m_pGraphicsSettings->maxFramerate > 0) m_renderTargetDelta = (1.0f / (float)m_pGraphicsSettings->maxFramerate); else m_renderTargetDelta = 0.0f;
 }
 
 void Window::framebufferResizeCallback(GLFWwindow* window, int width, int height)
@@ -98,11 +105,19 @@ void Window::mainLoop()
 
 void Window::drawFrame()
 {
+	double currentDelta = glfwGetTime() - m_renderLastTime;
+	if (currentDelta < m_renderTargetDelta) return;
+
 	uint32_t imageIndex;
 
 	std::vector<VkCommandBuffer> commandBuffers = *m_pCommandBuffer->getCommandBuffers();
 
+	double timeBeforeFences = glfwGetTime();
+
 	vkWaitForFences(*m_pLogicalDevice, 1, &m_inFlightFences[m_currentFrame], VK_TRUE, UINT64_MAX);
+
+	m_gpuDrawTime = glfwGetTime() - timeBeforeFences;
+	double timeAfterFences = glfwGetTime();
 
 	VkResult result = vkAcquireNextImageKHR(*m_pLogicalDevice, *m_pSwapchain->getSwapchain(), UINT64_MAX, m_imageAvailableSemaphores[m_currentFrame], VK_NULL_HANDLE, &imageIndex);
 
@@ -116,7 +131,7 @@ void Window::drawFrame()
 		throw std::runtime_error("failed to acquire swap chain image!");
 	}
 
-	updateUniformBuffer(m_currentFrame);
+	updateUniformBuffer(m_currentFrame); // Perform translations
 
 	vkResetFences(*m_pLogicalDevice, 1, &m_inFlightFences[m_currentFrame]);
 
@@ -144,7 +159,7 @@ void Window::drawFrame()
 	}
 
 
-	VkSwapchainKHR swapChains[] = { *m_pSwapchain->getSwapchain()};
+	VkSwapchainKHR swapChains[] = { *m_pSwapchain->getSwapchain() };
 
 	VkPresentInfoKHR presentInfo{
 		.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR,
@@ -159,7 +174,7 @@ void Window::drawFrame()
 	result = vkQueuePresentKHR(*m_pGraphicsQueue, &presentInfo);
 
 	// Ensure swapchain quality
-	if (result == VK_ERROR_OUT_OF_DATE_KHR || result != VK_SUBOPTIMAL_KHR  || m_framebufferResized)
+	if (result == VK_ERROR_OUT_OF_DATE_KHR || result != VK_SUBOPTIMAL_KHR || m_framebufferResized)
 	{
 		m_framebufferResized = false;
 		m_pSwapchain->recreateSwapchain(m_pWindow);
@@ -168,7 +183,12 @@ void Window::drawFrame()
 		throw std::runtime_error("failed to present swap chain image!");
 	}
 
+	m_frameCounter++;
 	m_currentFrame = (m_currentFrame + 1) % m_MAX_FRAMES_IN_FLIGHT;
+
+	m_cpuWorkTime = glfwGetTime() - timeAfterFences;
+
+	m_renderLastTime = glfwGetTime();
 }
 
 void Window::updateUniformBuffer(uint32_t currentImage)
@@ -200,13 +220,17 @@ void Window::calculateFPS()
 	using std::string, std::to_string;
 	double current = glfwGetTime();
 	double delta = current - m_lastTime;
-	m_frameCounter++;
 
-	if (delta >= 1.0)
+	if (delta >= 1) // Wait 1 second
 	{
 		// Print the FPS with a precision of 2 d.p.
 		string fpsString = to_string(m_frameCounter/delta);
-		mDebugPrint("FPS: " + fpsString.substr(0, fpsString.find(".") + 3));
+		string cpuWaitString = to_string(m_cpuWorkTime*1000);
+		string gpuDrawString = to_string((m_gpuDrawTime*1000000));
+		mDebugPrint("FPS (current): " + fpsString.substr(0, fpsString.find(".") + 3));
+		mDebugPrint("CPU work (ms): " + cpuWaitString.substr(0, cpuWaitString.find(".") + 3));
+		mDebugPrint("GPU draw (us): " + gpuDrawString.substr(0, gpuDrawString.find(".") + 3));
+
 		m_frameCounter = 0;
 		m_lastTime = current;
 	}

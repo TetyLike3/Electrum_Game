@@ -52,10 +52,11 @@ void VulkanEngine::run(std::map<std::string, uint32_t> versions, sSettings* sett
 	mDebugPrint("Engine version: " + m_pUtilities->getVkAPIVersionString(m_versions["engineVersion"]));
 	mDebugPrint("Game version: " + m_pUtilities->getVkAPIVersionString(m_versions["gameVersion"]));
 	mDebugPrint("API version: " + m_pUtilities->getVkAPIVersionString(m_versions["apiVersion"]));
-	mDebugPrint("Maximum frames in flight: " + std::to_string(MAX_FRAMES_IN_FLIGHT) + "\n");
 
-	m_MAX_FRAMES_IN_FLIGHT = MAX_FRAMES_IN_FLIGHT;
 	m_settings = settings;
+	m_MAX_FRAMES_IN_FLIGHT = m_settings->graphicsSettings.maxFramesInFlight;
+
+	mDebugPrint("Maximum frames in flight: " + std::to_string(m_MAX_FRAMES_IN_FLIGHT) + "\n");
 
 	Image::m_pGraphicsSettings = &m_settings->graphicsSettings;
 
