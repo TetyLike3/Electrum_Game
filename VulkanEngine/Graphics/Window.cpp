@@ -204,8 +204,8 @@ void Window::updateUniformBuffer(uint32_t currentImage)
 	VkExtent2D swapchainExtent = *m_pSwapchain->getSwapchainExtent();
 
 	UniformBufferObject::sUniformBufferObject ubo{
-		.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(120.0f), glm::vec3(1.0f, 0.1f, 0.6f)),
-		.view = glm::lookAt(glm::vec3(5.0f, /*(8.0f * glm::sin(time)) + 4.0f*/ 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)),
+		.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(120.0f), glm::vec3(1.0f, 0.0f, 1.0f)),
+		.view = glm::lookAt(glm::vec3(5.0f, /*(8.0f * glm::sin(time)) + 4.0f*/ -4.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)),
 		.proj = glm::perspective(glm::radians(70.0f), swapchainExtent.width / (float)swapchainExtent.height, 0.1f, 10.0f)
 	};
 	ubo.proj[1][1] *= -1; // Flip the y axis to account for Vulkan's inverted y axis
@@ -227,9 +227,9 @@ void Window::calculateFPS()
 		string fpsString = to_string(m_frameCounter/delta);
 		string cpuWaitString = to_string(m_cpuWorkTime*1000);
 		string gpuDrawString = to_string((m_gpuDrawTime*1000000));
-		mDebugPrint("FPS (current): " + fpsString.substr(0, fpsString.find(".") + 3));
-		mDebugPrint("CPU work (ms): " + cpuWaitString.substr(0, cpuWaitString.find(".") + 3));
-		mDebugPrint("GPU draw (us): " + gpuDrawString.substr(0, gpuDrawString.find(".") + 3));
+		mDebugPrint(std::format("\x1b[36;49m{}", "FPS (current): " + fpsString.substr(0, fpsString.find(".") + 3)));
+		mDebugPrint(std::format("\x1b[33;49m{}", "CPU work (ms): " + cpuWaitString.substr(0, cpuWaitString.find(".") + 3)));
+		mDebugPrint(std::format("\x1b[33;49m{}", "GPU draw (us): " + gpuDrawString.substr(0, gpuDrawString.find(".") + 3)));
 
 		m_frameCounter = 0;
 		m_lastTime = current;

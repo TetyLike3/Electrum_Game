@@ -38,6 +38,9 @@ public:
 	static VulkanEngine* getInstance();
 	static void destroyInstance();
 
+	VkEngineState getState() { return m_state; }
+	Window* getWindow() { return m_pWindow; }
+
 	void run(std::map<std::string,uint32_t> versions, sSettings* settings);
 
 private:
@@ -71,7 +74,7 @@ private:
 	GraphicsPipeline* m_pGraphicsPipeline = nullptr;
 	BufferManager* m_pBufferManager = nullptr;
 
-	int m_MAX_FRAMES_IN_FLIGHT = 2;
+	int m_MAX_FRAMES_IN_FLIGHT = 1;
 	sSettings* m_settings = nullptr;
 
 	std::map<std::string, uint32_t> m_versions = {};
