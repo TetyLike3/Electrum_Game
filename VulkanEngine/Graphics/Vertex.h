@@ -56,7 +56,7 @@ struct Vertex {
 			VkVertexInputAttributeDescription{
 				.location = 3,
 				.binding = 0,
-				.format = VK_FORMAT_R16_SFLOAT,
+				.format = VK_FORMAT_R16_UNORM,
 				.offset = offsetof(Vertex, colorBlendTex)
 			}
 		};

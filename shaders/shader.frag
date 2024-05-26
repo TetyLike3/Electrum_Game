@@ -9,10 +9,5 @@ layout(location = 2) in float fragColorBlendTex;
 layout(location = 0) out vec4 outColor;
 
 void main() {
-	if (fragColorBlendTex > 0.5)
-	{
-		outColor = vec4(fragColor * texture(texSampler, fragTexCoord).rgb, 1.0);
-	} else {
-		outColor = texture(texSampler, fragTexCoord);
-	}
+	outColor = vec4(fragColor * texture(texSampler, fragTexCoord).rgb, 1.0);
 }

@@ -10,6 +10,7 @@
 #include <iostream>
 #include <chrono>
 
+#include "../Utilities/Utilities.h"
 #include "Swapchain.h"
 
 
@@ -49,6 +50,7 @@ private:
 	Swapchain* m_pSwapchain = nullptr;
 	CommandBuffer* m_pCommandBuffer = nullptr;
 	UniformBufferObject* m_pUniformBufferObject = nullptr;
+	sSettings::sGraphicsSettings* m_pGraphicsSettings = nullptr;
 
 	GLFWwindow* m_pWindow = nullptr;
 	VkSurfaceKHR m_surface = nullptr;
@@ -58,8 +60,13 @@ private:
 	int m_MAX_FRAMES_IN_FLIGHT = 0;
 	uint32_t m_currentFrame = 0;
 
+	// Debug information
 	double m_lastTime = 0.0f;
 	int m_frameCounter = 0;
+	double m_cpuWorkTime = 0.0f;
+	double m_gpuDrawTime = 0.0f;
+	double m_renderTargetDelta = 0.0f;
+	double m_renderLastTime = 0.0f;
 
 
 	void drawFrame();

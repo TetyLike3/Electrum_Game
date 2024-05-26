@@ -22,10 +22,6 @@
 #include "Models/Block.h"
 
 
-const int MAX_FRAMES_IN_FLIGHT = 2;
-
-
-
 enum class VkEngineState
 {
 	NONE,
@@ -41,6 +37,9 @@ class VulkanEngine
 public:
 	static VulkanEngine* getInstance();
 	static void destroyInstance();
+
+	VkEngineState getState() { return m_state; }
+	Window* getWindow() { return m_pWindow; }
 
 	void run(std::map<std::string,uint32_t> versions, sSettings* settings);
 
@@ -62,7 +61,7 @@ private:
 	static DebugMessenger* m_pDebugMessenger;
 
 	std::vector<Block*> m_pLoadedBlocks;
-	Image* m_pTextureImage;
+	Image* m_pTextureImage = nullptr;
 
 	VkInstance m_vkInstance = VK_NULL_HANDLE;
 	Window* m_pWindow = nullptr;
@@ -75,7 +74,7 @@ private:
 	GraphicsPipeline* m_pGraphicsPipeline = nullptr;
 	BufferManager* m_pBufferManager = nullptr;
 
-	int m_MAX_FRAMES_IN_FLIGHT = 2;
+	int m_MAX_FRAMES_IN_FLIGHT = 1;
 	sSettings* m_settings = nullptr;
 
 	std::map<std::string, uint32_t> m_versions = {};

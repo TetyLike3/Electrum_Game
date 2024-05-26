@@ -27,15 +27,16 @@ void VulkanEngine::destroyInstance()
 
 		nativeDebugPrint("Exiting...", true);
 		m_pInstance->m_state = VkEngineState::EXIT;
-		delete m_pInstance;
-		m_pInstance = nullptr;
-		nativeDebugPrint("Instance destroyed");
+		//delete m_pInstance;
+		//m_pInstance = nullptr;
+		//nativeDebugPrint("Instance destroyed");
 	}
 }
 
 
 VulkanEngine::VulkanEngine() {}
 
+void enableInputProcessing() {}
 
 DebugMessenger* VulkanEngine::m_pDebugMessenger = nullptr;
 
@@ -52,10 +53,11 @@ void VulkanEngine::run(std::map<std::string, uint32_t> versions, sSettings* sett
 	mDebugPrint("Engine version: " + m_pUtilities->getVkAPIVersionString(m_versions["engineVersion"]));
 	mDebugPrint("Game version: " + m_pUtilities->getVkAPIVersionString(m_versions["gameVersion"]));
 	mDebugPrint("API version: " + m_pUtilities->getVkAPIVersionString(m_versions["apiVersion"]));
-	mDebugPrint("Maximum frames in flight: " + std::to_string(MAX_FRAMES_IN_FLIGHT) + "\n");
 
-	m_MAX_FRAMES_IN_FLIGHT = MAX_FRAMES_IN_FLIGHT;
 	m_settings = settings;
+	m_MAX_FRAMES_IN_FLIGHT = m_settings->graphicsSettings.maxFramesInFlight;
+
+	mDebugPrint("Maximum frames in flight: " + std::to_string(m_MAX_FRAMES_IN_FLIGHT) + "\n");
 
 	Image::m_pGraphicsSettings = &m_settings->graphicsSettings;
 
@@ -110,6 +112,7 @@ void VulkanEngine::initVulkan()
 		glm::vec3 newPos = {};
 		newPos.x = 1.0f * i;
 		newPos.y = 1.0f * i;
+		mDebugPrint(std::format("Creating block at position ({}, {}, {})", newPos.x, newPos.y, newPos.z));
 
 		Block* newBlock = new Block(newPos, "textures/image.png");
 		newBlock->buildModel();
@@ -379,6 +382,12 @@ void VulkanEngine::validateSettings()
 	{
 		mDebugPrint("Wide lines are not supported by the device. Setting wireframe thickness to 1px.");
 		m_settings->graphicsSettings.wireframeThickness = 1.0f;
+		settingsChanged++;
+	}
+
+	if (!features.sampleRateShading) {
+		mDebugPrint("Sample rate shading is not supported by the device. Disabling multisampling.");
+		m_settings->graphicsSettings.multisampling = false;
 		settingsChanged++;
 	}
 
