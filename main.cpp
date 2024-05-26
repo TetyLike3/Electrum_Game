@@ -101,6 +101,7 @@ int main()
 
 	// Wait for rendering engine to start running
 	while (pVulkanEngine->getState() != VkEngineState::RUNNING) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
 
 	// Allow inputs to be processed
